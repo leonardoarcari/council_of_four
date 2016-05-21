@@ -14,11 +14,13 @@ import java.util.Vector;
  */
 public class PermitCard {
     public static final boolean RIGHT_CARD = true;
-    public static final boolean LEFT_CARD = true;
+    public static final boolean LEFT_CARD = false;
+    private RegionType region;
     private Vector<Bonus> bonuses = new Vector<>();
     private ArrayList<TownName> townEmporiumPermit = new ArrayList<>();
 
-    public PermitCard() {
+    public PermitCard(RegionType region) {
+        this.region = region;
         BonusNumber bonusNumber = bonusNumberCalculator();
         int townEmporiumPermitNumber = emporiumPermitCalculator();
 
@@ -27,7 +29,7 @@ public class PermitCard {
         }
         for(int i = 0; i < townEmporiumPermitNumber; i++) {
             ArrayList<TownName> supporter = new ArrayList<>(townEmporiumPermit);
-            townEmporiumPermit.add(TownNameFactory.getTownName(supporter));
+            townEmporiumPermit.add(TownNameFactory.getTownName(supporter, region));
 
         }
     }
