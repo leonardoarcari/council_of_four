@@ -9,29 +9,30 @@ import java.util.Vector;
  */
 public class Region {
     boolean regionCardTaken;
-    CouncilorsBalcony regionBalcony;
-    Stack<PermitCard> regionPermitCards;
-    PermitCard rightPermitCard;
-    PermitCard leftPermitCard;
-    Vector<Town> regionTowns;
-    RegionCard regionCard;
+    private CouncilorsBalcony regionBalcony;
+    private Stack<PermitCard> regionPermitCards;
+    private PermitCard rightPermitCard;
+    private PermitCard leftPermitCard;
+    private Vector<Town> regionTowns;
+    private RegionCard regionCard;
 
-    public Region(Town[] regionTowns, RegionCard regionCard, Councilor[] councilors) {
-        this.regionTowns = new Vector<>(Arrays.asList(regionTowns));
+    public Region(RegionCard regionCard, RegionType region) {
         this.regionCard = regionCard;
+        createPermitCards(region);
 
-        createPermitCards();
-        createRegionBalcony(councilors);
+        regionTowns = new Vector<>();
+        regionPermitCards = new Stack<>();
+        regionBalcony = new CouncilorsBalcony();
         regionCardTaken = false;
     }
 
-    private void createPermitCards() {
+    private void createPermitCards(RegionType region) {
         for(int i = 0; i < 15; i++) {
-            regionPermitCards.add(new PermitCard());
+            regionPermitCards.add(new PermitCard(region));
         }
     }
 
-    private void createRegionBalcony(Councilor[] councilors) {
+    public void createRegionBalcony(Councilor[] councilors) {
         for(int i = 0; i < councilors.length; i++) {    //Length has to be 4
             regionBalcony.addCouncilor(councilors[i]);
         }
