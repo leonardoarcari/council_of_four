@@ -43,14 +43,18 @@ public class WaitingHall {
         gamesCounter = 0;
     }
 
-    public void addPlayer(Player p) {
+    public synchronized void addPlayer(Player p) {
         waitingPlayers.add(p);
-        if (waitingPlayers.size() == 2) {
+        if (waitingPlayers.size() == 2) { // Start countdown
             timer = scheduledExecutor.schedule(model, 5L, TimeUnit.SECONDS);
+        }
+        if (waitingPlayers.size() == Server.MAX_PLAYERS) { // Immediately start the game
+            timer.cancel(false);
+            new Thread(model).start();
         }
     }
 
-    public List<Player> pullPlayers() {
+    public synchronized List<Player> pullPlayers() {
         List<Player> result = new ArrayList<>(waitingPlayers);
         waitingPlayers.clear();
         return result;
