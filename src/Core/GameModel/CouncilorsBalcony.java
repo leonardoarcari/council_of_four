@@ -1,13 +1,24 @@
 package Core.GameModel;
 
+import Core.GameModel.ModelInterface.BalconyInterface;
+import Server.Observer;
+import Server.Subject;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Vector;
+
 /**
  * Created by Matteo on 20/05/16.
  */
-public class CouncilorsBalcony {
+public class CouncilorsBalcony implements BalconyInterface, Subject{
     private Councilor[] councilorsBalcony;
+    private transient List<Observer> observers;
 
     public CouncilorsBalcony() {
         councilorsBalcony = new Councilor[4];
+        observers = new Vector<>();
     }
 
     /**
@@ -19,7 +30,30 @@ public class CouncilorsBalcony {
             councilorsBalcony[i] = councilorsBalcony[i-1];
         }
         councilorsBalcony[0] = councilor;
+        notifyObservers();
         return councilorToAddToPool;
+    }
+
+    @Override
+    public Iterator<Councilor> councilorsIterator() {
+        return new CouncilorIterator();
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o : observers) {
+            o.update(this);
+        }
     }
 
     @Override
@@ -29,5 +63,21 @@ public class CouncilorsBalcony {
             toString = toString + councilorsBalcony[i] + " ";
         }
         return toString;
+    }
+
+    private class CouncilorIterator implements Iterator<Councilor> {
+        private int current = 0;
+
+        @Override
+        public boolean hasNext() {
+            return current < 4;
+        }
+
+        @Override
+        public Councilor next() {
+            if (hasNext()) {
+                return councilorsBalcony[current++];
+            } else throw new NoSuchElementException();
+        }
     }
 }

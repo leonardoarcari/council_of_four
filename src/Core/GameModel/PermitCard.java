@@ -15,6 +15,7 @@ import java.util.Vector;
 public class PermitCard {
     public static final boolean RIGHT_CARD = true;
     public static final boolean LEFT_CARD = false;
+
     private RegionType region;
     private Vector<Bonus> bonuses = new Vector<>();
     private ArrayList<TownName> townEmporiumPermit = new ArrayList<>();

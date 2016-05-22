@@ -8,7 +8,8 @@ import Core.GameModel.Bonus.VictoryPoint;
 public enum RegionCard {
     SEA(new VictoryPoint(5)),
     HILLS(new VictoryPoint(5)),
-    MOUNTAINS(new VictoryPoint(5));
+    MOUNTAINS(new VictoryPoint(5)),
+    NULL(new VictoryPoint(0));
 
     private VictoryPoint victoryPoint;
 

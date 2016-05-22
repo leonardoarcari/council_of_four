@@ -2,17 +2,18 @@ package Core.GameModel;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 /**
  * Created by Matteo on 21/05/16.
  */
 public class GameBoard {
-    private Vector<PoliticsCard> politicsCardPool;
-    private Vector<RoyalCard> royalCardPool;
-    private Vector<Councilor> councilorPool;
-    private Vector<TownTypeCard> townTypeCards;
-    private Vector<Servant> servantPool;
+    private List<PoliticsCard> politicsCardPool;
+    private List<RoyalCard> royalCardPool;
+    private List<Councilor> councilorPool;
+    private List<TownTypeCard> townTypeCards;
+    private List<Servant> servantPool;
     private CouncilorsBalcony boardBalcony;
     private Region seaRegion;
     private Region hillsRegion;
