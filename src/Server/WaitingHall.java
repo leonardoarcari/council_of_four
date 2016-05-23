@@ -64,10 +64,6 @@ public class WaitingHall {
         return model;
     }
 
-    public RMIProcessor getRMIGameProcessor() {
-        return model.getRMIGameProcessor();
-    }
-
     public InfoProcessor getInfoProcessor() { return model.getProcessor();}
 
     public int getGamesCounter() {

@@ -9,19 +9,21 @@ import Server.Subject;
 import Server.WaitingHall;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.
  */
-public class RMIConnection implements ServerConnection, Observer {
+public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
     private RMIProcessor clientRMIProcessor;
-    private RMIProcessor serverRMIProcessor;
+    private InfoProcessor serverProcessor;
     private Player me;
 
-    public RMIConnection(RMIProcessor clientProcessor) {
+    public RMIConnection(RMIProcessor clientProcessor) throws RemoteException {
         this.clientRMIProcessor = clientProcessor;
-        serverRMIProcessor = WaitingHall.getInstance().getRMIGameProcessor();
+        serverProcessor = WaitingHall.getInstance().getInfoProcessor();
         WaitingHall.getInstance().getModel().registerObserver(this);
+        UnicastRemoteObject.exportObject(this, 0);
     }
 
     @Override
@@ -40,12 +42,14 @@ public class RMIConnection implements ServerConnection, Observer {
     }
 
     @Override
-    public void processInfo(Object info) {
-        try {
-            serverRMIProcessor.processInfo(info);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void processInfo(Object info) throws RemoteException{
+        //TODO: Add reference to me in action
+        serverProcessor.processInfo(info);
+    }
+
+    @Override
+    public void setProcessor(InfoProcessor processor) throws RemoteException {
+
     }
 
     @Override

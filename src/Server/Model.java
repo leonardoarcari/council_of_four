@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class Model implements ModelInterface, Runnable, Serializable, Subject{
     private static final long serialVersionUID = 1L;
     private transient ArrayList<Observer> observers;
-    private transient RMIProcessor rmiProcessor;
     private transient InfoProcessor processor;
 
     private String usefulStuff;
@@ -25,11 +24,6 @@ public class Model implements ModelInterface, Runnable, Serializable, Subject{
         observers = new ArrayList<>();
         usefulStuff = "";
         processor = new ServerProcessor(this);
-        try {
-            rmiProcessor = new RMIGameProcessor(processor);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -61,10 +55,6 @@ public class Model implements ModelInterface, Runnable, Serializable, Subject{
         }
         WaitingHall.getInstance().incrementGamesCounter();
         notifyObservers();
-    }
-
-    public RMIProcessor getRMIGameProcessor() {
-        return rmiProcessor;
     }
 
     public InfoProcessor getProcessor() {

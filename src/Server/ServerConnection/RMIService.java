@@ -25,18 +25,11 @@ public class RMIService implements RMIServiceInterface {
     }
 
     @Override
-    public String connect(RMIProcessor clientProcessor) throws RemoteException {
-        ServerConnection playerConnection = new RMIConnection(clientProcessor);
+    public RMIProcessor connect(RMIProcessor clientProcessor) throws RemoteException {
+        RMIConnection playerConnection = new RMIConnection(clientProcessor);
         Player player = new Player(playerConnection);
         playerConnection.setPlayer(player);
         WaitingHall.getInstance().addPlayer(player);
-        int gamesCount = WaitingHall.getInstance().getGamesCounter();
-        try {
-            registry.lookup(startingGameProcessorName + gamesCount);
-        } catch (NotBoundException e) {
-            registry.rebind(startingGameProcessorName + gamesCount, WaitingHall.getInstance().getRMIGameProcessor());
-            //e.printStackTrace();
-        }
-        return startingGameProcessorName + gamesCount;
+        return playerConnection;
     }
 }
