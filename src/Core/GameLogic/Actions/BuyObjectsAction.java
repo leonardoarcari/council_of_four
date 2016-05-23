@@ -12,8 +12,8 @@ import java.util.List;
 public class BuyObjectsAction extends Action implements MarketAction {
     private final List<OnSaleItem> onSaleItems;
 
-    public BuyObjectsAction(Player player, List<OnSaleItem> onSaleItems) {
-        super(player);
+    public BuyObjectsAction(List<OnSaleItem> onSaleItems) {
+        super();
         this.onSaleItems = onSaleItems;
     }
 

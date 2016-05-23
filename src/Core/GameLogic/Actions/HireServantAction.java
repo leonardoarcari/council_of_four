@@ -7,6 +7,6 @@ import Core.Player;
  */
 public class HireServantAction extends Action implements FastAction{
     public HireServantAction(Player player) {
-        super(player);
+        super();
     }
 }

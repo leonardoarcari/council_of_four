@@ -1,36 +1,36 @@
 package Core.GameLogic.Actions;
 
-import Core.GameModel.PermitCard;
 import Core.GameModel.PoliticsCard;
+import Core.GameModel.Region;
 import Core.GameModel.RegionType;
-import Core.Player;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Matteo on 23/05/16.
  */
 public class BuyPermitCardAction extends Action implements NormalAction{
-    List<PoliticsCard> discardedCards;
-    RegionType regionType;
-    PermitCard drawnPermitCard;
+    private List<PoliticsCard> discardedCards;
+    private RegionType regionType;
+    private Region.PermitPos position;
 
-    public BuyPermitCardAction(Player player, List<PoliticsCard> discardedCards, RegionType regionType, PermitCard drawnPermitCard) {
-        super(player);
+    public BuyPermitCardAction(List<PoliticsCard> discardedCards, RegionType regionType, Region.PermitPos drawnPermitCard) {
+        super();
         this.discardedCards = discardedCards;
         this.regionType = regionType;
-        this.drawnPermitCard = drawnPermitCard;
+        this.position = drawnPermitCard;
     }
 
-    public List<PoliticsCard> getDiscardedCards() {
-        return discardedCards;
+    public Iterator<PoliticsCard> discartedIterator() {
+        return discardedCards.iterator();
     }
 
     public RegionType getRegionType() {
         return regionType;
     }
 
-    public PermitCard getDrawnPermitCard() {
-        return drawnPermitCard;
+    public Region.PermitPos getDrawnPermitCard() {
+        return position;
     }
 }

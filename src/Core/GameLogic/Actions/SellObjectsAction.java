@@ -13,7 +13,7 @@ public class SellObjectsAction extends Action implements MarketAction {
     private final List<OnSaleItem> onSaleItems;
 
     public SellObjectsAction(Player player, List<OnSaleItem> onSaleItems) {
-        super(player);
+        super();
         this.onSaleItems = onSaleItems;
     }
 
