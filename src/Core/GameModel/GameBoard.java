@@ -1,13 +1,17 @@
 package Core.GameModel;
 
+import Core.Player;
+
 import java.util.*;
 
 /**
  * Created by Matteo on 21/05/16.
  */
 public class GameBoard {
+    private RegionType boardType;
     private List<PoliticsCard> politicsCardPool;
-    private List<RoyalCard> royalCardPool;
+    private List<PoliticsCard> discardedCards;
+    private Stack<RoyalCard> royalCardPool;
     private List<Councilor> councilorPool;
     private List<TownTypeCard> townTypeCards;
     private List<Servant> servantPool;
@@ -15,10 +19,13 @@ public class GameBoard {
     private Region seaRegion;
     private Region hillsRegion;
     private Region mountainsRegion;
+    private NobilityPath nobilityPath;
 
     public GameBoard() {
+        boardType = RegionType.KINGBOARD;
         politicsCardPool = new Vector<>();
-        royalCardPool = new Vector<>();
+        discardedCards = new Vector<>();
+        royalCardPool = new Stack<>();
         councilorPool = new Vector<>();
         townTypeCards = new Vector<>();
         servantPool = new Vector<>();
@@ -29,6 +36,8 @@ public class GameBoard {
         createPoliticsCard();
         shufflePool(politicsCardPool);
         createServantsPool();
+        Arrays.stream(RoyalCard.values()).forEach(royalCard -> royalCardPool.push(royalCard));
+        Arrays.stream(TownTypeCard.values()).forEach(townTypeCard -> townTypeCards.add(townTypeCard));
 
         //Regions creation
         seaRegion = new Region(RegionCard.SEA, RegionType.SEA, fillBalcony());
@@ -38,6 +47,7 @@ public class GameBoard {
 
         boardBalcony = new CouncilorsBalcony();
         Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
+        nobilityPath = new NobilityPath();
     }
 
     private void createCouncilors() {
@@ -49,9 +59,10 @@ public class GameBoard {
                 CouncilColor.PURPLE,
                 CouncilColor.WHITE
         ));
+        int id = 0;
         for(CouncilColor color: coucilorsColor) {
             for(int i = 0; i < 4; i++) {
-                councilorPool.add(new Councilor(color));
+                councilorPool.add(new Councilor(color, id++));
             }
         }
     }
@@ -79,17 +90,15 @@ public class GameBoard {
         }
     }
 
-    private void assignCouncilors() {
-        for(int i = 0; i < 4; i++) {
-            boardBalcony.addCouncilor(councilorPool.remove(0));
-        }
-    }
-
     private Councilor[] fillBalcony() {
         Councilor[] councHelper = new Councilor[4];
         for( int i = 0; i < 4; i++) {
             councHelper[i] = councilorPool.remove(0);
         }
         return councHelper;
+    }
+
+    public void setNobilityPlayer(Player player) {
+        nobilityPath.setPlayer(player);
     }
 }

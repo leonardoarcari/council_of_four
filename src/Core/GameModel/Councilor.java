@@ -5,9 +5,11 @@ package Core.GameModel;
  */
 public class Councilor {
     private final CouncilColor councilorColor;
+    private final int id;
 
-    public Councilor(CouncilColor councilorColor) {
+    public Councilor(CouncilColor councilorColor, int id) {
         this.councilorColor = councilorColor;
+        this.id = id;
     }
 
     public CouncilColor getCouncilorColor() {
