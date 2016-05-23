@@ -142,6 +142,10 @@ public class GameBoard implements Subject{
         town.createEmporium(player);
     }
 
+    public void discartCard(PoliticsCard politicCard) {
+        discardedCards.add(politicCard);
+    }
+
     @Override
     public void registerObserver(Server.Observer observer) {
         observers.add(observer);
