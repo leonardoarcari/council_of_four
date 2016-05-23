@@ -51,6 +51,7 @@ public class SocketConnection implements Connection, Runnable {
                 String className = tokenizer.nextToken();
                 String json = tokenizer.nextToken();
                 Object data = gson.fromJson(json, Class.forName(className));
+                packPlayer(info);
                 processor.processInfo(data);
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -71,4 +72,6 @@ public class SocketConnection implements Connection, Runnable {
             }
         }
     }
+
+    protected void packPlayer(Object info) {}
 }

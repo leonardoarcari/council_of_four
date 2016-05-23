@@ -2,6 +2,7 @@ package Server.ServerConnection;
 
 import Core.Connection.InfoProcessor;
 import Core.Connection.SocketConnection;
+import Core.GameLogic.Actions.Action;
 import Core.Player;
 import Server.Observer;
 import Server.Subject;
@@ -19,6 +20,14 @@ public class ServerSocketConnection extends SocketConnection implements ServerCo
     public ServerSocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         super(processor, socket);
         //WaitingHall.getInstance().getModel().registerObserver(this);
+    }
+
+    @Override
+    protected void packPlayer(Object info) {
+        if (info instanceof Action) {
+            Action action = (Action) info;
+            action.setPlayer(me);
+        }
     }
 
     @Override

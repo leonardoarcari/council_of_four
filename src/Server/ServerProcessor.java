@@ -45,15 +45,27 @@ public class ServerProcessor implements InfoProcessor {
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
         // Add politics card to discarted deck
+        int rainbowCards = 0;
+        int cardsNo = 0;
         Iterator<PoliticsCard> cardIterator = action.discartedIterator();
         while (cardIterator.hasNext()) {
             PoliticsCard card = cardIterator.next();
             game.getGameBoard().discardCard(cardIterator.next());
             action.getPlayer().removePoliticsCard(card);
+            if (card.getCardColor() == CouncilColor.RAINBOW) rainbowCards++;
+            cardsNo++;
         }
 
         // Pay for discarted cards
-        //TODO: Once we have a wealth path
+        int coinsToPay = 0;
+
+        if (cardsNo == 1) coinsToPay = 10;
+        else if (cardsNo == 2) coinsToPay = 7;
+        else if (cardsNo == 3) coinsToPay = 4;
+        else if (cardsNo == 4) coinsToPay = 0;
+
+        coinsToPay += rainbowCards;
+        game.getGameBoard().moveWealthPath(action.getPlayer(), -coinsToPay);
 
         // Draw permit card and redeem bonuses
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getDrawnPermitCard());
