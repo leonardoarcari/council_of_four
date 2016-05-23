@@ -1,5 +1,6 @@
 package Server;
 
+import Core.GameLogic.Actions.Action;
 import Server.ServerConnection.RMIService;
 import Server.ServerConnection.SocketService;
 
