@@ -62,6 +62,18 @@ public class Player implements Subject {
         politicsCards.remove(card);
     }
 
+    public void addPermitCard(PermitCard permitCard) {
+        permitCards.add(permitCard);
+    }
+
+    public void addPoliticsCard(PoliticsCard card) {
+        politicsCards.add(card);
+    }
+
+    public void hireServant(Servant servant) {
+        servants.add(servant);
+    }
+
     public List<PermitCard> getPermitCards() {
         return permitCards;
     }

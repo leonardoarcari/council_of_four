@@ -11,8 +11,7 @@ import java.util.List;
  */
 public class WealthPath extends AbstractPath{
 
-    public WealthPath(List<Observer> observers) {
-        super(observers);
+    public WealthPath() {
         players = new ArrayList<>(21);
         players.stream().forEach(playerList -> playerList = new ArrayList<>());
     }

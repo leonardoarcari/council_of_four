@@ -21,7 +21,7 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
     public RMIConnection(RMIProcessor clientProcessor) throws RemoteException {
         this.clientRMIProcessor = clientProcessor;
         serverProcessor = WaitingHall.getInstance().getInfoProcessor();
-        WaitingHall.getInstance().getModel().registerObserver(this);
+        //WaitingHall.getInstance().getModel().registerObserver(this);
         UnicastRemoteObject.exportObject(this, 0);
     }
 
@@ -48,14 +48,14 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
 
     @Override
     public void setProcessor(InfoProcessor processor) throws RemoteException {
-
+        serverProcessor = processor;
     }
 
     @Override
     public void update(Subject subject) {
-        if (subject.getClass().equals(Model.class)) {
+        /*if (subject.getClass().equals(Model.class)) {
             sendInfo(subject);
-        }
+        }*/
     }
 
     @Override

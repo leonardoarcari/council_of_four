@@ -46,11 +46,11 @@ public class WaitingHall {
     public synchronized void addPlayer(Player p) {
         waitingPlayers.add(p);
         if (waitingPlayers.size() == 2) { // Start countdown
-            timer = scheduledExecutor.schedule(model, 5L, TimeUnit.SECONDS);
+            timer = scheduledExecutor.schedule(game, 5L, TimeUnit.SECONDS);
         }
         if (waitingPlayers.size() == Server.MAX_PLAYERS) { // Immediately start the game
             timer.cancel(false);
-            new Thread(model).start();
+            new Thread(game).start();
         }
     }
 
@@ -60,17 +60,17 @@ public class WaitingHall {
         return result;
     }
 
-    public Model getModel() {
-        return model;
+    public void createNewGame() {
+        game = new Game();
     }
 
-    public InfoProcessor getInfoProcessor() { return model.getProcessor();}
+    public Game getGame() {
+        return game;
+    }
+
+    public InfoProcessor getInfoProcessor() { return game.getProcessor();}
 
     public int getGamesCounter() {
         return gamesCounter;
-    }
-
-    public void incrementGamesCounter() {
-        gamesCounter++;
     }
 }

@@ -1,5 +1,6 @@
 package Core.GameModel;
 
+import Core.GameModel.Bonus.Bonus;
 import Core.Player;
 import Server.Observer;
 import Server.Subject;
@@ -11,7 +12,7 @@ import java.util.*;
  */
 public class GameBoard implements Subject{
     private transient RegionType boardType;
-    private transient List<PoliticsCard> politicsCardPool;
+    private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
     private Stack<RoyalCard> royalCardPool;
     private List<Councilor> councilorPool;
@@ -22,12 +23,13 @@ public class GameBoard implements Subject{
     private transient Region hillsRegion;
     private transient Region mountainsRegion;
     private transient NobilityPath nobilityPath;
+    private transient WealthPath wealthPath;
 
     private transient List<Server.Observer> observers;
 
     public GameBoard() {
         boardType = RegionType.KINGBOARD;
-        politicsCardPool = new Vector<>();
+        politicsCardPool = new Stack<>();
         discardedCards = new Vector<>();
         royalCardPool = new Stack<>();
         councilorPool = new Vector<>();
@@ -52,7 +54,8 @@ public class GameBoard implements Subject{
 
         boardBalcony = new CouncilorsBalcony();
         Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
-        nobilityPath = new NobilityPath(observers);
+        nobilityPath = new NobilityPath();
+        wealthPath = new WealthPath();
     }
 
     private void createCouncilors() {
@@ -107,10 +110,14 @@ public class GameBoard implements Subject{
         nobilityPath.setPlayer(player);
     }
 
+    public void discardCard(PoliticsCard card) {
+        discardedCards.add(card);
+    }
+
     public void electCouncilor(Councilor councilor, RegionType regionType) {
         Councilor toAddCounc;
 
-        if(regionType.equals(RegionType.KINGBOARD)) {
+        if (regionType.equals(RegionType.KINGBOARD)) {
             toAddCounc = boardBalcony.addCouncilor(councilor);
         } else {
             Region region;
@@ -134,8 +141,21 @@ public class GameBoard implements Subject{
         notifyObservers();
     }
 
-    public void updateWealthPath(Player player, int increment) {
-        //TODO: create wealth path
+    public PermitCard drawPermitCard(RegionType type, Region.PermitPos pos) {
+        switch (type) {
+            case SEA:
+                return seaRegion.drawPermitCard(pos);
+            case HILLS:
+                return hillsRegion.drawPermitCard(pos);
+            case MOUNTAINS:
+                return mountainsRegion.drawPermitCard(pos);
+            default: // Shouldn't happen
+                return null;
+        }
+    }
+
+    public void moveWealthPath (Player player, int increment) {
+        wealthPath.movePlayer(player, increment);
     }
 
     public void updateTown(Player player, Town town) {
@@ -144,6 +164,20 @@ public class GameBoard implements Subject{
 
     public void discartCard(PoliticsCard politicCard) {
         discardedCards.add(politicCard);
+    }
+
+    //TODO: Check for empty deck
+    public PoliticsCard drawPoliticsCard() {
+        return politicsCardPool.pop();
+    }
+
+    public Servant hireServant() {
+        return servantPool.remove(0);
+    }
+
+    public List<Bonus> moveNobilityPath(Player player, int increment) {
+        nobilityPath.movePlayer(player, increment);
+        return nobilityPath.retrieveBonus(player);
     }
 
     @Override

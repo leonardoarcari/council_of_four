@@ -6,16 +6,17 @@ import Server.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by Matteo on 23/05/16.
  */
 public class AbstractPath implements Subject{
-    protected ArrayList<ArrayList<Player>> players;
+    protected List<List<Player>> players;
     protected transient List<Observer> observers;
 
-    public AbstractPath(List<Observer> observers) {
-        this.observers = observers;
+    public AbstractPath() {
+        observers = new Vector<>();
     }
 
     public void movePlayer(Player player, int variation) {

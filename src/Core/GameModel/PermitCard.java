@@ -7,6 +7,7 @@ import Core.GameModel.Bonus.BonusNumber;
 import Core.GameModel.ModelInterface.SellableItem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -17,8 +18,8 @@ public class PermitCard implements SellableItem {
     //TODO: add card identifier
     private RegionType region;
     private boolean isBurned;
-    private Vector<Bonus> bonuses = new Vector<>();
-    private ArrayList<TownName> townEmporiumPermit = new ArrayList<>();
+    private List<Bonus> bonuses = new Vector<>();
+    private List<TownName> townEmporiumPermit = new ArrayList<>();
 
     public PermitCard(RegionType region) {
         this.region = region;
@@ -65,10 +66,10 @@ public class PermitCard implements SellableItem {
         return isBurned;
     }
 
-    public Vector<Bonus> getBonuses() {
+    public List<Bonus> getBonuses() {
         return bonuses;
     }
 
-    public ArrayList<TownName> getCityPermits() { return townEmporiumPermit; }
+    public List<TownName> getCityPermits() { return townEmporiumPermit; }
 
 }

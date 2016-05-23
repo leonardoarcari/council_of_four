@@ -18,14 +18,14 @@ public class ServerSocketConnection extends SocketConnection implements ServerCo
 
     public ServerSocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         super(processor, socket);
-        WaitingHall.getInstance().getModel().registerObserver(this);
+        //WaitingHall.getInstance().getModel().registerObserver(this);
     }
 
     @Override
     public void update(Subject subject) {
-        if (subject.getClass().equals(Model.class)) {
+        /*if (subject.getClass().equals(Model.class)) {
             sendInfo(subject);
-        }
+        }*/
     }
 
     @Override

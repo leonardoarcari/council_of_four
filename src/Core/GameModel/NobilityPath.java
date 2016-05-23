@@ -10,10 +10,9 @@ import java.util.*;
  * Created by Matteo on 23/05/16.
  */
 public class NobilityPath extends AbstractPath{
-    private ArrayList<ArrayList<Bonus>> bonusPath;
+    private List<List<Bonus>> bonusPath;
 
-    public NobilityPath(List<Observer> observers) {
-        super(observers);
+    public NobilityPath() {
         bonusPath = new ArrayList<>(21);
         bonusPath.stream().forEach(bonuses -> bonuses = new ArrayList<>());
         players = new ArrayList<>(21);
@@ -35,8 +34,19 @@ public class NobilityPath extends AbstractPath{
         players.get(0).add(player);
     }
 
-    public ArrayList<Bonus> retrieveBonus(Player player) {
-        for (ArrayList<Player> al : players) {
+    public void movePlayer(Player player, int increment) {
+        for (int i = 0; i < players.size(); i++) {
+            if(players.get(i).contains(player)) {
+                players.get(i).remove(player);
+                int newPos = (i+increment < 20) ? i+increment : 20;
+                players.get(newPos).add(player);
+                break;
+            }
+        }
+    }
+
+    public List<Bonus> retrieveBonus(Player player) {
+        for (List<Player> al : players) {
             if(al.contains(player)) {
                 int pathPosition = players.indexOf(al);
                 return bonusPath.get(pathPosition);
