@@ -3,7 +3,9 @@ package Server;
 import Core.Connection.InfoProcessor;
 import Core.GameLogic.Actions.*;
 import Core.GameModel.Councilor;
+import Core.GameModel.PermitCard;
 import Core.GameModel.RegionType;
+import Core.GameModel.Town;
 import Core.Player;
 
 /**
@@ -21,6 +23,8 @@ public class ServerProcessor implements InfoProcessor {
         if (info instanceof NormalAction) {
             if(info.getClass().equals(CouncilorElectionAction.class)){
                 councilorElection((CouncilorElectionAction) info);
+            } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
+                buildEmpoWithPermit((BuildEmpoPCAction) info);
             }
         } else if (info instanceof MarketAction) {
             //TODO: Add Market actions
@@ -37,5 +41,13 @@ public class ServerProcessor implements InfoProcessor {
         RegionType regionType = action.getRegionType();
         game.getGameBoard().electCouncilor(councilor, regionType);
         game.getGameBoard().updateWealthPath(player, 4);
+    }
+
+    private void buildEmpoWithPermit(BuildEmpoPCAction action) {
+        Player player = action.getPlayer();
+        PermitCard permitCard = action.getUsedPermitCard();
+        Town town = action.getSelectedTown();
+        game.getGameBoard().updateTown(player, town);
+        player.burnPermitCard(permitCard);
     }
 }

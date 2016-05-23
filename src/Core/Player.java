@@ -2,12 +2,17 @@ package Core;
 
 import Core.Connection.Connection;
 import Core.GameModel.*;
+import Server.Observer;
+import Server.Subject;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by Matteo on 19/05/16.
  */
-public class Player {
+public class Player implements Subject {
     private String username;
     private String nickname;
     private transient Connection connection;
@@ -22,6 +27,8 @@ public class Player {
     private ArrayList<TownTypeCard>  townTypeCards;
     private ArrayList<Servant> servants;
 
+    private transient List<Observer> observers;
+
     public Player(Connection connection) {
         this.connection = connection;
 
@@ -33,6 +40,7 @@ public class Player {
         royalCards = new ArrayList<>();
         townTypeCards = new ArrayList<>();
         servants = new ArrayList<>();
+        observers = new Vector<>();
     }
 
     public void setNickname(String nickname) {
@@ -73,5 +81,29 @@ public class Player {
 
     public ArrayList<Servant> getServants() {
         return servants;
+    }
+
+    public void burnPermitCard(PermitCard permitCard) {
+        if(permitCards.contains(permitCard)) {
+            permitCard.burn();
+            notifyObservers();
+        }
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o : observers) {
+            o.update(this);
+        }
     }
 }

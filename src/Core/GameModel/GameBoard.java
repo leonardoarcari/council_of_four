@@ -33,6 +33,7 @@ public class GameBoard implements Subject{
         councilorPool = new Vector<>();
         townTypeCards = new Vector<>();
         servantPool = new Vector<>();
+        observers = new Vector<>();
 
         // Pools creation
         createCouncilors();
@@ -51,7 +52,7 @@ public class GameBoard implements Subject{
 
         boardBalcony = new CouncilorsBalcony();
         Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
-        nobilityPath = new NobilityPath();
+        nobilityPath = new NobilityPath(observers);
     }
 
     private void createCouncilors() {
@@ -107,28 +108,38 @@ public class GameBoard implements Subject{
     }
 
     public void electCouncilor(Councilor councilor, RegionType regionType) {
-        Region region;
-        switch(regionType) {
-            case SEA:
-                region = seaRegion;
-                break;
-            case HILLS:
-                region = hillsRegion;
-                break;
-            case MOUNTAINS:
-                region = mountainsRegion;
-                break;
-            default:
-                region = null;
-                break;
+        Councilor toAddCounc;
+
+        if(regionType.equals(RegionType.KINGBOARD)) {
+            toAddCounc = boardBalcony.addCouncilor(councilor);
+        } else {
+            Region region;
+            switch (regionType) {
+                case SEA:
+                    region = seaRegion;
+                    break;
+                case HILLS:
+                    region = hillsRegion;
+                    break;
+                case MOUNTAINS:
+                    region = mountainsRegion;
+                    break;
+                default:    // Never reached
+                    region = null;
+                    break;
+            }
+            toAddCounc = region.updateBalcony(councilor);
         }
-        Councilor toAddCounc = region.updateBalcony(councilor);
         councilorPool.add(toAddCounc);
         notifyObservers();
     }
 
     public void updateWealthPath(Player player, int increment) {
         //TODO: create wealth path
+    }
+
+    public void updateTown(Player player, Town town) {
+        town.createEmporium(player);
     }
 
     @Override

@@ -19,11 +19,13 @@ public class PermitCard implements SellableItem {
 
     //TODO: add card identifier
     private RegionType region;
+    private boolean isBurned;
     private Vector<Bonus> bonuses = new Vector<>();
     private ArrayList<TownName> townEmporiumPermit = new ArrayList<>();
 
     public PermitCard(RegionType region) {
         this.region = region;
+        isBurned = false;
         BonusNumber bonusNumber = bonusNumberCalculator();
         int townEmporiumPermitNumber = emporiumPermitCalculator();
 
@@ -56,6 +58,14 @@ public class PermitCard implements SellableItem {
 
     private int emporiumPermitCalculator() {
         return new Random().nextInt(3) + 1;
+    }
+
+    public void burn() {
+        isBurned = true;
+    }
+
+    public boolean isBurned() {
+        return isBurned;
     }
 
     public Vector<Bonus> getBonuses() {

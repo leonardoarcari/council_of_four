@@ -2,17 +2,18 @@ package Core.GameModel;
 
 import Core.GameModel.Bonus.Bonus;
 import Core.Player;
+import Server.Observer;
 
 import java.util.*;
 
 /**
  * Created by Matteo on 23/05/16.
  */
-public class NobilityPath {
-    ArrayList<ArrayList<Bonus>> bonusPath;
-    ArrayList<ArrayList<Player>> players;
+public class NobilityPath extends AbstractPath{
+    private ArrayList<ArrayList<Bonus>> bonusPath;
 
-    public NobilityPath() {
+    public NobilityPath(List<Observer> observers) {
+        super(observers);
         bonusPath = new ArrayList<>(21);
         bonusPath.stream().forEach(bonuses -> bonuses = new ArrayList<>());
         players = new ArrayList<>(21);
@@ -32,17 +33,6 @@ public class NobilityPath {
 
     public void setPlayer(Player player) {
         players.get(0).add(player);
-    }
-
-    public void movePlayer(Player player, int increment) {
-        for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).contains(player)) {
-                players.get(i).remove(player);
-                int newPos = (i+increment < 20) ? i+increment : 20;
-                players.get(newPos).add(player);
-                break;
-            }
-        }
     }
 
     public ArrayList<Bonus> retrieveBonus(Player player) {

@@ -1,6 +1,7 @@
 package Core.GameModel;
 
 import Core.GameModel.ModelInterface.RegionInterface;
+import Core.Player;
 import Server.Observer;
 import Server.Subject;
 
