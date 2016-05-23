@@ -44,7 +44,7 @@ public class Region implements RegionInterface, Subject{
         }
     }
 
-    public void createRegionBalcony(Councilor[] councilors) {
+    private void createRegionBalcony(Councilor[] councilors) {
         for(int i = 0; i < councilors.length; i++) {    //Length has to be 4
             regionBalcony.addCouncilor(councilors[i]);
         }
@@ -99,6 +99,10 @@ public class Region implements RegionInterface, Subject{
             notifyObservers(); // RegionCard must disappear from Region
             return regionCard;
         } else throw  new AlreadyTakenException();
+    }
+
+    public Councilor updateBalcony(Councilor councilor) {
+        return regionBalcony.addCouncilor(councilor);
     }
 
     @Override

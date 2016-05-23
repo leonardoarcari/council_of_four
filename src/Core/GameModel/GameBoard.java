@@ -1,25 +1,29 @@
 package Core.GameModel;
 
 import Core.Player;
+import Server.Observer;
+import Server.Subject;
 
 import java.util.*;
 
 /**
  * Created by Matteo on 21/05/16.
  */
-public class GameBoard {
-    private RegionType boardType;
-    private List<PoliticsCard> politicsCardPool;
-    private List<PoliticsCard> discardedCards;
+public class GameBoard implements Subject{
+    private transient RegionType boardType;
+    private transient List<PoliticsCard> politicsCardPool;
+    private transient List<PoliticsCard> discardedCards;
     private Stack<RoyalCard> royalCardPool;
     private List<Councilor> councilorPool;
     private List<TownTypeCard> townTypeCards;
-    private List<Servant> servantPool;
+    private transient List<Servant> servantPool;
     private CouncilorsBalcony boardBalcony;
-    private Region seaRegion;
-    private Region hillsRegion;
-    private Region mountainsRegion;
-    private NobilityPath nobilityPath;
+    private transient Region seaRegion;
+    private transient Region hillsRegion;
+    private transient Region mountainsRegion;
+    private transient NobilityPath nobilityPath;
+
+    private transient List<Server.Observer> observers;
 
     public GameBoard() {
         boardType = RegionType.KINGBOARD;
@@ -100,5 +104,47 @@ public class GameBoard {
 
     public void setNobilityPlayer(Player player) {
         nobilityPath.setPlayer(player);
+    }
+
+    public void electCouncilor(Councilor councilor, RegionType regionType) {
+        Region region;
+        switch(regionType) {
+            case SEA:
+                region = seaRegion;
+                break;
+            case HILLS:
+                region = hillsRegion;
+                break;
+            case MOUNTAINS:
+                region = mountainsRegion;
+                break;
+            default:
+                region = null;
+                break;
+        }
+        Councilor toAddCounc = region.updateBalcony(councilor);
+        councilorPool.add(toAddCounc);
+        notifyObservers();
+    }
+
+    public void updateWealthPath(Player player, int increment) {
+        //TODO: create wealth path
+    }
+
+    @Override
+    public void registerObserver(Server.Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Server.Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o : observers) {
+            o.update(this);
+        }
     }
 }

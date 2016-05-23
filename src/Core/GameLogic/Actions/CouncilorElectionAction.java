@@ -1,6 +1,5 @@
 package Core.GameLogic.Actions;
 
-import Core.GameModel.CouncilColor;
 import Core.GameModel.Councilor;
 import Core.GameModel.RegionType;
 import Core.Player;
