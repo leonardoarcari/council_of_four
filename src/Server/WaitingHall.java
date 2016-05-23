@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WaitingHall {
     private volatile static WaitingHall instance = null;
-    private Model model;
+    private Game game;
     private List<Player> waitingPlayers;
     private ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> timer;
@@ -36,7 +36,7 @@ public class WaitingHall {
     }
 
     private WaitingHall() {
-        model = new Model();
+        game = new Game();
         waitingPlayers = new Vector<>();
         scheduledExecutor = new ScheduledThreadPoolExecutor(1);
         timer = null;

@@ -3,7 +3,6 @@ package Server.ServerConnection;
 import Core.Connection.InfoProcessor;
 import Core.Connection.SocketConnection;
 import Core.Player;
-import Server.Model;
 import Server.Observer;
 import Server.Subject;
 import Server.WaitingHall;
