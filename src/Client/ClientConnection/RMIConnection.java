@@ -21,8 +21,7 @@ public class RMIConnection implements Connection {
         Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
         RMIServiceInterface serverService = (RMIServiceInterface) registry.lookup("rmi_server_service");
         clientRmiProcessor = new ClientRMIProcessor(clientProcessor);
-        String gameRMIProcessor = serverService.connect(clientRmiProcessor);
-        serverRmiProcessor = (RMIProcessor) registry.lookup(gameRMIProcessor);
+        serverRmiProcessor = serverService.connect(clientRmiProcessor);
     }
 
     @Override
@@ -38,15 +37,6 @@ public class RMIConnection implements Connection {
     public void sendInfo(Object info) {
         try {
             serverRmiProcessor.processInfo(info);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void processInfo(Object info) {
-        try {
-            clientRmiProcessor.processInfo(info);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

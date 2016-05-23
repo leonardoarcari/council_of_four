@@ -39,11 +39,6 @@ public class SocketConnection implements Connection, Runnable {
     }
 
     @Override
-    public void processInfo(Object info) {
-        processor.processInfo(info);
-    }
-
-    @Override
     public void run() {
         try {
             // Open stream reader
