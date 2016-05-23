@@ -17,18 +17,15 @@ import java.util.Vector;
 public class Town implements Subject, TownInterface{
     private TownName townName;
     private TownType townType;
-    private Vector<Town> nearbyTown;
+    private Vector<Town> nearbyTowns;
     private Bonus townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
 
     private transient List<Observer> observers;
 
-    public Town(TownName townName, TownType townType, Vector<Town> nearbyTown) {
+    public Town(TownName townName) {
         this.townName = townName;
-        this.townType = townType;
-        this.nearbyTown = nearbyTown;
-
         this.townBonus = BonusFactory.createBonus(BonusNumber.ONE_PROBABILITY);
 
         if(townName.equals(TownName.J)) {
@@ -38,6 +35,32 @@ public class Town implements Subject, TownInterface{
         }
 
         observers = new Vector<>();
+        nearbyTowns = new Vector<>();
+        townType = null;
+    }
+
+    public void setTownType() {
+        switch (townName) {
+            case A:case M:
+                townType = TownType.IRON;
+                break;
+            case B:case F:case H:case K:case O:
+                townType = TownType.GOLD;
+                break;
+            case C:case D:case G:case L:
+                townType = TownType.SILVER;
+                break;
+            case E:case I:case N:
+                townType = TownType.BRONZE;
+                break;
+            case J:
+                townType = TownType.KING;
+                break;
+        }
+    }
+
+    public void addNearbyTown(Town nearbyTown) {
+        nearbyTowns.add(nearbyTown);
     }
 
     @Override

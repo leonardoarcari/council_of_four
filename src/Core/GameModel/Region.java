@@ -4,16 +4,14 @@ import Core.GameModel.ModelInterface.RegionInterface;
 import Server.Observer;
 import Server.Subject;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Matteo on 20/05/16. Need to add LinkTown method and attributes
  */
 public class Region implements RegionInterface, Subject{
     boolean regionCardTaken;
+    private RegionType regionType;
     private CouncilorsBalcony regionBalcony;
     private Stack<PermitCard> regionPermitCards;
     private PermitCard rightPermitCard;
@@ -25,7 +23,8 @@ public class Region implements RegionInterface, Subject{
 
     public Region(RegionCard regionCard, RegionType region) {
         this.regionCard = regionCard;
-        createPermitCards(region);
+        this.regionType = regionType;
+        //createPermitCards(region);
 
         regionTowns = new Vector<>();
         regionPermitCards = new Stack<>();
@@ -48,6 +47,22 @@ public class Region implements RegionInterface, Subject{
     }
 
     //TODO: Add checks on empty stack
+    /**
+     * Why not delegate town creation to gameboard?
+     */
+    private void setTowns() {
+        switch(regionType) {
+            case SEA:
+                regionTowns.addAll(new ArrayList<>(Arrays.asList(
+                        new Town(TownName.A),
+                        new Town(TownName.B),
+                        new Town(TownName.C),
+                        new Town(TownName.D),
+                        new Town(TownName.E))));
+                break;
+        }
+    }
+
     public PermitCard drawPermitCard(boolean isRight) {
         PermitCard drawn;
         if(isRight == PermitCard.RIGHT_CARD) {
