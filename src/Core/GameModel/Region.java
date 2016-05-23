@@ -21,10 +21,14 @@ public class Region implements RegionInterface, Subject{
 
     private transient List<Observer> observers;
 
-    public Region(RegionCard regionCard, RegionType region) {
+    public Region(RegionCard regionCard, RegionType regionType, Councilor[] councilors) {
+
+        // Region objects initialization
         this.regionCard = regionCard;
         this.regionType = regionType;
-        //createPermitCards(region);
+        createPermitCards(regionType);
+        createRegionBalcony(councilors);
+        setTowns();
 
         regionTowns = new Vector<>();
         regionPermitCards = new Stack<>();
@@ -46,10 +50,6 @@ public class Region implements RegionInterface, Subject{
         }
     }
 
-    //TODO: Add checks on empty stack
-    /**
-     * Why not delegate town creation to gameboard?
-     */
     private void setTowns() {
         switch(regionType) {
             case SEA:
@@ -60,9 +60,26 @@ public class Region implements RegionInterface, Subject{
                         new Town(TownName.D),
                         new Town(TownName.E))));
                 break;
+            case HILLS:
+                regionTowns.addAll(new ArrayList<>(Arrays.asList(
+                        new Town(TownName.F),
+                        new Town(TownName.G),
+                        new Town(TownName.H),
+                        new Town(TownName.I),
+                        new Town(TownName.J))));
+                break;
+            case MOUNTAINS:
+                regionTowns.addAll(new ArrayList<>(Arrays.asList(
+                        new Town(TownName.K),
+                        new Town(TownName.L),
+                        new Town(TownName.M),
+                        new Town(TownName.N),
+                        new Town(TownName.O))));
+                break;
         }
     }
 
+    //TODO: Add checks on empty stack
     public PermitCard drawPermitCard(boolean isRight) {
         PermitCard drawn;
         if(isRight == PermitCard.RIGHT_CARD) {

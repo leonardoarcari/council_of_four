@@ -1,9 +1,6 @@
 package Core.GameModel;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Matteo on 21/05/16.
@@ -25,35 +22,26 @@ public class GameBoard {
         councilorPool = new Vector<>();
         townTypeCards = new Vector<>();
         servantPool = new Vector<>();
+
+        // Pools creation
+        createCouncilors();
+        shufflePool(councilorPool);
+        createPoliticsCard();
+        shufflePool(politicsCardPool);
+        createServantsPool();
+
+        //Regions creation
+        seaRegion = new Region(RegionCard.SEA, RegionType.SEA, fillBalcony());
+        hillsRegion = new Region(RegionCard.HILLS, RegionType.HILLS, fillBalcony());
+        mountainsRegion = new Region(RegionCard.MOUNTAINS, RegionType.MOUNTAINS, fillBalcony());
+
+
         boardBalcony = new CouncilorsBalcony();
-        seaRegion = new Region(RegionCard.SEA, RegionType.SEA);
-        hillsRegion = new Region(RegionCard.HILLS, RegionType.HILLS);
-        mountainsRegion = new Region(RegionCard.MOUNTAINS, RegionType.MOUNTAINS);
+        Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
     }
 
-    public void createPoliticsCard() {
-        for (CouncilColor color: CouncilColor.values()) {
-            for (int j = 0; j < 12; j++) {
-                politicsCardPool.add(new PoliticsCard(color));
-            }
-            if(!color.equals(CouncilColor.RAINBOW)) {
-                politicsCardPool.add(new PoliticsCard(color));
-            }
-        }
-    }
-
-    public void shuffleDeck() {
-        for(int i = 0; i < 10; i++) {
-            Collections.shuffle(politicsCardPool);
-        }
-    }
-
-    /**
-     * No first_turn creator, the game logic will handle that
-     */
-
-    public void createCouncilors() {
-        Vector<CouncilColor> coucilorsColor = new Vector<>(Arrays.asList(
+    private void createCouncilors() {
+        ArrayList<CouncilColor> coucilorsColor = new ArrayList<>(Arrays.asList(
                 CouncilColor.BLACK,
                 CouncilColor.CYAN,
                 CouncilColor.ORANGE,
@@ -68,20 +56,40 @@ public class GameBoard {
         }
     }
 
-    public void assignCouncilors() {
-        fillBalcony(seaRegion);
-        fillBalcony(hillsRegion);
-        fillBalcony(mountainsRegion);
+    private void createPoliticsCard() {
+        for (CouncilColor color: CouncilColor.values()) {
+            for (int j = 0; j < 12; j++) {
+                politicsCardPool.add(new PoliticsCard(color));
+            }
+            if(!color.equals(CouncilColor.RAINBOW)) {
+                politicsCardPool.add(new PoliticsCard(color));
+            }
+        }
+    }
+
+    private void shufflePool(List<?> pool) {
+        for(int i = 0; i < 10; i++) {
+            Collections.shuffle(pool);
+        }
+    }
+
+    private void createServantsPool() {
+        for(int i = 0; i < 48; i++) {
+            servantPool.add(new Servant());
+        }
+    }
+
+    private void assignCouncilors() {
         for(int i = 0; i < 4; i++) {
             boardBalcony.addCouncilor(councilorPool.remove(0));
         }
     }
 
-    private void fillBalcony(Region region) {
+    private Councilor[] fillBalcony() {
         Councilor[] councHelper = new Councilor[4];
         for( int i = 0; i < 4; i++) {
             councHelper[i] = councilorPool.remove(0);
         }
-        region.createRegionBalcony(councHelper);
+        return councHelper;
     }
 }
