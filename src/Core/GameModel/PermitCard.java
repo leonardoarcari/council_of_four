@@ -4,6 +4,7 @@ import Core.GameLogic.BonusFactory;
 import Core.GameLogic.TownNameFactory;
 import Core.GameModel.Bonus.Bonus;
 import Core.GameModel.Bonus.BonusNumber;
+import Core.GameModel.ModelInterface.SellableItem;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Vector;
 /**
  * Created by Matteo on 16/05/16.
  */
-public class PermitCard {
+public class PermitCard implements SellableItem {
     public static final boolean RIGHT_CARD = true;
     public static final boolean LEFT_CARD = false;
 
