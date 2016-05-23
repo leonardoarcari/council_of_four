@@ -3,6 +3,7 @@ package Core;
 import Core.Connection.Connection;
 import Core.GameModel.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matteo on 19/05/16.
@@ -15,12 +16,12 @@ public class Player {
     /**
      * GameObjects references of the current game
      */
-    private ArrayList<PermitCard> permitCards;
-    private ArrayList<RegionCard> regionCards;
-    private ArrayList<PoliticsCard> politicsCards; // The hand
-    private ArrayList<RoyalCard> royalCards;
-    private ArrayList<TownTypeCard>  townTypeCards;
-    private ArrayList<Servant> servants;
+    private List<PermitCard> permitCards;
+    private List<RegionCard> regionCards;
+    private List<PoliticsCard> politicsCards; // The hand
+    private List<RoyalCard> royalCards;
+    private List<TownTypeCard> townTypeCards;
+    private List<Servant> servants;
 
     public Player(Connection connection) {
         this.connection = connection;
@@ -51,27 +52,31 @@ public class Player {
         return nickname;
     }
 
-    public ArrayList<PermitCard> getPermitCards() {
+    public void removePoliticsCard(PoliticsCard card) {
+        politicsCards.remove(card);
+    }
+
+    public List<PermitCard> getPermitCards() {
         return permitCards;
     }
 
-    public ArrayList<RegionCard> getRegionCards() {
+    public List<RegionCard> getRegionCards() {
         return regionCards;
     }
 
-    public ArrayList<PoliticsCard> getPoliticsCards() {
+    public List<PoliticsCard> getPoliticsCards() {
         return politicsCards;
     }
 
-    public ArrayList<RoyalCard> getRoyalCards() {
+    public List<RoyalCard> getRoyalCards() {
         return royalCards;
     }
 
-    public ArrayList<TownTypeCard> getTownTypeCards() {
+    public List<TownTypeCard> getTownTypeCards() {
         return townTypeCards;
     }
 
-    public ArrayList<Servant> getServants() {
+    public List<Servant> getServants() {
         return servants;
     }
 }

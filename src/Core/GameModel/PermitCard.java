@@ -14,9 +14,6 @@ import java.util.Vector;
  * Created by Matteo on 16/05/16.
  */
 public class PermitCard implements SellableItem {
-    public static final boolean RIGHT_CARD = true;
-    public static final boolean LEFT_CARD = false;
-
     //TODO: add card identifier
     private RegionType region;
     private Vector<Bonus> bonuses = new Vector<>();
@@ -63,4 +60,5 @@ public class PermitCard implements SellableItem {
     }
 
     public ArrayList<TownName> getCityPermits() { return townEmporiumPermit; }
+
 }

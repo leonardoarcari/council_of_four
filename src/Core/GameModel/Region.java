@@ -80,9 +80,9 @@ public class Region implements RegionInterface, Subject{
     }
 
     //TODO: Add checks on empty stack
-    public PermitCard drawPermitCard(boolean isRight) {
+    public PermitCard drawPermitCard(PermitPos pos) {
         PermitCard drawn;
-        if(isRight == PermitCard.RIGHT_CARD) {
+        if(pos == PermitPos.RIGHT) {
             drawn = rightPermitCard;
             rightPermitCard = regionPermitCards.pop();
         } else {
@@ -142,6 +142,10 @@ public class Region implements RegionInterface, Subject{
         for (Observer o : observers) {
             o.update(this);
         }
+    }
+
+    public enum PermitPos {
+        LEFT, RIGHT
     }
 
     private class AlreadyTakenException extends RuntimeException {

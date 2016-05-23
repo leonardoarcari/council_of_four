@@ -12,7 +12,7 @@ public class FastCouncilorElectionAction extends Action implements FastAction {
     private final Councilor councilor;
 
     public FastCouncilorElectionAction(Player player, RegionType regionType, Councilor councilor) {
-        super(player);
+        super();
         this.regionType = regionType;
         this.councilor = councilor;
     }

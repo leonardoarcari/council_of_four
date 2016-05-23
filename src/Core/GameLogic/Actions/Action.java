@@ -8,11 +8,14 @@ import Core.Player;
 public abstract class Action {
     private Player player;
 
-    public Action(Player player) {
-        this.player = player;
+    public Action() {
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

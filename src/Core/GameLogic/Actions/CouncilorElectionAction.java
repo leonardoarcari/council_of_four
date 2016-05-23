@@ -12,7 +12,7 @@ public class CouncilorElectionAction extends Action implements NormalAction {
     private RegionType regionType;
 
     public CouncilorElectionAction(Player player, Councilor newCouncilor, RegionType regionType) {
-        super(player);
+        super();
         this.newCouncilor = newCouncilor;
         this.regionType = regionType;
     }
