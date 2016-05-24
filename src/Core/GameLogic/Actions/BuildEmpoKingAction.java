@@ -13,8 +13,8 @@ public class BuildEmpoKingAction extends Action implements NormalAction {
     List<PoliticsCard> kingSatisfCards;
     Town buildingTown;
 
-    public BuildEmpoKingAction(List<PoliticsCard> kingSatisfCards, Town buildingTown) {
-        super();
+    public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards, Town buildingTown) {
+        super(player);
         this.kingSatisfCards = kingSatisfCards;
         this.buildingTown = buildingTown;
     }

@@ -34,10 +34,6 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
     @Override
     public void sendInfo(Object info) {
         try {
-            if (info instanceof Action) {
-                Action action = (Action) info;
-                action.setPlayer(me);
-            }
             clientRMIProcessor.processInfo(info);
         } catch (RemoteException e) {
             // Client disconnected. Remove this player from game's ones.

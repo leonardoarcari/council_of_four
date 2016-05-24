@@ -6,7 +6,9 @@ import Server.Observer;
 import Server.Subject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by Matteo on 19/05/16.
@@ -74,28 +76,28 @@ public class Player implements Subject {
         servants.add(servant);
     }
 
-    public List<PermitCard> getPermitCards() {
-        return permitCards;
+    public Iterator<PermitCard> permitCardIterator() {
+        return permitCards.iterator();
     }
 
-    public List<RegionCard> getRegionCards() {
-        return regionCards;
+    public Iterator<RegionCard> regionCardIterator() {
+        return regionCards.iterator();
     }
 
-    public List<PoliticsCard> getPoliticsCards() {
-        return politicsCards;
+    public Iterator<PoliticsCard> politicsCardIterator() {
+        return politicsCards.iterator();
     }
 
-    public List<RoyalCard> getRoyalCards() {
-        return royalCards;
+    public Iterator<RoyalCard> royalCardIterator() {
+        return royalCards.iterator();
     }
 
-    public List<TownTypeCard> getTownTypeCards() {
-        return townTypeCards;
+    public Iterator<TownTypeCard> townCardIterator() {
+        return townTypeCards.iterator();
     }
 
-    public List<Servant> getServants() {
-        return servants;
+    public int servantsNumber() {
+        return servants.size();
     }
 
     public void burnPermitCard(PermitCard permitCard) {

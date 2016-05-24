@@ -3,6 +3,7 @@ package Core.GameLogic.Actions;
 import Core.GameModel.PoliticsCard;
 import Core.GameModel.Region;
 import Core.GameModel.RegionType;
+import Core.Player;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,11 +16,11 @@ public class BuyPermitCardAction extends Action implements NormalAction{
     private RegionType regionType;
     private Region.PermitPos position;
 
-    public BuyPermitCardAction(List<PoliticsCard> discardedCards, RegionType regionType, Region.PermitPos drawnPermitCard) {
-        super();
+    public BuyPermitCardAction(Player player, List<PoliticsCard> discardedCards, RegionType regionType, Region.PermitPos position) {
+        super(player);
         this.discardedCards = discardedCards;
         this.regionType = regionType;
-        this.position = drawnPermitCard;
+        this.position = position;
     }
 
     public Iterator<PoliticsCard> discartedIterator() {
