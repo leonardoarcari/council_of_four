@@ -4,7 +4,6 @@ import Core.Player;
 import Server.Observer;
 import Server.Subject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -23,7 +22,7 @@ public class AbstractPath implements Subject{
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).contains(player)) {
                 players.get(i).remove(player);
-                int newPos = (i+variation < 20) ? i+variation : 20;
+                int newPos = (i+variation < 20) ? ((i+variation >= 0) ? i+variation : 0) : 20;
                 players.get(newPos).add(player);
                 notifyObservers();
                 break;

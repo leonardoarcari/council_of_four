@@ -1,10 +1,8 @@
 package Core.GameModel;
 
 import Core.Player;
-import Server.Observer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Matteo on 23/05/16.

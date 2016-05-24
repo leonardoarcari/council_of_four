@@ -34,17 +34,6 @@ public class NobilityPath extends AbstractPath{
         players.get(0).add(player);
     }
 
-    public void movePlayer(Player player, int increment) {
-        for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).contains(player)) {
-                players.get(i).remove(player);
-                int newPos = (i+increment < 20) ? i+increment : 20;
-                players.get(newPos).add(player);
-                break;
-            }
-        }
-    }
-
     public List<Bonus> retrieveBonus(Player player) {
         for (List<Player> al : players) {
             if(al.contains(player)) {
