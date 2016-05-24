@@ -10,7 +10,7 @@ public class ChangePermitsAction extends Action implements FastAction {
     private final RegionType regionType;
 
     public ChangePermitsAction(Player player, RegionType regionType) {
-        super();
+        super(player);
         this.regionType = regionType;
     }
 

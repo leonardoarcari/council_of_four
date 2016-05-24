@@ -6,16 +6,14 @@ import Core.Player;
  * Created by Matteo on 23/05/16.
  */
 public abstract class Action {
-    private Player player;
+    private final Player player;
 
-    public Action() {
+    public Action(Player player) {
+        this.player = player;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 }

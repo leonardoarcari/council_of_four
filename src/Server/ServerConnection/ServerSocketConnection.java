@@ -23,14 +23,6 @@ public class ServerSocketConnection extends SocketConnection implements ServerCo
     }
 
     @Override
-    protected void packPlayer(Object info) {
-        if (info instanceof Action) {
-            Action action = (Action) info;
-            action.setPlayer(me);
-        }
-    }
-
-    @Override
     public void update(Subject subject) {
         /*if (subject.getClass().equals(Model.class)) {
             sendInfo(subject);

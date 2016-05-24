@@ -5,7 +5,7 @@ import Core.GameModel.PoliticsCard;
 /**
  * Created by Matteo on 23/05/16.
  */
-public class DrawCardAction {
+public class DrawCardAction implements SyncAction{
     PoliticsCard newCard;
 
     public DrawCardAction(PoliticsCard newCard) {

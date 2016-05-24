@@ -7,6 +7,6 @@ import Core.Player;
  */
 public class EndTurnAction extends Action implements SyncAction {
     public EndTurnAction(Player player) {
-        super();
+        super(player);
     }
 }
