@@ -34,6 +34,7 @@ public class Town implements Subject, TownInterface{
             kingHere = false;
         }
 
+        playersEmporium = new Vector<>();
         observers = new Vector<>();
         nearbyTowns = new Vector<>();
         townType = null;
