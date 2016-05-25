@@ -35,5 +35,6 @@ public class Game implements Runnable{
     public void run() {
         players = WaitingHall.getInstance().pullPlayers();
         WaitingHall.getInstance().createNewGame();
+        gameBoard = GameBoard.createGameBoard(players);
     }
 }

@@ -5,8 +5,8 @@ package Core.GameModel.Bonus;
  */
 public class DrawPermitCard extends Bonus {
 
-    public DrawPermitCard(int fixedValue) {
-        super(fixedValue);
+    public DrawPermitCard(BonusNumber bonusNumber) {
+        super(bonusNumber);
     }
 
     @Override

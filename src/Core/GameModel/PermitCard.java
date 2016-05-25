@@ -15,43 +15,23 @@ import java.util.Vector;
  * Created by Matteo on 16/05/16.
  */
 public class PermitCard implements SellableItem {
-    //TODO: add card identifier
     private RegionType region;
     private boolean isBurned;
-    private List<Bonus> bonuses = new Vector<>();
+    private List<Bonus> bonuses;
     private List<TownName> townEmporiumPermit = new ArrayList<>();
+    private int id;
 
-    public PermitCard(RegionType region) {
+    public PermitCard(RegionType region, List<Bonus> bonuses, int cardId) {
         this.region = region;
+        this.bonuses = bonuses;
+        this.id = cardId;
         isBurned = false;
-        BonusNumber bonusNumber = bonusNumberCalculator();
         int townEmporiumPermitNumber = emporiumPermitCalculator();
 
-        for(int i = 0; i <= bonusNumber.ordinal(); i++) {
-            bonuses.add(BonusFactory.createBonus(bonusNumber));
-        }
         for(int i = 0; i < townEmporiumPermitNumber; i++) {
             ArrayList<TownName> supporter = new ArrayList<>(townEmporiumPermit);
             townEmporiumPermit.add(TownNameFactory.getTownName(supporter, region));
-
         }
-    }
-
-    private BonusNumber bonusNumberCalculator() {
-        float randomNumber = new Random().nextFloat();
-
-        BonusNumber bonusNumber;
-        float ONES = (float) (13.0 / 45);
-        float TWOS = (float) (31.0 / 45);
-
-        if(randomNumber < ONES) {
-            bonusNumber = BonusNumber.ONE_PROBABILITY;
-        } else if(randomNumber < TWOS + ONES) {
-            bonusNumber = BonusNumber.TWO_PROBABILITY;
-        } else {
-            bonusNumber = BonusNumber.THREE_PROBABILITY;
-        }
-        return bonusNumber;
     }
 
     private int emporiumPermitCalculator() {
@@ -72,4 +52,22 @@ public class PermitCard implements SellableItem {
 
     public List<TownName> getCityPermits() { return townEmporiumPermit; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PermitCard that = (PermitCard) o;
+
+        if (id != that.id) return false;
+        return region == that.region;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = region.hashCode();
+        result = 31 * result + id;
+        return result;
+    }
 }

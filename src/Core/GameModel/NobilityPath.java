@@ -12,22 +12,10 @@ import java.util.*;
 public class NobilityPath extends AbstractPath{
     private List<List<Bonus>> bonusPath;
 
-    public NobilityPath() {
-        bonusPath = new ArrayList<>(21);
-        bonusPath.stream().forEach(bonuses -> bonuses = new ArrayList<>());
+    public NobilityPath(List<List<Bonus>> bonusPath) {
+        this.bonusPath = bonusPath;
         players = new ArrayList<>(21);
         players.stream().forEach(playerList -> playerList = new ArrayList<>());
-
-        int bonusNumber = generateBonusNumber();
-    }
-
-    private int generateBonusNumber () {
-        float generator = new Random().nextFloat();
-        if(generator < 10f/21) {
-            return 0;
-        } else if(generator < 16f/21) {
-            return 1;
-        } else return 2;
     }
 
     public void setPlayer(Player player) {

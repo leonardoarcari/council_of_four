@@ -1,5 +1,8 @@
 package Core.GameModel;
 
+import Core.GameLogic.AbstractBonusFactory;
+import Core.GameLogic.BonusFactory;
+import Core.GameLogic.BonusOwner;
 import Core.GameModel.Bonus.Bonus;
 import Core.Player;
 import Server.Observer;
@@ -24,10 +27,24 @@ public class GameBoard implements Subject{
     private transient Region mountainsRegion;
     private transient NobilityPath nobilityPath;
     private transient WealthPath wealthPath;
+    private transient VictoryPath victoryPath;
 
     private transient List<Server.Observer> observers;
 
-    public GameBoard() {
+    public static GameBoard createGameBoard(List<Player> players) {
+        GameBoard gameBoard = new GameBoard();
+        Iterator<Player> iterator = players.iterator();
+        int wealthPos = 10;
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+            gameBoard.nobilityPath.setPlayer(player);
+            gameBoard.wealthPath.setPlayer(player, wealthPos++);
+            gameBoard.victoryPath.setPlayer(player);
+        }
+        return gameBoard;
+    }
+
+    private GameBoard() {
         boardType = RegionType.KINGBOARD;
         politicsCardPool = new Stack<>();
         discardedCards = new Vector<>();
@@ -54,8 +71,9 @@ public class GameBoard implements Subject{
 
         boardBalcony = new CouncilorsBalcony();
         Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
-        nobilityPath = new NobilityPath();
+        nobilityPath = new NobilityPath(nobilityBonus());
         wealthPath = new WealthPath();
+        victoryPath = new VictoryPath();
     }
 
     private void createCouncilors() {
@@ -104,6 +122,13 @@ public class GameBoard implements Subject{
             councHelper[i] = councilorPool.remove(0);
         }
         return councHelper;
+    }
+
+    private List<List<Bonus>> nobilityBonus() {
+        AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.NOBILITY);
+        List<List<Bonus>> bonusPath = new ArrayList<>(21);
+        bonusPath.stream().forEach(bonusList -> bonusList = bonusFactory.generateBonuses());
+        return bonusPath;
     }
 
     public void setNobilityPlayer(Player player) {
@@ -160,10 +185,6 @@ public class GameBoard implements Subject{
 
     public void updateTown(Player player, Town town) {
         town.createEmporium(player);
-    }
-
-    public void discartCard(PoliticsCard politicCard) {
-        discardedCards.add(politicCard);
     }
 
     //TODO: Check for empty deck

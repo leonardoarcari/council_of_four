@@ -1,5 +1,9 @@
 package Core.GameModel;
 
+import Core.GameLogic.AbstractBonusFactory;
+import Core.GameLogic.BonusFactory;
+import Core.GameLogic.BonusOwner;
+import Core.GameModel.Bonus.Bonus;
 import Core.GameModel.ModelInterface.RegionInterface;
 import Core.Player;
 import Server.Observer;
@@ -40,8 +44,10 @@ public class Region implements RegionInterface, Subject{
     }
 
     private void createPermitCards(RegionType region) {
+        AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.PERMIT);
         for(int i = 0; i < 15; i++) {
-            regionPermitCards.add(new PermitCard(region));
+            List<Bonus> bonuses = bonusFactory.generateBonuses();
+            regionPermitCards.add(new PermitCard(region, bonuses, i));
         }
     }
 
@@ -52,30 +58,31 @@ public class Region implements RegionInterface, Subject{
     }
 
     private void setTowns() {
+        AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.TOWN);
         switch(regionType) {
             case SEA:
                 regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.A),
-                        new Town(TownName.B),
-                        new Town(TownName.C),
-                        new Town(TownName.D),
-                        new Town(TownName.E))));
+                        new Town(TownName.A, bonusFactory.generateBonuses()),
+                        new Town(TownName.B, bonusFactory.generateBonuses()),
+                        new Town(TownName.C, bonusFactory.generateBonuses()),
+                        new Town(TownName.D, bonusFactory.generateBonuses()),
+                        new Town(TownName.E, bonusFactory.generateBonuses()))));
                 break;
             case HILLS:
                 regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.F),
-                        new Town(TownName.G),
-                        new Town(TownName.H),
-                        new Town(TownName.I),
-                        new Town(TownName.J))));
+                        new Town(TownName.F, bonusFactory.generateBonuses()),
+                        new Town(TownName.G, bonusFactory.generateBonuses()),
+                        new Town(TownName.H, bonusFactory.generateBonuses()),
+                        new Town(TownName.I, bonusFactory.generateBonuses()),
+                        new Town(TownName.J, bonusFactory.generateBonuses()))));
                 break;
             case MOUNTAINS:
                 regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.K),
-                        new Town(TownName.L),
-                        new Town(TownName.M),
-                        new Town(TownName.N),
-                        new Town(TownName.O))));
+                        new Town(TownName.K, bonusFactory.generateBonuses()),
+                        new Town(TownName.L, bonusFactory.generateBonuses()),
+                        new Town(TownName.M, bonusFactory.generateBonuses()),
+                        new Town(TownName.N, bonusFactory.generateBonuses()),
+                        new Town(TownName.O, bonusFactory.generateBonuses()))));
                 break;
         }
     }

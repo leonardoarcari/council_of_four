@@ -1,6 +1,5 @@
 package Core.GameModel;
 
-import Core.GameLogic.BonusFactory;
 import Core.GameModel.Bonus.Bonus;
 import Core.GameModel.Bonus.BonusNumber;
 import Core.GameModel.ModelInterface.TownInterface;
@@ -8,6 +7,7 @@ import Core.Player;
 import Server.Observer;
 import Server.Subject;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -18,15 +18,15 @@ public class Town implements Subject, TownInterface{
     private TownName townName;
     private TownType townType;
     private Vector<Town> nearbyTowns;
-    private Bonus townBonus;
+    private List<Bonus> townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
 
     private transient List<Observer> observers;
 
-    public Town(TownName townName) {
+    public Town(TownName townName, List<Bonus> townBonus) {
         this.townName = townName;
-        this.townBonus = BonusFactory.createBonus(BonusNumber.ONE_PROBABILITY);
+        this.townBonus = townBonus;
 
         if(townName.equals(TownName.J)) {
             kingHere = true;
@@ -90,8 +90,8 @@ public class Town implements Subject, TownInterface{
     }
 
     @Override
-    public Bonus getTownBonus() {
-        return townBonus;
+    public Iterator<Bonus> bonusIterator() {
+        return townBonus.iterator();
     }
 
     @Override
