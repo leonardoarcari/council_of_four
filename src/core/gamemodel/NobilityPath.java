@@ -25,7 +25,7 @@ public class NobilityPath extends AbstractPath{
 
     public List<Bonus> retrieveBonus(Player player) {
         for (List<Player> al : players) {
-            if(al.contains(player)) {
+            if (al.contains(player)) {
                 int pathPosition = players.indexOf(al);
                 return bonusPath.get(pathPosition);
             }

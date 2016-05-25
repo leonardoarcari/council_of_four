@@ -19,9 +19,7 @@ public class WealthPath extends AbstractPath{
 
     @Override
     public void movePlayer(Player player, int variation) {
-        if(player == null) {
-            throw new IllegalArgumentException();
-        }
+        if (player == null) throw new IllegalArgumentException();
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).contains(player)) {
                 players.get(i).remove(player);
