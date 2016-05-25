@@ -1,12 +1,14 @@
 package server;
 
 import core.connection.InfoProcessor;
+import core.gamelogic.GraphsAlgorithms;
 import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.bonus.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import core.gamemodel.Councilor;
 import core.gamemodel.PermitCard;
@@ -16,7 +18,7 @@ import core.gamemodel.Town;
 import core.Player;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * Created by Matteo on 20/05/2016.
  */
 public class ServerProcessor implements InfoProcessor {
     private Game game;
@@ -31,18 +33,24 @@ public class ServerProcessor implements InfoProcessor {
             //TODO: mark normal action done
             if(info.getClass().equals(CouncilorElectionAction.class)){
                 councilorElection((CouncilorElectionAction) info);
-            } else if (info.getClass().equals(BuyPermitCardAction.class)) {
+            } else if(info.getClass().equals(BuyPermitCardAction.class)) {
                 buyPermitCardAction((BuyPermitCardAction) info);
             } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
                 buildEmpoWithPermit((BuildEmpoPCAction) info);
             } else {
                 buildEmpoKingHelp((BuildEmpoKingAction) info);
             }
-        } else if (info instanceof MarketAction) {
+        } else if(info instanceof MarketAction) {
             //TODO: Add Market actions
-        } else if (info instanceof FastAction) {
+        } else if(info instanceof FastAction) {
             if(info.getClass().equals(HireServantAction.class)) {
                 hireServantAction((HireServantAction) info);
+            } else if(info.getClass().equals(ChangePermitsAction.class)) {
+                changePermitsAction((ChangePermitsAction) info);
+            } else if(info.getClass().equals(FastCouncilorElectionAction.class)) {
+                fastCouncilorElection((FastCouncilorElectionAction) info);
+            } else {
+                //TODO: inform client of new normal action
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
@@ -124,7 +132,13 @@ public class ServerProcessor implements InfoProcessor {
         PermitCard permitCard = action.getUsedPermitCard();
         TownName townName = action.getSelectedTown();
         game.getGameBoard().buildEmporium(player, townName);
-        //TODO: research algorithm that calls redeemBonus
+        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(player,townName,game.getGameBoard().getTownsMap());
+        for(Town myTown : playerTowns) {
+            Iterator<Bonus> bonusIterator = myTown.bonusIterator();
+            while(bonusIterator.hasNext()) {
+                redeemBonus(bonusIterator.next(),player);
+            }
+        }
         player.burnPermitCard(permitCard);
     }
 
@@ -133,12 +147,34 @@ public class ServerProcessor implements InfoProcessor {
         discardAndPay(cardIterator, action.getPlayer());
         TownName townName = action.getBuildingTown();
         game.getGameBoard().buildEmporium(action.getPlayer(), townName);
-        //TODO: research algorithm that calls redeemBonus
+        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(action.getPlayer(),townName,game.getGameBoard().getTownsMap());
+        for(Town myTown : playerTowns) {
+            Iterator<Bonus> bonusIterator = myTown.bonusIterator();
+            while(bonusIterator.hasNext()) {
+                redeemBonus(bonusIterator.next(),action.getPlayer());
+            }
+        }
         game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
     }
 
     private void hireServantAction(HireServantAction action) {
         action.getPlayer().hireServants(game.getGameBoard().hireServants(1));
         game.getGameBoard().moveWealthPath(action.getPlayer(), -3);
+    }
+
+    private void changePermitsAction(ChangePermitsAction action) {
+        Servant servant = action.getPlayer().removeServant();
+        game.getGameBoard().returnServant(servant);
+        PermitCard leftCard = game.getGameBoard().drawPermitCard(action.getRegionType(), Region.PermitPos.LEFT);
+        PermitCard rightCard = game.getGameBoard().drawPermitCard(action.getRegionType(), Region.PermitPos.RIGHT);
+        Region thisRegion = game.getGameBoard().getRegionBy(action.getRegionType());
+        thisRegion.addPermitEndOfStack(leftCard);
+        thisRegion.addPermitEndOfStack(rightCard);
+    }
+
+    private void fastCouncilorElection(FastCouncilorElectionAction action) {
+        Servant servant = action.getPlayer().removeServant();
+        game.getGameBoard().returnServant(servant);
+        game.getGameBoard().electCouncilor(action.getCouncilor(), action.getRegionType());
     }
 }

@@ -18,10 +18,10 @@ public class Region implements RegionInterface, Subject{
     boolean regionCardTaken;
     private RegionType regionType;
     private CouncilorsBalcony regionBalcony;
-    private Stack<PermitCard> regionPermitCards;
+    private List<PermitCard> regionPermitCards;
     private PermitCard rightPermitCard;
     private PermitCard leftPermitCard;
-    private Vector<Town> regionTowns;
+    private List<Town> regionTowns;
     private RegionCard regionCard;
 
     private transient List<Observer> observers;
@@ -36,7 +36,7 @@ public class Region implements RegionInterface, Subject{
         setTowns();
 
         regionTowns = new Vector<>();
-        regionPermitCards = new Stack<>();
+        regionPermitCards = new Vector<>();
         regionBalcony = new CouncilorsBalcony();
         regionCardTaken = false;
 
@@ -104,13 +104,17 @@ public class Region implements RegionInterface, Subject{
         PermitCard drawn;
         if(pos == PermitPos.RIGHT) {
             drawn = rightPermitCard;
-            rightPermitCard = regionPermitCards.pop();
+            rightPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
         } else {
             drawn = leftPermitCard;
-            leftPermitCard = regionPermitCards.pop();
+            leftPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
         }
         notifyObservers();
         return drawn;
+    }
+
+    public void addPermitEndOfStack(PermitCard permitCard) {
+        regionPermitCards.add(0,permitCard);
     }
 
     public RegionCard drawRegionCard() throws AlreadyTakenException {

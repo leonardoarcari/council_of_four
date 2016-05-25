@@ -80,6 +80,10 @@ public class Player implements Subject {
         notifyObservers();
     }
 
+    public Servant removeServant() {
+        return servants.remove(0);
+    }
+
     public Iterator<PermitCard> permitCardIterator() {
         return permitCards.iterator();
     }

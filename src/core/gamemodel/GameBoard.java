@@ -179,6 +179,12 @@ public class GameBoard implements Subject{
         }
     }
 
+    public Region getRegionBy(RegionType regionType) {
+        if(regionType.equals(RegionType.SEA)) return seaRegion;
+        else if (regionType.equals(RegionType.HILLS)) return hillsRegion;
+        else return mountainsRegion;
+    }
+
     public void moveWealthPath (Player player, int increment) {
         wealthPath.movePlayer(player, increment);
     }
@@ -215,6 +221,10 @@ public class GameBoard implements Subject{
         return servants;
     }
 
+    public void returnServant(Servant servant) {
+        servantPool.add(servant);
+    }
+
     public List<Bonus> moveNobilityPath(Player player, int increment) {
         nobilityPath.movePlayer(player, increment);
         return nobilityPath.retrieveBonus(player);
@@ -222,6 +232,22 @@ public class GameBoard implements Subject{
 
     public void moveVictoryPath(Player player, int increment) {
         victoryPath.movePlayer(player, increment);
+    }
+
+    public Map<TownName, Town> getTownsMap() {
+        Map<TownName,Town> townMap = new HashMap<>();
+        fillTownMapBy(seaRegion, townMap);
+        fillTownMapBy(hillsRegion, townMap);
+        fillTownMapBy(mountainsRegion, townMap);
+        return townMap;
+    }
+
+    public void fillTownMapBy(Region region, Map<TownName,Town> townMap) {
+        Iterator<Town> iterator = region.townIterator();
+        while(iterator.hasNext()){
+            Town town = iterator.next();
+            townMap.put(town.getTownName(),town);
+        }
     }
 
     public Iterator<Region> regionIterator() {
