@@ -216,6 +216,10 @@ public class GameBoard implements Subject{
         victoryPath.movePlayer(player, increment);
     }
 
+    public Iterator<Region> regionIterator() {
+        return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
+    }
+
     @Override
     public void registerObserver(server.Observer observer) {
         observers.add(observer);

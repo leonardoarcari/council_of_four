@@ -147,6 +147,10 @@ public class Region implements RegionInterface, Subject{
         } else return RegionCard.NULL;
     }
 
+    public Iterator<Town> townIterator() {
+        return regionTowns.iterator();
+    }
+
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);

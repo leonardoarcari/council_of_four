@@ -16,7 +16,7 @@ import java.util.Vector;
 public class Town implements Subject, TownInterface{
     private TownName townName;
     private TownType townType;
-    private Vector<Town> nearbyTowns;
+    private Vector<TownName> nearbyTowns;
     private List<Bonus> townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
@@ -58,18 +58,16 @@ public class Town implements Subject, TownInterface{
                 break;
         }
     }
-
-    public void addNearbyTown(Town nearbyTown) {
-        nearbyTowns.add(nearbyTown);
+    public Iterator<TownName> nearbiesIterator() {
+        return nearbyTowns.iterator();
     }
-
     @Override
     public boolean isKingHere() {
         return kingHere;
     }
 
-    public void setKingHere() {
-        kingHere = true;
+    public void setKing (boolean here) {
+        kingHere = here;
         notifyObservers();
     }
 
