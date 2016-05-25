@@ -1,8 +1,8 @@
-package Core.GameModel.ModelInterface;
+package core.gamemodel.modelinterface;
 
-import Core.GameModel.Bonus.Bonus;
-import Core.GameModel.TownType;
-import Core.Player;
+import core.gamemodel.bonus.Bonus;
+import core.gamemodel.TownType;
+import core.Player;
 
 import java.util.Iterator;
 

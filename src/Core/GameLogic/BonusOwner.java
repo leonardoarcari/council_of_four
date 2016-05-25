@@ -1,4 +1,4 @@
-package Core.GameLogic;
+package core.gamelogic;
 
 /**
  * Created by Matteo on 24/05/16.

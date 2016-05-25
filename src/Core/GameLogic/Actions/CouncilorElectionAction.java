@@ -1,8 +1,8 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.Councilor;
-import Core.GameModel.RegionType;
-import Core.Player;
+import core.gamemodel.Councilor;
+import core.gamemodel.RegionType;
+import core.Player;
 
 /**
  * Created by Matteo on 23/05/16.

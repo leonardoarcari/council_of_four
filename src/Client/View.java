@@ -1,6 +1,6 @@
-package Client;
+package client;
 
-import Core.ModelInterface;
+import core.ModelInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;

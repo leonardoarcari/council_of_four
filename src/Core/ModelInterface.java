@@ -1,4 +1,4 @@
-package Core;
+package core;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.

@@ -1,8 +1,8 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.Player;
-import Server.Observer;
-import Server.Subject;
+import core.Player;
+import server.Observer;
+import server.Subject;
 
 import java.util.List;
 import java.util.Vector;

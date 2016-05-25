@@ -1,8 +1,8 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameModel.ModelInterface.BalconyInterface;
-import Server.Observer;
-import Server.Subject;
+import core.gamemodel.modelinterface.BalconyInterface;
+import server.Observer;
+import server.Subject;
 
 import java.util.Iterator;
 import java.util.List;

@@ -1,12 +1,10 @@
-package Server.ServerConnection;
+package server.serverconnection;
 
-import Core.Connection.InfoProcessor;
-import Core.Connection.SocketConnection;
-import Core.GameLogic.Actions.Action;
-import Core.Player;
-import Server.Observer;
-import Server.Subject;
-import Server.WaitingHall;
+import core.connection.InfoProcessor;
+import core.connection.SocketConnection;
+import core.Player;
+import server.Observer;
+import server.Subject;
 
 import java.io.IOException;
 import java.net.Socket;

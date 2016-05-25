@@ -1,4 +1,4 @@
-package Core.Connection;
+package core.connection;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.

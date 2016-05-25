@@ -1,12 +1,11 @@
-package Server.ServerConnection;
+package server.serverconnection;
 
-import Core.Connection.InfoProcessor;
-import Core.Connection.RMIProcessor;
-import Core.GameLogic.Actions.Action;
-import Core.Player;
-import Server.Observer;
-import Server.Subject;
-import Server.WaitingHall;
+import core.connection.InfoProcessor;
+import core.connection.RMIProcessor;
+import core.Player;
+import server.Observer;
+import server.Subject;
+import server.WaitingHall;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -36,7 +35,7 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
         try {
             clientRMIProcessor.processInfo(info);
         } catch (RemoteException e) {
-            // Client disconnected. Remove this player from game's ones.
+            // client disconnected. Remove this player from game's ones.
             e.printStackTrace();
         }
     }

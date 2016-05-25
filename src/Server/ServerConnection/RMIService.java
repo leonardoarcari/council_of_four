@@ -1,11 +1,10 @@
-package Server.ServerConnection;
+package server.serverconnection;
 
-import Core.Connection.RMIProcessor;
-import Core.Connection.RMIServiceInterface;
-import Core.Player;
-import Server.WaitingHall;
+import core.connection.RMIProcessor;
+import core.connection.RMIServiceInterface;
+import core.Player;
+import server.WaitingHall;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

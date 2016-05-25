@@ -1,6 +1,6 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.Player;
+import core.Player;
 
 import java.util.ArrayList;
 

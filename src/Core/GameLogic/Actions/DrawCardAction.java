@@ -1,6 +1,6 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.PoliticsCard;
+import core.gamemodel.PoliticsCard;
 
 /**
  * Created by Matteo on 23/05/16.

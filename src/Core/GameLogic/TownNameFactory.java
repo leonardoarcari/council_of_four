@@ -1,8 +1,7 @@
-package Core.GameLogic;
+package core.gamelogic;
 
-import Core.GameModel.RegionType;
-import Core.GameModel.Town;
-import Core.GameModel.TownName;
+import core.gamemodel.RegionType;
+import core.gamemodel.TownName;
 
 import java.util.ArrayList;
 import java.util.Arrays;

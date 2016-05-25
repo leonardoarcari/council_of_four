@@ -1,7 +1,7 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.OnSaleItem;
-import Core.Player;
+import core.gamemodel.OnSaleItem;
+import core.Player;
 
 import java.util.Iterator;
 import java.util.List;

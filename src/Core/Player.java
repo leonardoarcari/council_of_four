@@ -1,9 +1,9 @@
-package Core;
+package core;
 
-import Core.Connection.Connection;
-import Core.GameModel.*;
-import Server.Observer;
-import Server.Subject;
+import core.connection.Connection;
+import core.gamemodel.*;
+import server.Observer;
+import server.Subject;
 
 import java.util.ArrayList;
 import java.util.Iterator;

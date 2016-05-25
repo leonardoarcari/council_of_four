@@ -1,7 +1,7 @@
-package Server.ServerConnection;
+package server.serverconnection;
 
-import Core.Connection.Connection;
-import Core.Player;
+import core.connection.Connection;
+import core.Player;
 
 /**
  * Created by Leonardo Arcari on 21/05/2016.

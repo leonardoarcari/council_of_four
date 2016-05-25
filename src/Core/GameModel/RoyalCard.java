@@ -1,6 +1,6 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameModel.Bonus.VictoryPoint;
+import core.gamemodel.bonus.VictoryPoint;
 
 /**
  * Created by Matteo on 19/05/16.

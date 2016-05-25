@@ -1,7 +1,7 @@
-package Server.ServerConnection;
+package server.serverconnection;
 
-import Core.Player;
-import Server.WaitingHall;
+import core.Player;
+import server.WaitingHall;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,7 +23,7 @@ public class SocketService implements Runnable {
             e.printStackTrace();
             return;
         }
-        System.out.println("Server ready");
+        System.out.println("server ready");
         while (true) {
             try {
                 Socket socket = serverSocket.accept();

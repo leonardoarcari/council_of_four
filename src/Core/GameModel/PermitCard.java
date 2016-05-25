@@ -1,15 +1,12 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameLogic.BonusFactory;
-import Core.GameLogic.TownNameFactory;
-import Core.GameModel.Bonus.Bonus;
-import Core.GameModel.Bonus.BonusNumber;
-import Core.GameModel.ModelInterface.SellableItem;
+import core.gamelogic.TownNameFactory;
+import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.SellableItem;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 /**
  * Created by Matteo on 16/05/16.

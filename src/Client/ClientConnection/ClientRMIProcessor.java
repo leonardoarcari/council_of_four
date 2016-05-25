@@ -1,7 +1,7 @@
-package Client.ClientConnection;
+package client.clientconnection;
 
-import Core.Connection.InfoProcessor;
-import Core.Connection.RMIProcessor;
+import core.connection.InfoProcessor;
+import core.connection.RMIProcessor;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
