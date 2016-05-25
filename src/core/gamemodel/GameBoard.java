@@ -183,8 +183,15 @@ public class GameBoard implements Subject{
         wealthPath.movePlayer(player, increment);
     }
 
-    public void updateTown(Player player, Town town) {
-        town.createEmporium(player);
+    public void buildEmporium(Player player, TownName townName) {
+
+        if(townName.ordinal() < 5) {
+            seaRegion.buildEmporium(player, townName);
+        } else if (townName.ordinal() < 10) {
+            hillsRegion.buildEmporium(player, townName);
+        } else {
+            mountainsRegion.buildEmporium(player, townName);
+        }
     }
 
     //TODO: Check for empty deck
@@ -192,13 +199,21 @@ public class GameBoard implements Subject{
         return politicsCardPool.pop();
     }
 
-    public Servant hireServant() {
-        return servantPool.remove(0);
+    public List<Servant> hireServants(int number) {
+        List<Servant> servants = new ArrayList<>();
+        for(int i = 0; i < number; i++) {
+            servants.add(servantPool.remove(0));
+        }
+        return servants;
     }
 
     public List<Bonus> moveNobilityPath(Player player, int increment) {
         nobilityPath.movePlayer(player, increment);
         return nobilityPath.retrieveBonus(player);
+    }
+
+    public void moveVictoryPath(Player player, int increment) {
+        victoryPath.movePlayer(player, increment);
     }
 
     @Override

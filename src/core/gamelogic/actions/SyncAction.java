@@ -1,7 +1,11 @@
 package core.gamelogic.actions;
 
 /**
- * Created by Matteo on 23/05/16.
+ * Created by Matteo on 25/05/16.
  */
-public interface SyncAction {
+public enum SyncAction {
+    YOUR_TURN,
+    DRAW_PERMIT_BONUS,
+    PICK_PERMIT_AGAIN,
+    PICK_TOWN_BONUS
 }

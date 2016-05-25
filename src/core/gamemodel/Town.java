@@ -78,6 +78,8 @@ public class Town implements Subject, TownInterface{
         return townType;
     }
 
+    public TownName getTownName() { return townName; }
+
     public void createEmporium(Player player) {
         playersEmporium.add(player);
         notifyObservers();

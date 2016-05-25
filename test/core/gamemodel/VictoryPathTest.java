@@ -33,7 +33,7 @@ public class VictoryPathTest {
                 {2, 2},
                 {7, 7},
                 {20, 20},
-                {35, 20}
+                {105, 100}
         });
     }
 

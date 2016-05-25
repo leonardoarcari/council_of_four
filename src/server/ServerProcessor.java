@@ -27,12 +27,15 @@ public class ServerProcessor implements InfoProcessor {
     @Override
     public void processInfo(Object info) {
         if (info instanceof NormalAction) {
+            //TODO: mark normal action done
             if(info.getClass().equals(CouncilorElectionAction.class)){
                 councilorElection((CouncilorElectionAction) info);
             } else if (info.getClass().equals(BuyPermitCardAction.class)) {
                 buyPermitCardAction((BuyPermitCardAction) info);
             } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
                 buildEmpoWithPermit((BuildEmpoPCAction) info);
+            } else {
+                buildEmpoKingHelp((BuildEmpoKingAction) info);
             }
         } else if (info instanceof MarketAction) {
             //TODO: Add Market actions
@@ -50,7 +53,7 @@ public class ServerProcessor implements InfoProcessor {
         Iterator<PoliticsCard> cardIterator = action.discartedIterator();
         while (cardIterator.hasNext()) {
             PoliticsCard card = cardIterator.next();
-            game.getGameBoard().discardCard(cardIterator.next());
+            game.getGameBoard().discardCard(card);
             action.getPlayer().removePoliticsCard(card);
             if (card.getCardColor() == CouncilColor.RAINBOW) rainbowCards++;
             cardsNo++;
@@ -91,25 +94,33 @@ public class ServerProcessor implements InfoProcessor {
                 toPlayer.addPoliticsCard(card);
             }
         } else if (bonusType.equals(HireServant.class)) {
-            for (int i = 0; i < bonus.getValue(); i++) {
-                Servant servant = game.getGameBoard().hireServant();
-                toPlayer.hireServant(servant);
-            }
+            toPlayer.hireServants((game.getGameBoard().hireServants(bonus.getValue())));
         } else if (bonusType.equals(NobilityPoint.class)) {
             game.getGameBoard().moveNobilityPath(toPlayer, bonus.getValue()).stream().forEach(
                     otherBonus -> redeemBonus(otherBonus, toPlayer));
-        } else if (bonusType.equals(RainbowStar.class)) {
-            //TODO: New main action for toPlayer
         } else if (bonusType.equals(VictoryPoint.class)) {
-            //TODO: Move player in victory path
+            game.getGameBoard().moveVictoryPath(toPlayer, bonus.getValue());
+        } else if (bonusType.equals(RainbowStar.class)) {
+            //TODO: un-mark normal action and send to client new action
+        } else if (bonusType.equals(DrawPermitCard.class)) {
+            //TODO: send DRAW_PERMIT_BONUS action to player
+        } else if (bonusType.equals(GetOwnPermitBonus.class)) {
+            //TODO: send PICK_PERMIT_AGAIN
+        } else {
+            //TODO: send PICK_TOWN_BONUS
         }
     }
 
     private void buildEmpoWithPermit(BuildEmpoPCAction action) {
         Player player = action.getPlayer();
         PermitCard permitCard = action.getUsedPermitCard();
-        Town town = action.getSelectedTown();
-        game.getGameBoard().updateTown(player, town);
+        TownName townName = action.getSelectedTown();
+        game.getGameBoard().buildEmporium(player, townName);
+        //TODO: research algorithm that calls redeemBonus
         player.burnPermitCard(permitCard);
+    }
+
+    private void buildEmpoKingHelp(BuildEmpoKingAction action) {
+
     }
 }

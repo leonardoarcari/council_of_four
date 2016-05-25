@@ -1,5 +1,6 @@
 package core.gamemodel;
 
+import core.Player;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
@@ -84,6 +85,18 @@ public class Region implements RegionInterface, Subject{
                         new Town(TownName.O, bonusFactory.generateBonuses()))));
                 break;
         }
+    }
+
+    public void buildEmporium(Player player, TownName town) {
+        getTownByName(town).createEmporium(player);
+    }
+
+    public Town getTownByName(TownName townName) {
+        for(Town town: regionTowns) {
+            if(town.getTownName().equals(townName))
+                return town;
+        }
+        throw new NoSuchElementException();
     }
 
     //TODO: Add checks on empty stack
