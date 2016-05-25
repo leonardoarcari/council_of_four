@@ -1,9 +1,9 @@
-package Client.ClientConnection;
+package client.clientconnection;
 
-import Core.Connection.Connection;
-import Core.Connection.InfoProcessor;
-import Core.Connection.RMIProcessor;
-import Core.Connection.RMIServiceInterface;
+import core.connection.Connection;
+import core.connection.InfoProcessor;
+import core.connection.RMIProcessor;
+import core.connection.RMIServiceInterface;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

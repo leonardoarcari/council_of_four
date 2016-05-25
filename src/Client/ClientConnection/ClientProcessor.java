@@ -1,9 +1,9 @@
-package Client.ClientConnection;
+package client.clientconnection;
 
 
-import Client.View;
-import Core.Connection.InfoProcessor;
-import Core.ModelInterface;
+import client.View;
+import core.connection.InfoProcessor;
+import core.ModelInterface;
 
 import java.util.Arrays;
 

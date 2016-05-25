@@ -1,4 +1,4 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
 /**
  * Created by Matteo on 23/05/16.

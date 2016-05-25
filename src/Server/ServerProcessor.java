@@ -1,18 +1,18 @@
-package Server;
+package server;
 
-import Core.Connection.InfoProcessor;
-import Core.GameLogic.Actions.*;
-import Core.GameModel.*;
-import Core.GameModel.Bonus.*;
+import core.connection.InfoProcessor;
+import core.gamelogic.actions.*;
+import core.gamemodel.*;
+import core.gamemodel.bonus.*;
 
 import java.util.Iterator;
 
-import Core.GameModel.Councilor;
-import Core.GameModel.PermitCard;
-import Core.GameModel.RegionType;
-import Core.GameModel.Town;
+import core.gamemodel.Councilor;
+import core.gamemodel.PermitCard;
+import core.gamemodel.RegionType;
+import core.gamemodel.Town;
 
-import Core.Player;
+import core.Player;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.

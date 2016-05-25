@@ -1,7 +1,7 @@
-package Core.GameModel.ModelInterface;
+package core.gamemodel.modelinterface;
 
-import Core.GameModel.PermitCard;
-import Core.GameModel.RegionCard;
+import core.gamemodel.PermitCard;
+import core.gamemodel.RegionCard;
 
 /**
  * Created by Leonardo Arcari on 22/05/2016.

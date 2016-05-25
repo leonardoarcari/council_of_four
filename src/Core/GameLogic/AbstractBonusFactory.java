@@ -1,6 +1,6 @@
-package Core.GameLogic;
+package core.gamelogic;
 
-import Core.GameModel.Bonus.Bonus;
+import core.gamemodel.bonus.Bonus;
 
 import java.util.List;
 

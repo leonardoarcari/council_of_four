@@ -1,4 +1,4 @@
-package Core.GameModel.Bonus;
+package core.gamemodel.bonus;
 
 /**
  * Created by Matteo on 16/05/16.

@@ -1,12 +1,12 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameLogic.AbstractBonusFactory;
-import Core.GameLogic.BonusFactory;
-import Core.GameLogic.BonusOwner;
-import Core.GameModel.Bonus.Bonus;
-import Core.Player;
-import Server.Observer;
-import Server.Subject;
+import core.gamelogic.AbstractBonusFactory;
+import core.gamelogic.BonusFactory;
+import core.gamelogic.BonusOwner;
+import core.gamemodel.bonus.Bonus;
+import core.Player;
+import server.Observer;
+import server.Subject;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class GameBoard implements Subject{
     private transient WealthPath wealthPath;
     private transient VictoryPath victoryPath;
 
-    private transient List<Server.Observer> observers;
+    private transient List<server.Observer> observers;
 
     public static GameBoard createGameBoard(List<Player> players) {
         GameBoard gameBoard = new GameBoard();
@@ -202,12 +202,12 @@ public class GameBoard implements Subject{
     }
 
     @Override
-    public void registerObserver(Server.Observer observer) {
+    public void registerObserver(server.Observer observer) {
         observers.add(observer);
     }
 
     @Override
-    public void removeObserver(Server.Observer observer) {
+    public void removeObserver(server.Observer observer) {
         observers.remove(observer);
     }
 

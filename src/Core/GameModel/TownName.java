@@ -1,4 +1,4 @@
-package Core.GameModel;
+package core.gamemodel;
 
 /**
  * Created by Matteo on 18/05/16.

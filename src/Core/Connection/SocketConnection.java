@@ -1,4 +1,4 @@
-package Core.Connection;
+package core.connection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,7 +54,7 @@ public class SocketConnection implements Connection, Runnable {
                 processor.processInfo(data);
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Connection closed from the other side");
+            System.out.println("connection closed from the other side");
             e.printStackTrace();
             try {
                 in.close();

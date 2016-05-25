@@ -1,11 +1,10 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameModel.Bonus.Bonus;
-import Core.GameModel.Bonus.BonusNumber;
-import Core.GameModel.ModelInterface.TownInterface;
-import Core.Player;
-import Server.Observer;
-import Server.Subject;
+import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.TownInterface;
+import core.Player;
+import server.Observer;
+import server.Subject;
 
 import java.util.Iterator;
 import java.util.List;

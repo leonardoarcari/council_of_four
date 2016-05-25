@@ -1,8 +1,8 @@
-package Server;
+package server;
 
-import Core.Connection.InfoProcessor;
-import Core.GameModel.GameBoard;
-import Core.Player;
+import core.connection.InfoProcessor;
+import core.gamemodel.GameBoard;
+import core.Player;
 
 import java.util.Iterator;
 import java.util.List;

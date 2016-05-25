@@ -1,4 +1,4 @@
-package Core.GameModel;
+package core.gamemodel;
 
 /**
  * Created by Matteo on 23/05/16.
@@ -11,7 +11,7 @@ public class TownBonusSearcher {
      * Then an analyzer cycles through this list and for each bonus (or the sum...)
      * it calls a game object method of update. An example to clear our minds: if
      * the players has only cities which give him coins, at the end of the algorithm
-     * the list will contain only Bonus objects of Coin type. The other static
+     * the list will contain only bonus objects of Coin type. The other static
      * private method will analyze this list and, at the end, will call the WealthPath
      * movePlayer method. There are two disadvantages with such approach.
      * 1) There are five possible bonuses: coins, servants, victory points,

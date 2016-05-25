@@ -1,8 +1,7 @@
-package Server;
+package server;
 
-import Core.GameLogic.Actions.Action;
-import Server.ServerConnection.RMIService;
-import Server.ServerConnection.SocketService;
+import server.serverconnection.RMIService;
+import server.serverconnection.SocketService;
 
 import java.rmi.RemoteException;
 

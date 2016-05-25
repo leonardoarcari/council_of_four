@@ -1,8 +1,7 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameModel.Bonus.Bonus;
-import Core.Player;
-import Server.Observer;
+import core.gamemodel.bonus.Bonus;
+import core.Player;
 
 import java.util.*;
 

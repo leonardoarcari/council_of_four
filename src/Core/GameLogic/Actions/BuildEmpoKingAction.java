@@ -1,8 +1,8 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.PoliticsCard;
-import Core.GameModel.Town;
-import Core.Player;
+import core.gamemodel.PoliticsCard;
+import core.gamemodel.Town;
+import core.Player;
 
 import java.util.List;
 

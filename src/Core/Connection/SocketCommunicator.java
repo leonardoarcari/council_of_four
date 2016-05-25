@@ -1,4 +1,4 @@
-package Core.Connection;
+package core.connection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

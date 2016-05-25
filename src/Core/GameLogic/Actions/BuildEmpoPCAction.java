@@ -1,8 +1,8 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.PermitCard;
-import Core.GameModel.Town;
-import Core.Player;
+import core.gamemodel.PermitCard;
+import core.gamemodel.Town;
+import core.Player;
 
 /**
  * Created by Matteo on 23/05/16.

@@ -1,4 +1,4 @@
-package Core.GameModel;
+package core.gamemodel;
 
 import javafx.scene.paint.Color;
 

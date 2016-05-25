@@ -1,10 +1,10 @@
-package Client;
+package client;
 
-import Client.ClientConnection.ClientProcessor;
-import Client.ClientConnection.RMIConnection;
-import Core.Connection.Connection;
-import Core.Connection.InfoProcessor;
-import Core.Connection.SocketConnection;
+import client.clientconnection.ClientProcessor;
+import client.clientconnection.RMIConnection;
+import core.connection.Connection;
+import core.connection.InfoProcessor;
+import core.connection.SocketConnection;
 
 import java.io.IOException;
 import java.net.Socket;

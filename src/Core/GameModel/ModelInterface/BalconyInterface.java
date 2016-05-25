@@ -1,6 +1,6 @@
-package Core.GameModel.ModelInterface;
+package core.gamemodel.modelinterface;
 
-import Core.GameModel.Councilor;
+import core.gamemodel.Councilor;
 
 import java.util.Iterator;
 

@@ -1,7 +1,4 @@
-package Core.GameModel.Bonus;
-
-import Core.GameModel.Bonus.Bonus;
-import Core.GameModel.Bonus.BonusNumber;
+package core.gamemodel.bonus;
 
 import java.util.ArrayList;
 import java.util.Arrays;

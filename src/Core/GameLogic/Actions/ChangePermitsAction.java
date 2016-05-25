@@ -1,7 +1,7 @@
-package Core.GameLogic.Actions;
+package core.gamelogic.actions;
 
-import Core.GameModel.RegionType;
-import Core.Player;
+import core.gamemodel.RegionType;
+import core.Player;
 
 /**
  * Created by Leonardo Arcari on 23/05/2016.

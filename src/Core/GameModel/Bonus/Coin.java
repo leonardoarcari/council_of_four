@@ -1,4 +1,4 @@
-package Core.GameModel.Bonus;
+package core.gamemodel.bonus;
 
 import java.util.ArrayList;
 import java.util.Arrays;

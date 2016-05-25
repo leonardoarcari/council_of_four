@@ -1,7 +1,7 @@
-package Core.GameModel;
+package core.gamemodel;
 
-import Core.GameModel.ModelInterface.SellableItem;
-import Core.Player;
+import core.gamemodel.modelinterface.SellableItem;
+import core.Player;
 
 /**
  * Created by Leonardo Arcari on 23/05/2016.
