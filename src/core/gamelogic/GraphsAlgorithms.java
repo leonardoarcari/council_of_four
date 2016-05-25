@@ -14,11 +14,13 @@ public class GraphsAlgorithms {
     public static List<Town> townsWithEmporiumOf(Player player, TownName source, Map<TownName, Town> graph) {
         if(source == null || graph == null) throw new IllegalArgumentException();
         List<Town> returnList = new ArrayList<>();
-        Map<TownName, Node> graphNodes = new HashMap<>(graph.size());
-        for (Town t : graph.values()) {
-            graphNodes.put(t.getTownName(), new Node(t, Color.WHITE, -1));
+        Map<TownName, Node> graphNodes = new HashMap<>(graph.size()); // Convenient collection to handle BFS node data
+        for (Town t : graph.values()) { // Create nodes
+            if (!t.getTownName().equals(source)) graphNodes.put(t.getTownName(), new Node(t, Color.WHITE, -1));
         }
+
         Node sourceNode = new Node(graph.get(source), Color.GRAY, 0);
+        graphNodes.put(source, sourceNode);
         ArrayDeque<Node> deque = new ArrayDeque<>();
         deque.addFirst(sourceNode);
         while (!deque.isEmpty()) {
@@ -38,6 +40,8 @@ public class GraphsAlgorithms {
         }
         return returnList;
     }
+
+
 
     private static class Node {
         Town town;

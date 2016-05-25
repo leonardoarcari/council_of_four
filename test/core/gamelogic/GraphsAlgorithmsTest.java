@@ -24,7 +24,8 @@ public class GraphsAlgorithmsTest {
     private Map<TownName, Town> graphMid;
     private Map<TownName, Town> graphAllConn;
 
-    @Before public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         myTowns = new ArrayList<>();
         player = new Player(null);
         source = TownName.A;
@@ -88,18 +89,21 @@ public class GraphsAlgorithmsTest {
         graphAllConn.put(TownName.C,c10);
     }
 
-    @Test public void testNoConnected() {
+    @Test
+    public void testNoConnected() {
         myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphNoConn);
         assertTrue(myTowns.isEmpty());
     }
 
-    @Test public void testSomeConnected() {
+    @Test
+    public void testSomeConnected() {
         myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphMid);
         List<Town> expected = new ArrayList<>(Arrays.asList(c01));
         assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));
     }
 
-    @Test public void testAllConnected() {
+    @Test
+    public void testAllConnected() {
         myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphAllConn);
         List<Town> expected = new ArrayList<>(Arrays.asList(b10,c10));
         assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));

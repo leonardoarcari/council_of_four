@@ -43,6 +43,10 @@ public class Town implements Subject, TownInterface{
         this.nearbyTowns = nearbyTowns;
     }
 
+    public void addNearby(TownName nearby) {
+        nearbyTowns.add(nearby);
+    }
+
     public void setTownType() {
         switch (townName) {
             case A:case M:
@@ -62,9 +66,11 @@ public class Town implements Subject, TownInterface{
                 break;
         }
     }
+
     public Iterator<TownName> nearbiesIterator() {
         return nearbyTowns.iterator();
     }
+
     @Override
     public boolean isKingHere() {
         return kingHere;

@@ -21,7 +21,7 @@ public class Region implements RegionInterface, Subject{
     private List<PermitCard> regionPermitCards;
     private PermitCard rightPermitCard;
     private PermitCard leftPermitCard;
-    private List<Town> regionTowns;
+    private Map<TownName, Town> regionTowns;
     private RegionCard regionCard;
 
     private transient List<Observer> observers;
@@ -35,7 +35,7 @@ public class Region implements RegionInterface, Subject{
         createRegionBalcony(councilors);
         setTowns();
 
-        regionTowns = new Vector<>();
+        regionTowns = Collections.synchronizedMap(new HashMap<>());
         regionPermitCards = new Vector<>();
         regionBalcony = new CouncilorsBalcony();
         regionCardTaken = false;
@@ -61,28 +61,25 @@ public class Region implements RegionInterface, Subject{
         AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.TOWN);
         switch(regionType) {
             case SEA:
-                regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.A, bonusFactory.generateBonuses()),
-                        new Town(TownName.B, bonusFactory.generateBonuses()),
-                        new Town(TownName.C, bonusFactory.generateBonuses()),
-                        new Town(TownName.D, bonusFactory.generateBonuses()),
-                        new Town(TownName.E, bonusFactory.generateBonuses()))));
+                regionTowns.put(TownName.A, new Town(TownName.A, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.B, new Town(TownName.B, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.C, new Town(TownName.C, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.D, new Town(TownName.D, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.E, new Town(TownName.E, bonusFactory.generateBonuses()));
                 break;
             case HILLS:
-                regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.F, bonusFactory.generateBonuses()),
-                        new Town(TownName.G, bonusFactory.generateBonuses()),
-                        new Town(TownName.H, bonusFactory.generateBonuses()),
-                        new Town(TownName.I, bonusFactory.generateBonuses()),
-                        new Town(TownName.J, bonusFactory.generateBonuses()))));
+                regionTowns.put(TownName.F, new Town(TownName.F, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.G, new Town(TownName.G, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.H, new Town(TownName.H, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.I, new Town(TownName.I, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.J, new Town(TownName.J, bonusFactory.generateBonuses()));
                 break;
             case MOUNTAINS:
-                regionTowns.addAll(new ArrayList<>(Arrays.asList(
-                        new Town(TownName.K, bonusFactory.generateBonuses()),
-                        new Town(TownName.L, bonusFactory.generateBonuses()),
-                        new Town(TownName.M, bonusFactory.generateBonuses()),
-                        new Town(TownName.N, bonusFactory.generateBonuses()),
-                        new Town(TownName.O, bonusFactory.generateBonuses()))));
+                regionTowns.put(TownName.K, new Town(TownName.K, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.L, new Town(TownName.L, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.M, new Town(TownName.M, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.N, new Town(TownName.N, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.O, new Town(TownName.O, bonusFactory.generateBonuses()));
                 break;
         }
     }
@@ -92,11 +89,9 @@ public class Region implements RegionInterface, Subject{
     }
 
     public Town getTownByName(TownName townName) {
-        for(Town town: regionTowns) {
-            if(town.getTownName().equals(townName))
-                return town;
-        }
-        throw new NoSuchElementException();
+        Town t = regionTowns.get(townName);
+        if (t != null) return t;
+        else throw new NoSuchElementException();
     }
 
     //TODO: Add checks on empty stack
@@ -152,7 +147,7 @@ public class Region implements RegionInterface, Subject{
     }
 
     public Iterator<Town> townIterator() {
-        return regionTowns.iterator();
+        return regionTowns.values().iterator();
     }
 
     @Override
