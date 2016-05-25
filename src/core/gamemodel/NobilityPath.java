@@ -14,7 +14,9 @@ public class NobilityPath extends AbstractPath{
     public NobilityPath(List<List<Bonus>> bonusPath) {
         this.bonusPath = bonusPath;
         players = new ArrayList<>(21);
-        players.stream().forEach(playerList -> playerList = new ArrayList<>());
+        for (int i = 0; i < 21; i++) {
+            players.add(new ArrayList<>());
+        }
     }
 
     public void setPlayer(Player player) {

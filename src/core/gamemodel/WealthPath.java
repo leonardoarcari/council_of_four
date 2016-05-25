@@ -12,8 +12,9 @@ public class WealthPath extends AbstractPath{
 
     public WealthPath() {
         players = new ArrayList<>(21);
-        players.stream().forEach(playerList -> playerList = new ArrayList<>());
-    }
+        for (int i = 0; i < 21; i++) {
+            players.add(new ArrayList<>());
+        }    }
 
     @Override
     public void movePlayer(Player player, int variation) {
