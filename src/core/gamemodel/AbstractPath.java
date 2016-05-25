@@ -13,7 +13,7 @@ import java.util.Vector;
  */
 public abstract class AbstractPath implements Subject{
     protected List<List<Player>> players;
-    protected transient List<Observer> observers;
+    private transient List<Observer> observers;
 
     public AbstractPath() {
         observers = new Vector<>();
@@ -37,7 +37,7 @@ public abstract class AbstractPath implements Subject{
 
     public int getPlayerPosition(Player player) {
         for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).contains(player)) {
+            if (players.get(i).contains(player)) {
                 return i;
             }
         }

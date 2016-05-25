@@ -60,10 +60,20 @@ public class NobilityPathTest {
         pathWithoutPlayer.movePlayer(player, 5);
     }
 
+    @Test (expected = NoSuchElementException.class)
+    public void getPlayerPositionWithoutPlayer() throws Exception {
+        pathWithoutPlayer.getPlayerPosition(player);
+    }
+
     @Test
     public void moveWithPlayer() throws Exception {
         pathWithPlayer.movePlayer(player, incrementValue);
         assertEquals(expectedPosition, pathWithPlayer.getPlayerPosition(player));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void nullPlayerPosition() throws Exception {
+        pathWithPlayer.movePlayer(null, 1);
     }
 
     @Test (expected = IllegalArgumentException.class)
