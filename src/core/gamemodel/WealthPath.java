@@ -14,17 +14,21 @@ public class WealthPath extends AbstractPath{
         players = new ArrayList<>(21);
         for (int i = 0; i < 21; i++) {
             players.add(new ArrayList<>());
-        }    }
+        }
+    }
 
     @Override
     public void movePlayer(Player player, int variation) {
+        if(player == null) {
+            throw new IllegalArgumentException();
+        }
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).contains(player)) {
                 players.get(i).remove(player);
                 int newPos = (i+variation < 20) ? ((i+variation >= 0) ? i+variation : 0) : 20;
                 players.get(newPos).add(player);
                 notifyObservers();
-                break;
+                return;
             }
         }
         throw new NoSuchElementException();
