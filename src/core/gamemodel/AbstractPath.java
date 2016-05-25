@@ -24,12 +24,12 @@ public class AbstractPath implements Subject{
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).contains(player)) {
+            if (players.get(i).contains(player)) {
                 players.get(i).remove(player);
                 int newPos = (i+variation < 20) ? i+variation : 20;
                 players.get(newPos).add(player);
                 notifyObservers();
-                break;
+                return;
             }
         }
         throw new NoSuchElementException();
