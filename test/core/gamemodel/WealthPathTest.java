@@ -1,4 +1,4 @@
-package test;
+package core.gamemodel;
 
 import core.Player;
 import core.gamemodel.VictoryPath;
