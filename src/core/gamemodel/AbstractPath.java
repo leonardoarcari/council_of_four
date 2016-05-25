@@ -20,7 +20,7 @@ public class AbstractPath implements Subject{
     }
 
     public void movePlayer(Player player, int variation) {
-        if (variation <= 0) {
+        if (variation <= 0 || player == null) {
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < players.size(); i++) {
