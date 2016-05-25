@@ -12,10 +12,11 @@ import java.util.*;
  */
 public class GraphsAlgorithms {
     public static List<Town> townsWithEmporiumOf(Player player, TownName source, Map<TownName, Town> graph) {
+        if(source == null || graph == null) throw new IllegalArgumentException();
         List<Town> returnList = new ArrayList<>();
         Map<TownName, Node> graphNodes = new HashMap<>(graph.size());
         for (Town t : graph.values()) {
-            if (!t.getTownName().equals(source)) graphNodes.put(t.getTownName(), new Node(t, Color.WHITE, -1));
+            graphNodes.put(t.getTownName(), new Node(t, Color.WHITE, -1));
         }
         Node sourceNode = new Node(graph.get(source), Color.GRAY, 0);
         ArrayDeque<Node> deque = new ArrayDeque<>();

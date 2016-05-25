@@ -14,44 +14,99 @@ import static org.junit.Assert.*;
  * Created by Matteo on 25/05/16.
  */
 public class GraphsAlgorithmsTest {
-    Player player;
-    List<Town> myTowns;
-    TownName source;
-    Town a,b,c,d,e,f;
-    Map<TownName, Town> graph;
+    private Player player;
+    private List<Town> myTowns;
+    private TownName source;
+    private Town a00,b00,c00;
+    private Town a01,b01,c01,d01,e01,f01;
+    private Town a10,b10,c10;
+    private Map<TownName, Town> graphNoConn;
+    private Map<TownName, Town> graphMid;
+    private Map<TownName, Town> graphAllConn;
 
     @Before public void setUp() throws Exception {
+        myTowns = new ArrayList<>();
         player = new Player(null);
         source = TownName.A;
-        a = new Town(TownName.A,null);
-        a.setNearbyTowns(Arrays.asList(TownName.B, TownName.C));
-        b = new Town(TownName.B,null);
-        b.setNearbyTowns(Arrays.asList(TownName.A,TownName.C,TownName.D));
-        c = new Town(TownName.C,null);
-        c.setNearbyTowns(Arrays.asList(TownName.A,TownName.B,TownName.F));
-        c.createEmporium(player);
-        d = new Town(TownName.D,null);
-        d.setNearbyTowns(Arrays.asList(TownName.B,TownName.F,TownName.E));
-        d.createEmporium(player);
-        e = new Town(TownName.E,null);
-        e.setNearbyTowns(Arrays.asList(TownName.D));
-        e.createEmporium(player);
-        f = new Town(TownName.F,null);
-        f.setNearbyTowns(Arrays.asList(TownName.C,TownName.F));
-
-        graph = new HashMap<>();
-        graph.put(TownName.A,a);
-        graph.put(TownName.B,b);
-        graph.put(TownName.C,c);
-        graph.put(TownName.D,d);
-        graph.put(TownName.E,e);
-        graph.put(TownName.F,f);
+        setUpNoConn();
+        setUpMid();
+        setUpAllConn();
     }
 
-    @Test public void testAlgorithm() {
-        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graph);
-        List<Town> expected = new ArrayList<>(Arrays.asList(c,d,e));
-        assertTrue(expected.containsAll(myTowns));
-        assertTrue(myTowns.containsAll(expected));
+    private void setUpNoConn() {
+        a00 = new Town(TownName.A,null);
+        b00 = new Town(TownName.B, null);
+        b00.setNearbyTowns(Arrays.asList(TownName.C));
+        c00 = new Town(TownName.C, null);
+        c00.setNearbyTowns(Arrays.asList(TownName.B));
+
+        graphNoConn = new HashMap<>();
+        graphNoConn.put(TownName.A,a00);
+        graphNoConn.put(TownName.B,b00);
+        graphNoConn.put(TownName.C,c00);
+    }
+
+    private void setUpMid() {
+        a01 = new Town(TownName.A,null);
+        a01.setNearbyTowns(Arrays.asList(TownName.B, TownName.C));
+        b01 = new Town(TownName.B,null);
+        b01.setNearbyTowns(Arrays.asList(TownName.A,TownName.C,TownName.D));
+        c01 = new Town(TownName.C,null);
+        c01.setNearbyTowns(Arrays.asList(TownName.A,TownName.B,TownName.F));
+        c01.createEmporium(player);
+        d01 = new Town(TownName.D,null);
+        d01.setNearbyTowns(Arrays.asList(TownName.B,TownName.F,TownName.E));
+        d01.createEmporium(player);
+        e01 = new Town(TownName.E,null);
+        e01.setNearbyTowns(Arrays.asList(TownName.D));
+        e01.createEmporium(player);
+        f01 = new Town(TownName.F,null);
+        f01.setNearbyTowns(Arrays.asList(TownName.C,TownName.F));
+
+        graphMid = new HashMap<>();
+        graphMid.put(TownName.A,a01);
+        graphMid.put(TownName.B,b01);
+        graphMid.put(TownName.C,c01);
+        graphMid.put(TownName.D,d01);
+        graphMid.put(TownName.E,e01);
+        graphMid.put(TownName.F,f01);
+    }
+
+    private void setUpAllConn() {
+        a10 = new Town(TownName.A,null);
+        a10.setNearbyTowns(Arrays.asList(TownName.B,TownName.C));
+        b10 = new Town(TownName.B,null);
+        b10.createEmporium(player);
+        b10.setNearbyTowns(Arrays.asList(TownName.A,TownName.C));
+        c10 = new Town(TownName.C,null);
+        c10.setNearbyTowns(Arrays.asList(TownName.A,TownName.B));
+        c10.createEmporium(player);
+
+        graphAllConn = new HashMap<>();
+        graphAllConn.put(TownName.A,a10);
+        graphAllConn.put(TownName.B,b10);
+        graphAllConn.put(TownName.C,c10);
+    }
+
+    @Test public void testNoConnected() {
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphNoConn);
+        assertTrue(myTowns.isEmpty());
+    }
+
+    @Test public void testSomeConnected() {
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphMid);
+        List<Town> expected = new ArrayList<>(Arrays.asList(c01));
+        assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));
+    }
+
+    @Test public void testAllConnected() {
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphAllConn);
+        List<Town> expected = new ArrayList<>(Arrays.asList(b10,c10));
+        assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testNullParameters() {
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player,null,null);
     }
 }
