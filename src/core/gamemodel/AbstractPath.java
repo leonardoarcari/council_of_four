@@ -29,9 +29,10 @@ public class AbstractPath implements Subject{
                 break;
             }
         }
+        throw new NoSuchElementException();
     }
 
-    public int getPlayerPosition(Player player) throws NoSuchElementException{
+    public int getPlayerPosition(Player player) {
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).contains(player)) {
                 return i;

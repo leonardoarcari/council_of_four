@@ -47,7 +47,7 @@ public class WaitingHall {
         if (waitingPlayers.size() == 2) { // Start countdown
             timer = scheduledExecutor.schedule(game, 5L, TimeUnit.SECONDS);
         }
-        if (waitingPlayers.size() == Server.MAX_PLAYERS) { // Immediately start the game
+        if (waitingPlayers.size() == server.MAX_PLAYERS) { // Immediately start the game
             timer.cancel(false);
             new Thread(game).start();
         }
