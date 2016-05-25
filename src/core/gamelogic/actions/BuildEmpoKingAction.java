@@ -3,7 +3,9 @@ package core.gamelogic.actions;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Town;
 import core.Player;
+import core.gamemodel.TownName;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,19 +13,27 @@ import java.util.List;
  */
 public class BuildEmpoKingAction extends Action implements NormalAction {
     List<PoliticsCard> kingSatisfCards;
-    Town buildingTown;
+    int spentCoins;
+    TownName startingTown;
+    TownName buildingTown;
 
-    public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards, Town buildingTown) {
+    public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards,TownName startingTown, TownName buildingTown, int spentCoins) {
         super(player);
         this.kingSatisfCards = kingSatisfCards;
         this.buildingTown = buildingTown;
+        this.startingTown = startingTown;
+        this.spentCoins = spentCoins;
     }
 
-    public List<PoliticsCard> getKingSatisfCards() {
-        return kingSatisfCards;
+    public Iterator<PoliticsCard> getSatCardIterator() {
+            return kingSatisfCards.iterator();
     }
 
-    public Town getBuildingTown() {
+    public TownName getStartingTown() {
+        return startingTown;
+    }
+
+    public TownName getBuildingTown() {
         return buildingTown;
     }
 }

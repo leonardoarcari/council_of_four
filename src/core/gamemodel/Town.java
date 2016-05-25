@@ -16,7 +16,7 @@ import java.util.Vector;
 public class Town implements Subject, TownInterface{
     private TownName townName;
     private TownType townType;
-    private Vector<TownName> nearbyTowns;
+    private List<TownName> nearbyTowns;
     private List<Bonus> townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
@@ -37,6 +37,10 @@ public class Town implements Subject, TownInterface{
         observers = new Vector<>();
         nearbyTowns = new Vector<>();
         townType = null;
+    }
+
+    public void setNearbyTowns(List<TownName> nearbyTowns) {
+        this.nearbyTowns = nearbyTowns;
     }
 
     public void setTownType() {

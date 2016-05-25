@@ -183,15 +183,23 @@ public class GameBoard implements Subject{
         wealthPath.movePlayer(player, increment);
     }
 
-    public void buildEmporium(Player player, TownName townName) {
-
+    public Region regionFromTownName(TownName townName) {
         if(townName.ordinal() < 5) {
-            seaRegion.buildEmporium(player, townName);
+            return seaRegion;
         } else if (townName.ordinal() < 10) {
-            hillsRegion.buildEmporium(player, townName);
+            return hillsRegion;
         } else {
-            mountainsRegion.buildEmporium(player, townName);
+            return mountainsRegion;
         }
+    }
+
+    public void buildEmporium(Player player, TownName townName) {
+        regionFromTownName(townName).buildEmporium(player, townName);
+    }
+
+    public void moveKing(TownName startingTown, TownName buildingTown) {
+        regionFromTownName(startingTown).getTownByName(startingTown).setKing(false);
+        regionFromTownName(buildingTown).getTownByName(buildingTown).setKing(true);
     }
 
     //TODO: Check for empty deck

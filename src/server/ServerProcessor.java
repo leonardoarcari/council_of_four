@@ -5,6 +5,7 @@ import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.bonus.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import core.gamemodel.Councilor;
@@ -40,7 +41,9 @@ public class ServerProcessor implements InfoProcessor {
         } else if (info instanceof MarketAction) {
             //TODO: Add Market actions
         } else if (info instanceof FastAction) {
-            //TODO: Add Fast actions
+            if(info.getClass().equals(HireServantAction.class)) {
+                hireServantAction((HireServantAction) info);
+            }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
         }
@@ -48,13 +51,23 @@ public class ServerProcessor implements InfoProcessor {
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
         // Add politics card to discarted deck
+        Iterator<PoliticsCard> cardIterator = action.discartedIterator();
+        discardAndPay(cardIterator, action.getPlayer());
+
+        // Draw permit card and redeem bonuses
+        PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getDrawnPermitCard());
+        action.getPlayer().addPermitCard(card);
+        card.getBonuses().forEach(bonus -> redeemBonus(bonus, action.getPlayer()));
+    }
+
+    private void discardAndPay(Iterator<PoliticsCard> cardIterator, Player player) {
         int rainbowCards = 0;
         int cardsNo = 0;
-        Iterator<PoliticsCard> cardIterator = action.discartedIterator();
+
         while (cardIterator.hasNext()) {
             PoliticsCard card = cardIterator.next();
             game.getGameBoard().discardCard(card);
-            action.getPlayer().removePoliticsCard(card);
+            player.removePoliticsCard(card);
             if (card.getCardColor() == CouncilColor.RAINBOW) rainbowCards++;
             cardsNo++;
         }
@@ -68,12 +81,7 @@ public class ServerProcessor implements InfoProcessor {
         else if (cardsNo == 4) coinsToPay = 0;
 
         coinsToPay += rainbowCards;
-        game.getGameBoard().moveWealthPath(action.getPlayer(), -coinsToPay);
-
-        // Draw permit card and redeem bonuses
-        PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getDrawnPermitCard());
-        action.getPlayer().addPermitCard(card);
-        card.getBonuses().forEach(bonus -> redeemBonus(bonus, action.getPlayer()));
+        game.getGameBoard().moveWealthPath(player, -coinsToPay);
     }
 
     private void councilorElection(CouncilorElectionAction action) {
@@ -121,6 +129,16 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void buildEmpoKingHelp(BuildEmpoKingAction action) {
+        Iterator<PoliticsCard> cardIterator = action.getSatCardIterator();
+        discardAndPay(cardIterator, action.getPlayer());
+        TownName townName = action.getBuildingTown();
+        game.getGameBoard().buildEmporium(action.getPlayer(), townName);
+        //TODO: research algorithm that calls redeemBonus
+        game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
+    }
 
+    private void hireServantAction(HireServantAction action) {
+        action.getPlayer().hireServants(game.getGameBoard().hireServants(1));
+        game.getGameBoard().moveWealthPath(action.getPlayer(), -3);
     }
 }
