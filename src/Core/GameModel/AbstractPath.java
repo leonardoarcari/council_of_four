@@ -5,6 +5,7 @@ import Server.Observer;
 import Server.Subject;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 /**
@@ -28,6 +29,15 @@ public class AbstractPath implements Subject{
                 break;
             }
         }
+    }
+
+    public int getPlayerPosition(Player player) throws NoSuchElementException{
+        for (int i = 0; i < players.size(); i++) {
+            if(players.get(i).contains(player)) {
+                return i;
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     @Override
