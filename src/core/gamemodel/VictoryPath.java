@@ -10,8 +10,10 @@ import java.util.ArrayList;
 public class VictoryPath extends AbstractPath {
 
     public VictoryPath() {
-        players = new ArrayList<>(21);
-        players.stream().forEach(playerList -> playerList = new ArrayList<>());
+        players = new ArrayList<>(100);
+        for(int i = 0; i < 100; i++) {
+            players.add(new ArrayList<>());
+        }
     }
 
     public void setPlayer(Player player) {

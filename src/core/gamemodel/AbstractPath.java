@@ -11,7 +11,7 @@ import java.util.Vector;
 /**
  * Created by Matteo on 23/05/16.
  */
-public class AbstractPath implements Subject{
+public abstract class AbstractPath implements Subject{
     protected List<List<Player>> players;
     protected transient List<Observer> observers;
 
@@ -20,7 +20,7 @@ public class AbstractPath implements Subject{
     }
 
     public void movePlayer(Player player, int variation) {
-        if (variation <= 0) {
+        if (variation <= 0 || player == null) {
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < players.size(); i++) {
