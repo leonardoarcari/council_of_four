@@ -236,6 +236,7 @@ public class GameBoard implements Subject{
 
     public Map<TownName, Town> getTownsMap() {
         Map<TownName,Town> townMap = new HashMap<>();
+
         fillTownMapBy(seaRegion, townMap);
         fillTownMapBy(hillsRegion, townMap);
         fillTownMapBy(mountainsRegion, townMap);

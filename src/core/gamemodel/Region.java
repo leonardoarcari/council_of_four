@@ -17,11 +17,11 @@ import java.util.*;
 public class Region implements RegionInterface, Subject{
     boolean regionCardTaken;
     private RegionType regionType;
-    private CouncilorsBalcony regionBalcony;
-    private List<PermitCard> regionPermitCards;
+    private transient CouncilorsBalcony regionBalcony;
+    private transient List<PermitCard> regionPermitCards;
     private PermitCard rightPermitCard;
     private PermitCard leftPermitCard;
-    private Map<TownName, Town> regionTowns;
+    private transient Map<TownName, Town> regionTowns;
     private RegionCard regionCard;
 
     private transient List<Observer> observers;
