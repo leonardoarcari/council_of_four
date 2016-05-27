@@ -3,6 +3,7 @@ package server.serverconnection;
 import core.connection.RMIProcessor;
 import core.connection.RMIServiceInterface;
 import core.Player;
+import core.gamemodel.DummyRef;
 import server.WaitingHall;
 
 import java.rmi.RemoteException;
@@ -28,6 +29,7 @@ public class RMIService implements RMIServiceInterface {
         RMIConnection playerConnection = new RMIConnection(clientProcessor);
         Player player = new Player(playerConnection);
         playerConnection.setPlayer(player);
+        player.addDummy(new DummyRef());
         WaitingHall.getInstance().addPlayer(player);
         return playerConnection;
     }

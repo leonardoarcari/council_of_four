@@ -53,9 +53,7 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
 
     @Override
     public void update(Subject subject) {
-        /*if (subject.getClass().equals(Model.class)) {
-            sendInfo(subject);
-        }*/
+        sendInfo(subject);
     }
 
     @Override

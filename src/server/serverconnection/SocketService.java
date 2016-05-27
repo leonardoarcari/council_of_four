@@ -33,7 +33,6 @@ public class SocketService implements Runnable {
                         socket);
                 Player player = new Player(connection);
                 player.addDummy(new DummyRef());
-                connection.update(player);
                 WaitingHall.getInstance().addPlayer(player);
                 executor.submit(connection);
             } catch (IOException e) {

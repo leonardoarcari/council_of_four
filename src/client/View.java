@@ -43,20 +43,6 @@ public class View {
     public void setPlayer(Player player) {
         this.player = player;
         System.out.println("Mi sono ricevuto");
-        sendFakeAsshole();
-    }
-
-    public void sendFakeAsshole() {
-        System.out.println("Send fake ass action, press 5");
-        try {
-            String answer = in.readLine();
-            if (Integer.valueOf(answer).equals(5)) {
-                Action fakeAss = new HireServantAction(player);
-                controller.getSocketConnection().sendInfo(fakeAss);
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     public void print(ModelInterface modelInterface) {

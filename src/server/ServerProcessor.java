@@ -56,7 +56,6 @@ public class ServerProcessor implements InfoProcessor {
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
         }
-        GameBoardStatus.printStatus(game.getGameBoard());
     }
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
