@@ -21,6 +21,10 @@ public class Town implements Subject, TownInterface{
     private Vector<Player> playersEmporium;
     private boolean kingHere;
 
+    public Vector<Player> getPlayersEmporium() {
+        return playersEmporium;
+    }
+
     private transient List<Observer> observers;
 
     public Town(TownName townName, List<Bonus> townBonus) {

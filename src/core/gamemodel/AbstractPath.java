@@ -44,6 +44,10 @@ public abstract class AbstractPath implements Subject{
         throw new NoSuchElementException();
     }
 
+    public List<List<Player>> getPlayers() {
+        return players;
+    }
+
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);

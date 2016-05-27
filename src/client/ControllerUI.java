@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 public class ControllerUI {
     private Connection connection;
     private InfoProcessor processor;
+    private SocketConnection socketConnection;
     private View view;
 
     public ControllerUI() {
@@ -35,9 +36,14 @@ public class ControllerUI {
     public void socketConnection() {
         try {
             Socket socket = new Socket("127.0.0.1", 2828);
-            new Thread(new SocketConnection(processor, socket)).start();
+            socketConnection = new SocketConnection(processor, socket);
+            new Thread(socketConnection).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public SocketConnection getSocketConnection() {
+        return socketConnection;
     }
 }

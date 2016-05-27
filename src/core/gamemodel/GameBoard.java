@@ -17,6 +17,19 @@ public class GameBoard implements Subject{
     private transient RegionType boardType;
     private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
+
+    public NobilityPath getNobilityPath() {
+        return nobilityPath;
+    }
+
+    public WealthPath getWealthPath() {
+        return wealthPath;
+    }
+
+    public VictoryPath getVictoryPath() {
+        return victoryPath;
+    }
+
     private Stack<RoyalCard> royalCardPool;
     private List<Councilor> councilorPool;
     private List<TownTypeCard> townTypeCards;
@@ -127,7 +140,10 @@ public class GameBoard implements Subject{
     private List<List<Bonus>> nobilityBonus() {
         AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.NOBILITY);
         List<List<Bonus>> bonusPath = new ArrayList<>(21);
-        bonusPath.stream().forEach(bonusList -> bonusList = bonusFactory.generateBonuses());
+        bonusPath.add(new ArrayList<>());
+        for (int i = 1; i < 21; i++) {
+            bonusPath.add(bonusFactory.generateBonuses());
+        }
         return bonusPath;
     }
 

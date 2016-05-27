@@ -31,13 +31,13 @@ public class Region implements RegionInterface, Subject{
         // Region objects initialization
         this.regionCard = regionCard;
         this.regionType = regionType;
+        regionPermitCards = new Vector<>();
+        regionBalcony = new CouncilorsBalcony();
+        regionTowns = Collections.synchronizedMap(new HashMap<>());
         createPermitCards(regionType);
         createRegionBalcony(councilors);
         setTowns();
 
-        regionTowns = Collections.synchronizedMap(new HashMap<>());
-        regionPermitCards = new Vector<>();
-        regionBalcony = new CouncilorsBalcony();
         regionCardTaken = false;
 
         observers = new Vector<>();
@@ -122,6 +122,10 @@ public class Region implements RegionInterface, Subject{
 
     public Councilor updateBalcony(Councilor councilor) {
         return regionBalcony.addCouncilor(councilor);
+    }
+
+    public List<PermitCard> getRegionPermitCards() {
+        return regionPermitCards;
     }
 
     @Override

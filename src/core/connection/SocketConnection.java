@@ -47,6 +47,8 @@ public class SocketConnection implements Connection, Runnable {
             // Wait for messages in the socket
             while (true) {
                 String info = in.readLine();
+                if(info == null)
+                    System.out.println("MERDA NULL");
                 StringTokenizer tokenizer = new StringTokenizer(info, SocketCommunicator.SEPARATOR);
                 String className = tokenizer.nextToken();
                 String json = tokenizer.nextToken();

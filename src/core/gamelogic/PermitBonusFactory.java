@@ -14,9 +14,9 @@ public class PermitBonusFactory implements AbstractBonusFactory{
     private static final ArrayList<Float> CARD_LOW_PROBABILITIES = new ArrayList<>(Arrays.asList(
             3f/13, 6f/13, 9f/13, 10f/13, 12f/13, 1f));
     private static final ArrayList<Float> CARD_MEDIUM_PROBABILITIES = new ArrayList<>(Arrays.asList(
-            7f/31, 14f/31, 20f/31, 25f/31, 29f/31, 1f));
+            7f/31, 14f/31, 20f/31, 25f/31, 30f/31, 1f));
     private static final ArrayList<Float> CARD_HIGH_PROBABILITIES = new ArrayList<>(Arrays.asList(
-            2f/10, 4f/10, 6f/10, 8f/10, 9f/10, 1f));
+            2f/10, 4f/10, 6f/10, 8f/10, 9.7f/10, 1f));
 
     @Override
     public List<Bonus> generateBonuses() {

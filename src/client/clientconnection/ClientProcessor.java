@@ -2,6 +2,7 @@ package client.clientconnection;
 
 
 import client.View;
+import core.Player;
 import core.connection.InfoProcessor;
 import core.ModelInterface;
 
@@ -23,6 +24,10 @@ public class ClientProcessor implements InfoProcessor {
         if (Arrays.asList(objClass.getInterfaces()).contains(ModelInterface.class)) {
             ModelInterface model = (ModelInterface) info;
             view.print(model);
+        }
+        if(info.getClass().equals(Player.class)) {
+            Player player = (Player) info;
+            view.setPlayer(player);
         }
     }
 }

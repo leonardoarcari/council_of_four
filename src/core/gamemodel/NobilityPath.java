@@ -11,6 +11,10 @@ import java.util.*;
 public class NobilityPath extends AbstractPath{
     private List<List<Bonus>> bonusPath;
 
+    public List<List<Bonus>> getBonusPath() {
+        return bonusPath;
+    }
+
     public NobilityPath(List<List<Bonus>> bonusPath) {
         this.bonusPath = bonusPath;
         players = new ArrayList<>(21);

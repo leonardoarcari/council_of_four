@@ -5,6 +5,7 @@ import core.gamemodel.*;
 import server.Observer;
 import server.Subject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,9 +14,10 @@ import java.util.Vector;
 /**
  * Created by Matteo on 19/05/16.
  */
-public class Player implements Subject {
+public class Player implements Subject, Serializable {
     private String username;
     private String nickname;
+    private DummyRef dummyRef;
     private transient Connection connection;
 
     /**
@@ -60,6 +62,14 @@ public class Player implements Subject {
         return nickname;
     }
 
+    public void addDummy(DummyRef dummyRef) {
+        this.dummyRef = dummyRef;
+    }
+
+    public DummyRef getDummyRef() {
+        return dummyRef;
+    }
+
     public void removePoliticsCard(PoliticsCard card) {
         politicsCards.remove(card);
         notifyObservers();
@@ -77,7 +87,7 @@ public class Player implements Subject {
 
     public void hireServants(List<Servant> servant) {
         servants.addAll(servant);
-        notifyObservers();
+        //notifyObservers();
     }
 
     public Servant removeServant() {
@@ -130,5 +140,11 @@ public class Player implements Subject {
         for (Observer o : observers) {
             o.update(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        Player player = (Player) object;
+        return this.dummyRef.getId() == player.dummyRef.getId();
     }
 }

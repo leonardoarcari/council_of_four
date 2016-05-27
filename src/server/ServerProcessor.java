@@ -29,6 +29,7 @@ public class ServerProcessor implements InfoProcessor {
 
     @Override
     public void processInfo(Object info) {
+
         if (info instanceof NormalAction) {
             //TODO: mark normal action done
             if(info.getClass().equals(CouncilorElectionAction.class)){
@@ -55,6 +56,7 @@ public class ServerProcessor implements InfoProcessor {
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
         }
+        GameBoardStatus.printStatus(game.getGameBoard());
     }
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
@@ -158,6 +160,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void hireServantAction(HireServantAction action) {
+        System.out.println("ricevuto");
         action.getPlayer().hireServants(game.getGameBoard().hireServants(1));
         game.getGameBoard().moveWealthPath(action.getPlayer(), -3);
     }

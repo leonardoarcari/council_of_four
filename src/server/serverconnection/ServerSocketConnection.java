@@ -17,14 +17,13 @@ public class ServerSocketConnection extends SocketConnection implements ServerCo
 
     public ServerSocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         super(processor, socket);
+        me = null;
         //WaitingHall.getInstance().getModel().registerObserver(this);
     }
 
     @Override
     public void update(Subject subject) {
-        /*if (subject.getClass().equals(Model.class)) {
-            sendInfo(subject);
-        }*/
+        sendInfo(subject);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class ServerSocketConnection extends SocketConnection implements ServerCo
         me = player;
     }
 
-    @Override
+   @Override
     public Player getPlayer() {
         return me;
     }

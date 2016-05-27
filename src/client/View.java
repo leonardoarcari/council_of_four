@@ -1,6 +1,10 @@
 package client;
 
 import core.ModelInterface;
+import core.Player;
+import core.connection.Communicator;
+import core.gamelogic.actions.Action;
+import core.gamelogic.actions.HireServantAction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +15,8 @@ import java.io.InputStreamReader;
  */
 public class View {
     private ControllerUI controller;
+    private Communicator socketCommunicator;
+    private Player player;
     private BufferedReader in;
 
     public View(ControllerUI controller) {
@@ -30,6 +36,25 @@ public class View {
                 controller.rmiConnection();
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        System.out.println("Mi sono ricevuto");
+        sendFakeAsshole();
+    }
+
+    public void sendFakeAsshole() {
+        System.out.println("Send fake ass action, press 5");
+        try {
+            String answer = in.readLine();
+            if (Integer.valueOf(answer).equals(5)) {
+                Action fakeAss = new HireServantAction(player);
+                controller.getSocketConnection().sendInfo(fakeAss);
+            }
+        } catch (IOException e){
             e.printStackTrace();
         }
     }

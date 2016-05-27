@@ -1,6 +1,7 @@
 package server.serverconnection;
 
 import core.Player;
+import core.gamemodel.DummyRef;
 import server.WaitingHall;
 
 import java.io.IOException;
@@ -31,6 +32,8 @@ public class SocketService implements Runnable {
                         WaitingHall.getInstance().getInfoProcessor(),
                         socket);
                 Player player = new Player(connection);
+                player.addDummy(new DummyRef());
+                connection.update(player);
                 WaitingHall.getInstance().addPlayer(player);
                 executor.submit(connection);
             } catch (IOException e) {

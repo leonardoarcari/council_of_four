@@ -21,12 +21,16 @@ public class WealthPath extends AbstractPath{
     public void movePlayer(Player player, int variation) {
         if (player == null) throw new IllegalArgumentException();
         for (int i = 0; i < players.size(); i++) {
-            if(players.get(i).contains(player)) {
-                players.get(i).remove(player);
-                int newPos = (i+variation < 20) ? ((i+variation >= 0) ? i+variation : 0) : 20;
-                players.get(newPos).add(player);
-                notifyObservers();
-                return;
+            for(Player play : getPlayers().get(i)) {
+                if(play == player) System.out.println("Eureka!");
+                if (play.equals(player)) {
+
+                    players.get(i).remove(play);
+                    int newPos = (i + variation < 20) ? ((i + variation >= 0) ? i + variation : 0) : 20;
+                    players.get(newPos).add(play);
+                    //notifyObservers();
+                    return;
+                }
             }
         }
         throw new NoSuchElementException();
