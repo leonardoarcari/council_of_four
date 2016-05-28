@@ -29,7 +29,7 @@ public class Town implements Subject, TownInterface{
         playersEmporium = new Vector<>();
         observers = new Vector<>();
         nearbyTowns = new Vector<>();
-        townType = null;
+        setTownType();
     }
 
     public void setNearbyTowns(List<TownName> nearbyTowns) {
@@ -40,7 +40,7 @@ public class Town implements Subject, TownInterface{
         nearbyTowns.add(nearby);
     }
 
-    public void setTownType() {
+    private void setTownType() {
         switch (townName) {
             case A:case M:
                 townType = TownType.IRON;

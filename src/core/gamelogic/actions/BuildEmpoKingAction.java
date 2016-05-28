@@ -1,6 +1,7 @@
 package core.gamelogic.actions;
 
 import core.gamemodel.PoliticsCard;
+import core.gamemodel.RegionType;
 import core.gamemodel.Town;
 import core.Player;
 import core.gamemodel.TownName;
@@ -16,10 +17,12 @@ public class BuildEmpoKingAction extends Action implements NormalAction {
     int spentCoins;
     TownName startingTown;
     TownName buildingTown;
+    RegionType regionType;
 
-    public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards,TownName startingTown, TownName buildingTown, int spentCoins) {
+    public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards, RegionType regionType, TownName startingTown, TownName buildingTown, int spentCoins) {
         super(player);
         this.kingSatisfCards = kingSatisfCards;
+        this.regionType = regionType;
         this.buildingTown = buildingTown;
         this.startingTown = startingTown;
         this.spentCoins = spentCoins;
@@ -29,11 +32,19 @@ public class BuildEmpoKingAction extends Action implements NormalAction {
             return kingSatisfCards.iterator();
     }
 
+    public RegionType getRegionType() {
+        return regionType;
+    }
+
     public TownName getStartingTown() {
         return startingTown;
     }
 
     public TownName getBuildingTown() {
         return buildingTown;
+    }
+
+    public int getSpentCoins() {
+        return spentCoins;
     }
 }

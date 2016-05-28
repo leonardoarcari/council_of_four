@@ -7,7 +7,7 @@ import core.gamemodel.Region;
 /**
  * Created by Matteo on 25/05/16.
  */
-public class SelectPermitAction extends Action implements BonusAction{
+public class SelectPermitAction extends Action {
     private Region region;
     private PermitCard permitCard;
 

@@ -21,6 +21,7 @@ public class Region implements RegionInterface, Subject{
     private transient List<PermitCard> regionPermitCards;
     private PermitCard rightPermitCard;
     private PermitCard leftPermitCard;
+    private int remainingPermits;
     private transient Map<TownName, Town> regionTowns;
     private RegionCard regionCard;
 
@@ -35,6 +36,9 @@ public class Region implements RegionInterface, Subject{
         regionBalcony = new CouncilorsBalcony(regionType);
         regionTowns = Collections.synchronizedMap(new HashMap<>());
         createPermitCards(regionType);
+        leftPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
+        rightPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
+        remainingPermits = regionPermitCards.size();
         createRegionBalcony(councilors);
         setTowns();
 
@@ -94,18 +98,27 @@ public class Region implements RegionInterface, Subject{
         else throw new NoSuchElementException();
     }
 
-    //TODO: Add checks on empty stack
     public PermitCard drawPermitCard(PermitPos pos) {
         PermitCard drawn;
         if(pos == PermitPos.RIGHT) {
             drawn = rightPermitCard;
-            rightPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
+            if(regionPermitCards.size() >= 1) {
+                rightPermitCard = regionPermitCards.remove(regionPermitCards.size() - 1);
+            } else rightPermitCard = null;
         } else {
             drawn = leftPermitCard;
-            leftPermitCard = regionPermitCards.remove(regionPermitCards.size()-1);
+            if(regionPermitCards.size() >= 1) {
+                leftPermitCard = regionPermitCards.remove(regionPermitCards.size() - 1);
+            } else leftPermitCard = null;
         }
+        remainingPermits = regionPermitCards.size(); //Need to update the size for the players
         notifyObservers();
         return drawn;
+    }
+
+    public PermitCard peekPermitCard(PermitPos pos) {
+        if(pos == PermitPos.LEFT) return leftPermitCard;
+        else return rightPermitCard;
     }
 
     public void addPermitEndOfStack(PermitCard permitCard) {
@@ -160,6 +173,10 @@ public class Region implements RegionInterface, Subject{
 
     public Iterator<Town> townIterator() {
         return regionTowns.values().iterator();
+    }
+
+    public CouncilorsBalcony getRegionBalcony() {
+        return regionBalcony;
     }
 
     @Override

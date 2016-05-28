@@ -31,7 +31,6 @@ public class GameBoard implements Subject{
     private transient WealthPath wealthPath;
     private transient VictoryPath victoryPath;
 
-    private transient List<Player> boardPlayers;
     private transient List<Observer> observers;
 
     public static GameBoard createGameBoard(List<Player> players) {
@@ -40,7 +39,6 @@ public class GameBoard implements Subject{
         int wealthPos = 10;
         while (iterator.hasNext()) {
             Player player = iterator.next();
-            gameBoard.boardPlayers.add(player);
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
             gameBoard.victoryPath.setPlayer(player);
@@ -58,7 +56,6 @@ public class GameBoard implements Subject{
         councilorPool = new Vector<>();
         townTypeCards = new Vector<>();
         servantPool = new Vector<>();
-        boardPlayers = new Vector<>();
         observers = new Vector<>();
 
         // Pools creation
@@ -83,6 +80,7 @@ public class GameBoard implements Subject{
         victoryPath = new VictoryPath();
     }
 
+    /* Creation methods */
     private void createCouncilors() {
         ArrayList<CouncilColor> councilorsColor = new ArrayList<>(Arrays.asList(
                 CouncilColor.BLACK,
@@ -90,8 +88,7 @@ public class GameBoard implements Subject{
                 CouncilColor.ORANGE,
                 CouncilColor.PINK,
                 CouncilColor.PURPLE,
-                CouncilColor.WHITE
-        ));
+                CouncilColor.WHITE));
         int id = 0;
         for(CouncilColor color: councilorsColor) {
             for(int i = 0; i < 4; i++) {
@@ -141,6 +138,7 @@ public class GameBoard implements Subject{
         return bonusPath;
     }
 
+    /* Logic handler methods */
     public void discardCard(PoliticsCard card) {
         discardedCards.add(card);
     }
@@ -151,62 +149,26 @@ public class GameBoard implements Subject{
         if (regionType.equals(RegionType.KINGBOARD)) {
             toAddCounc = boardBalcony.addCouncilor(councilor);
         } else {
-            Region region;
-            switch (regionType) {
-                case SEA:
-                    region = seaRegion;
-                    break;
-                case HILLS:
-                    region = hillsRegion;
-                    break;
-                case MOUNTAINS:
-                    region = mountainsRegion;
-                    break;
-                default:    // Never reached
-                    region = null;
-                    break;
-            }
+            Region region = getRegionBy(regionType);
             toAddCounc = region.updateBalcony(councilor);
         }
+
+        councilorPool.remove(councilor);
         councilorPool.add(toAddCounc);
         notifyObservers();
     }
 
     public PermitCard drawPermitCard(RegionType type, Region.PermitPos pos) {
-        switch (type) {
-            case SEA:
-                return seaRegion.drawPermitCard(pos);
-            case HILLS:
-                return hillsRegion.drawPermitCard(pos);
-            case MOUNTAINS:
-                return mountainsRegion.drawPermitCard(pos);
-            default: // Shouldn't happen
-                return null;
-        }
-    }
-
-    public Region getRegionBy(RegionType regionType) {
-        if(regionType.equals(RegionType.SEA)) return seaRegion;
-        else if (regionType.equals(RegionType.HILLS)) return hillsRegion;
-        else return mountainsRegion;
+        Region region = getRegionBy(type);
+        return region.drawPermitCard(pos);
     }
 
     public void moveWealthPath (Player player, int increment) {
         wealthPath.movePlayer(player, increment);
     }
 
-    public Region regionFromTownName(TownName townName) {
-        if(townName.ordinal() < 5) {
-            return seaRegion;
-        } else if (townName.ordinal() < 10) {
-            return hillsRegion;
-        } else {
-            return mountainsRegion;
-        }
-    }
-
-    public void buildEmporium(Player player, TownName townName) {
-        regionFromTownName(townName).buildEmporium(player, townName);
+    public void buildEmporium(Player player,RegionType type, TownName townName) {
+        getRegionBy(type).buildEmporium(player, townName);
     }
 
     public void moveKing(TownName startingTown, TownName buildingTown) {
@@ -214,7 +176,6 @@ public class GameBoard implements Subject{
         regionFromTownName(buildingTown).getTownByName(buildingTown).setKing(true);
     }
 
-    //TODO: Check for empty deck
     public PoliticsCard drawPoliticsCard() {
         return politicsCardPool.pop();
     }
@@ -257,27 +218,6 @@ public class GameBoard implements Subject{
         }
     }
 
-    private Iterator<Region> regionIterator() {
-        return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
-    }
-
-    private Iterator<Player> playersIterator() {
-        return boardPlayers.iterator();
-    }
-
-    private Iterator<TownTypeCard> townTypeCardIterator() {
-        return townTypeCards.iterator();
-    }
-
-    public Player truePlayer(Player player) {
-        Iterator<Player> players = playersIterator();
-        while(players.hasNext()){
-            Player truePlayer = players.next();
-            if(player.equals(truePlayer)) return truePlayer;
-        }
-        throw new NoSuchElementException();
-    }
-
     public boolean checkTypeCompletion(Player player, TownName townName) {
         Map<TownName,Town> map = getTownsMap();
         TownType type = map.get(townName).getTownType();
@@ -289,8 +229,8 @@ public class GameBoard implements Subject{
         return true;
     }
 
-    public boolean checkRegionCompletion(Player player, TownName townName) {
-        Region buildingRegion = regionFromTownName(townName);
+    public boolean checkRegionCompletion(Player player,RegionType regionType) {
+        Region buildingRegion = getRegionBy(regionType);
         return buildingRegion.allTownsCaptured(player);
     }
 
@@ -306,6 +246,33 @@ public class GameBoard implements Subject{
         }
         throw new NoSuchElementException();
     }
+
+    /* Utility methods */
+    public Region getRegionBy(RegionType regionType) {
+        if(regionType.equals(RegionType.SEA)) return seaRegion;
+        else if (regionType.equals(RegionType.HILLS)) return hillsRegion;
+        else return mountainsRegion;
+    }
+
+    public Region regionFromTownName(TownName townName) {
+        if(townName.ordinal() < 5) {
+            return seaRegion;
+        } else if (townName.ordinal() < 10) {
+            return hillsRegion;
+        } else {
+            return mountainsRegion;
+        }
+    }
+
+    private Iterator<Region> regionIterator() {
+        return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
+    }
+
+    private Iterator<TownTypeCard> townTypeCardIterator() {
+        return townTypeCards.iterator();
+    }
+
+    public Iterator<Councilor> councilorIterator() { return councilorPool.iterator(); }
 
     public boolean checkRoyalSize() {
         if(royalCardPool.size() == 0) return false;

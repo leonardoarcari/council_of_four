@@ -5,6 +5,7 @@ import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -46,6 +47,8 @@ public class PermitCard implements SellableItem {
     public List<Bonus> getBonuses() {
         return bonuses;
     }
+
+    public Iterator<Bonus> getBonusesIterator() { return bonuses.iterator(); }
 
     public List<TownName> getCityPermits() { return townEmporiumPermit; }
 

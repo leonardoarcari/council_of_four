@@ -8,8 +8,8 @@ import core.gamemodel.bonus.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import core.gamemodel.Councilor;
 import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.Town;
@@ -43,14 +43,22 @@ public class ServerProcessor implements InfoProcessor {
         } else if(info instanceof MarketAction) {
             //TODO: Add Market actions
         } else if(info instanceof FastAction) {
-            if(info.getClass().equals(HireServantAction.class)) {
+            if (info.getClass().equals(HireServantAction.class)) {
                 hireServantAction((HireServantAction) info);
-            } else if(info.getClass().equals(ChangePermitsAction.class)) {
+            } else if (info.getClass().equals(ChangePermitsAction.class)) {
                 changePermitsAction((ChangePermitsAction) info);
-            } else if(info.getClass().equals(FastCouncilorElectionAction.class)) {
+            } else if (info.getClass().equals(FastCouncilorElectionAction.class)) {
                 fastCouncilorElection((FastCouncilorElectionAction) info);
             } else {
                 //TODO: inform client of new normal action
+            }
+        } else if (info instanceof SpecialAction) {
+            if(info.getClass().equals(PickTownBonusAction.class)) {
+                pickTownBonus((PickTownBonusAction) info);
+            } else if(info.getClass().equals(TakePermitBonusAction.class)) {
+                takePermitBonus((TakePermitBonusAction) info);
+            } else {
+                permitNoPay((PermitNoPayAction) info);
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
@@ -59,13 +67,23 @@ public class ServerProcessor implements InfoProcessor {
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
         // Add politics card to discarted deck
+        Player player = truePlayer(action.getPlayer());
         Iterator<PoliticsCard> cardIterator = action.discartedIterator();
-        discardAndPay(cardIterator, action.getPlayer());
+        discardAndPay(cardIterator, player);
 
         // Draw permit card and redeem bonuses
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getDrawnPermitCard());
-        action.getPlayer().addPermitCard(card);
-        card.getBonuses().forEach(bonus -> redeemBonus(bonus, action.getPlayer()));
+        player.addPermitCard(card);
+        //card.getBonuses().forEach(bonus -> redeemBonus(bonus, action.getPlayer()));
+        retrievePermitBonus(card, player);
+    }
+
+    private void retrievePermitBonus(PermitCard permitCard, Player player) {
+        Iterator<Bonus> iterator = permitCard.getBonusesIterator();
+        while(iterator.hasNext()) {
+            Bonus bonus = iterator.next();
+            redeemBonus(bonus, player);
+        }
     }
 
     private void discardAndPay(Iterator<PoliticsCard> cardIterator, Player player) {
@@ -80,7 +98,6 @@ public class ServerProcessor implements InfoProcessor {
             cardsNo++;
         }
 
-        // Pay for discarted cards
         int coinsToPay = 0;
 
         if (cardsNo == 1) coinsToPay = 10;
@@ -93,10 +110,8 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void councilorElection(CouncilorElectionAction action) {
-        Player player = action.getPlayer();
-        Councilor councilor = action.getNewCouncilor();
-        RegionType regionType = action.getRegionType();
-        game.getGameBoard().electCouncilor(councilor, regionType);
+        Player player = truePlayer(action.getPlayer());
+        game.getGameBoard().electCouncilor(action.getNewCouncilor(), action.getRegionType());
         game.getGameBoard().moveWealthPath(player, 4);
     }
 
@@ -112,6 +127,7 @@ public class ServerProcessor implements InfoProcessor {
         } else if (bonusType.equals(HireServant.class)) {
             toPlayer.hireServants((game.getGameBoard().hireServants(bonus.getValue())));
         } else if (bonusType.equals(NobilityPoint.class)) {
+            //TODO: check for this code
             game.getGameBoard().moveNobilityPath(toPlayer, bonus.getValue()).stream().forEach(
                     otherBonus -> redeemBonus(otherBonus, toPlayer));
         } else if (bonusType.equals(VictoryPoint.class)) {
@@ -128,40 +144,47 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void buildEmpoWithPermit(BuildEmpoPCAction action) {
-        Player player = action.getPlayer();
-        PermitCard permitCard = action.getUsedPermitCard();
+        Player player = truePlayer(action.getPlayer());
+        RegionType regionType = action.getRegionType();
         TownName townName = action.getSelectedTown();
-        game.getGameBoard().buildEmporium(player, townName);
+
+        buildEmporium(player, regionType, townName);
+        player.burnPermitCard(action.getUsedPermitCard());
+    }
+
+    private void buildEmpoKingHelp(BuildEmpoKingAction action) {
+        Player player = truePlayer(action.getPlayer());
+        RegionType regionType = action.getRegionType();
+        TownName townName = action.getBuildingTown();
+        Iterator<PoliticsCard> cardIterator = action.getSatCardIterator();
+
+        discardAndPay(cardIterator, player);
+        buildEmporium(player, regionType, townName);
+        game.getGameBoard().getWealthPath().movePlayer(player, -action.getSpentCoins());
+        game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
+    }
+
+    private void buildEmporium(Player player, RegionType regionType, TownName townName) {
+        game.getGameBoard().buildEmporium(player, regionType, townName);
+        redeemTown(player, townName);
+        redeemLinkedTowns(player, townName);
+        regionCompletion(player, regionType);
+        typeCompletion(player, townName);
+    }
+
+    private void redeemLinkedTowns(Player player, TownName townName) {
         List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(game.getGameBoard().getTownsMap(), townName, player);
         for(Town myTown : playerTowns) {
             Iterator<Bonus> bonusIterator = myTown.bonusIterator();
             while(bonusIterator.hasNext()) {
-                redeemBonus(bonusIterator.next(),player);
+                redeemBonus(bonusIterator.next(), player);
             }
         }
-        regionCompletion(player, townName);
-        typeCompletion(player, townName);
-        player.burnPermitCard(permitCard);
     }
 
-    private void buildEmpoKingHelp(BuildEmpoKingAction action) {
-        Iterator<PoliticsCard> cardIterator = action.getSatCardIterator();
-        discardAndPay(cardIterator, action.getPlayer());
-        TownName townName = action.getBuildingTown();
-        game.getGameBoard().buildEmporium(action.getPlayer(), townName);
-        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(game.getGameBoard().getTownsMap(), townName, action.getPlayer());
-        for(Town myTown : playerTowns) {
-            Iterator<Bonus> bonusIterator = myTown.bonusIterator();
-            while(bonusIterator.hasNext()) {
-                redeemBonus(bonusIterator.next(),action.getPlayer());
-            }
-        }
-        game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
-    }
-
-    private void regionCompletion(Player player, TownName townName) {
-        if(game.getGameBoard().checkRegionCompletion(player, townName)) {
-            Region region = game.getGameBoard().regionFromTownName(townName);
+    private void regionCompletion(Player player,RegionType regionType) {
+        if(game.getGameBoard().checkRegionCompletion(player, regionType)) {
+            Region region = game.getGameBoard().getRegionBy(regionType);
             RegionCard regionCard = region.drawRegionCard();
             player.addRegionCard(regionCard);
             redeemBonus(regionCard.getRegionBonus(),player);
@@ -187,24 +210,67 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void hireServantAction(HireServantAction action) {
-        System.out.println("ricevuto");
-        action.getPlayer().hireServants(game.getGameBoard().hireServants(1));
-        game.getGameBoard().moveWealthPath(action.getPlayer(), -3);
+        Player player = truePlayer(action.getPlayer());
+        player.hireServants(game.getGameBoard().hireServants(1));
+        game.getGameBoard().moveWealthPath(player, -3);
     }
 
     private void changePermitsAction(ChangePermitsAction action) {
-        Servant servant = action.getPlayer().removeServant();
+        Player player = truePlayer(action.getPlayer());
+        RegionType regionType = action.getRegionType();
+
+        Servant servant = player.removeServant();
         game.getGameBoard().returnServant(servant);
-        PermitCard leftCard = game.getGameBoard().drawPermitCard(action.getRegionType(), Region.PermitPos.LEFT);
-        PermitCard rightCard = game.getGameBoard().drawPermitCard(action.getRegionType(), Region.PermitPos.RIGHT);
-        Region thisRegion = game.getGameBoard().getRegionBy(action.getRegionType());
-        thisRegion.addPermitEndOfStack(leftCard);
-        thisRegion.addPermitEndOfStack(rightCard);
+        PermitCard leftCard = game.getGameBoard().drawPermitCard(regionType, Region.PermitPos.LEFT);
+        PermitCard rightCard = game.getGameBoard().drawPermitCard(regionType, Region.PermitPos.RIGHT);
+        Region thisRegion = game.getGameBoard().getRegionBy(regionType);
+        if(leftCard != null) thisRegion.addPermitEndOfStack(leftCard);
+        if(rightCard != null) thisRegion.addPermitEndOfStack(rightCard);
     }
 
     private void fastCouncilorElection(FastCouncilorElectionAction action) {
-        Servant servant = action.getPlayer().removeServant();
+        Player player = truePlayer(action.getPlayer());
+
+        Servant servant = player.removeServant();
         game.getGameBoard().returnServant(servant);
         game.getGameBoard().electCouncilor(action.getCouncilor(), action.getRegionType());
+    }
+
+    private void pickTownBonus(PickTownBonusAction action) {
+        Player player = truePlayer(action.getPlayer());
+
+        redeemTown(player, action.getTownName());
+    }
+
+    private void redeemTown(Player player, TownName townName) {
+        Region myRegion = game.getGameBoard().regionFromTownName(townName);
+        Town myTown = myRegion.getTownByName(townName);
+        Iterator<Bonus> bonusIterator = myTown.bonusIterator();
+        while(bonusIterator.hasNext()) {
+            redeemBonus(bonusIterator.next(), player);
+        }
+    }
+
+    private Player truePlayer(Player player) {
+        Iterator<Player> players = game.playerIterator();
+        while(players.hasNext()){
+            Player truePlayer = players.next();
+            if(player.equals(truePlayer)) return truePlayer;
+        }
+        throw new NoSuchElementException();
+    }
+
+    private void takePermitBonus(TakePermitBonusAction action) {
+        Player player = truePlayer(action.getPlayer());
+
+        retrievePermitBonus(action.getMyPermitCard(), player);
+    }
+
+    private void permitNoPay(PermitNoPayAction action) {
+        Player player = truePlayer(action.getPlayer());
+
+        PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getPosition());
+        player.addPermitCard(card);
+        retrievePermitBonus(card, player);
     }
 }

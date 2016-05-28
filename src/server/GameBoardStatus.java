@@ -27,9 +27,9 @@ public class GameBoardStatus {
             }
             System.out.println();
             for(PermitCard permitCard : gameBoard.getRegionBy(type).getRegionPermitCards()) {
-                for(Bonus bonus : permitCard.getBonuses()) {
+                /*for(Bonus bonus : permitCard.getBonuses()) {
                     System.out.print(bonus.getClass().getName().substring(bonus.getClass().getName().lastIndexOf(".")+1) + " " + bonus.getValue() +  " ");
-                }
+                }*/
                 System.out.print("\t\t\t");
                 for(TownName name : permitCard.getCityPermits()) {
                     System.out.print(name + "/");
