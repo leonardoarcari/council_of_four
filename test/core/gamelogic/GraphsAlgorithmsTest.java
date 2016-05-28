@@ -91,26 +91,26 @@ public class GraphsAlgorithmsTest {
 
     @Test
     public void testNoConnected() {
-        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphNoConn);
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(graphNoConn, source, player);
         assertTrue(myTowns.isEmpty());
     }
 
     @Test
     public void testSomeConnected() {
-        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphMid);
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(graphMid, source, player);
         List<Town> expected = new ArrayList<>(Arrays.asList(c01));
         assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));
     }
 
     @Test
     public void testAllConnected() {
-        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player, source, graphAllConn);
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(graphAllConn, source, player);
         List<Town> expected = new ArrayList<>(Arrays.asList(b10,c10));
         assertTrue(expected.containsAll(myTowns) && myTowns.containsAll(expected));
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testNullParameters() {
-        myTowns = GraphsAlgorithms.townsWithEmporiumOf(player,null,null);
+        myTowns = GraphsAlgorithms.townsWithEmporiumOf(null, null, player);
     }
 }

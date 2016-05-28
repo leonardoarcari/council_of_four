@@ -132,7 +132,7 @@ public class ServerProcessor implements InfoProcessor {
         PermitCard permitCard = action.getUsedPermitCard();
         TownName townName = action.getSelectedTown();
         game.getGameBoard().buildEmporium(player, townName);
-        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(player,townName,game.getGameBoard().getTownsMap());
+        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(game.getGameBoard().getTownsMap(), townName, player);
         for(Town myTown : playerTowns) {
             Iterator<Bonus> bonusIterator = myTown.bonusIterator();
             while(bonusIterator.hasNext()) {
@@ -149,7 +149,7 @@ public class ServerProcessor implements InfoProcessor {
         discardAndPay(cardIterator, action.getPlayer());
         TownName townName = action.getBuildingTown();
         game.getGameBoard().buildEmporium(action.getPlayer(), townName);
-        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(action.getPlayer(),townName,game.getGameBoard().getTownsMap());
+        List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(game.getGameBoard().getTownsMap(), townName, action.getPlayer());
         for(Town myTown : playerTowns) {
             Iterator<Bonus> bonusIterator = myTown.bonusIterator();
             while(bonusIterator.hasNext()) {
