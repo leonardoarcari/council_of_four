@@ -19,7 +19,7 @@ public enum TownTypeCard {
         this.townType = townType;
     }
 
-    public VictoryPoint getRoyalBonus() {
+    public VictoryPoint getTypeBonus() {
         return victoryPoint;
     }
 

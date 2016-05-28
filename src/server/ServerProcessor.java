@@ -139,7 +139,8 @@ public class ServerProcessor implements InfoProcessor {
                 redeemBonus(bonusIterator.next(),player);
             }
         }
-        game.getGameBoard().checkCompletion(player, townName);
+        regionCompletion(player, townName);
+        typeCompletion(player, townName);
         player.burnPermitCard(permitCard);
     }
 
@@ -156,6 +157,33 @@ public class ServerProcessor implements InfoProcessor {
             }
         }
         game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
+    }
+
+    private void regionCompletion(Player player, TownName townName) {
+        if(game.getGameBoard().checkRegionCompletion(player, townName)) {
+            Region region = game.getGameBoard().regionFromTownName(townName);
+            RegionCard regionCard = region.drawRegionCard();
+            player.addRegionCard(regionCard);
+            redeemBonus(regionCard.getRegionBonus(),player);
+            canGetRoyal(player);
+        }
+    }
+
+    private void typeCompletion(Player player, TownName townName) {
+        if(game.getGameBoard().checkTypeCompletion(player,townName)) {
+            TownTypeCard townTypeCard = game.getGameBoard().acquireTownTypeCard(townName);
+            player.addTownTypeCard(townTypeCard);
+            redeemBonus(townTypeCard.getTypeBonus(),player);
+            canGetRoyal(player);
+        }
+    }
+
+    private void canGetRoyal(Player player) {
+        if(game.getGameBoard().checkRoyalSize()) {
+            RoyalCard royalCard = game.getGameBoard().popRoyalCard();
+            player.addRoyalCard(royalCard);
+            redeemBonus(royalCard.getRoyalBonus(),player);
+        }
     }
 
     private void hireServantAction(HireServantAction action) {

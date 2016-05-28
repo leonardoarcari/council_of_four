@@ -141,10 +141,6 @@ public class GameBoard implements Subject{
         return bonusPath;
     }
 
-    public void setNobilityPlayer(Player player) {
-        nobilityPath.setPlayer(player);
-    }
-
     public void discardCard(PoliticsCard card) {
         discardedCards.add(card);
     }
@@ -269,6 +265,10 @@ public class GameBoard implements Subject{
         return boardPlayers.iterator();
     }
 
+    private Iterator<TownTypeCard> townTypeCardIterator() {
+        return townTypeCards.iterator();
+    }
+
     public Player truePlayer(Player player) {
         Iterator<Player> players = playersIterator();
         while(players.hasNext()){
@@ -278,20 +278,42 @@ public class GameBoard implements Subject{
         throw new NoSuchElementException();
     }
 
-    public void checkCompletion(Player player, TownName townName) {
-        Region buildingRegion = regionFromTownName(townName);
-        if(buildingRegion.allTownsCaptured(player)) {
-            RegionCard regionCard = buildingRegion.drawRegionCard();
-            player.addRegionCard(regionCard);
-        }
+    public boolean checkTypeCompletion(Player player, TownName townName) {
         Map<TownName,Town> map = getTownsMap();
         TownType type = map.get(townName).getTownType();
         for(TownName name : map.keySet()){
-            if(map.get(name).getTownType().equals(name)) {
-                if(!map.get(name).hasEmporium(player)) return;
+            if(map.get(name).getTownType().equals(type)) {
+                if(!map.get(name).hasEmporium(player)) return false;
             }
         }
-        //TODO: break method, initialize bonus cards and finish this
+        return true;
+    }
+
+    public boolean checkRegionCompletion(Player player, TownName townName) {
+        Region buildingRegion = regionFromTownName(townName);
+        return buildingRegion.allTownsCaptured(player);
+    }
+
+    public TownTypeCard acquireTownTypeCard(TownName townName) {
+        Map<TownName,Town> map = getTownsMap();
+        TownType type = map.get(townName).getTownType();
+        Iterator<TownTypeCard> iterator = townTypeCardIterator();
+        while(iterator.hasNext()) {
+            TownTypeCard typeCard = iterator.next();
+            if(typeCard.getTownType().equals(type)) {
+                return typeCard;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    public boolean checkRoyalSize() {
+        if(royalCardPool.size() == 0) return false;
+        else return true;
+    }
+
+    public RoyalCard popRoyalCard() {
+        return royalCardPool.pop();
     }
 
     public NobilityPath getNobilityPath() {
