@@ -1,8 +1,8 @@
 package core.gamemodel;
 
 import core.Player;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
 
 import java.util.List;
 import java.util.NoSuchElementException;

@@ -1,8 +1,8 @@
 package core.gamemodel;
 
 import core.gamemodel.modelinterface.BalconyInterface;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,10 +14,12 @@ import java.util.Vector;
  */
 public class CouncilorsBalcony implements BalconyInterface, Subject{
     private Councilor[] councilorsBalcony;
+    private final RegionType region;
     private transient List<Observer> observers;
 
-    public CouncilorsBalcony() {
+    public CouncilorsBalcony(RegionType regionType) {
         councilorsBalcony = new Councilor[4];
+        this.region = regionType;
         observers = new Vector<>();
     }
 
@@ -32,6 +34,10 @@ public class CouncilorsBalcony implements BalconyInterface, Subject{
         councilorsBalcony[0] = councilor;
         notifyObservers();
         return councilorToAddToPool;
+    }
+
+    public RegionType getRegion() {
+        return region;
     }
 
     @Override

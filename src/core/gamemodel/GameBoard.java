@@ -5,8 +5,9 @@ import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
 import core.Player;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
+import server.serverconnection.ServerConnection;
 
 import java.util.*;
 
@@ -18,23 +19,11 @@ public class GameBoard implements Subject{
     private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
 
-    public NobilityPath getNobilityPath() {
-        return nobilityPath;
-    }
-
-    public WealthPath getWealthPath() {
-        return wealthPath;
-    }
-
-    public VictoryPath getVictoryPath() {
-        return victoryPath;
-    }
-
     private Stack<RoyalCard> royalCardPool;
     private List<Councilor> councilorPool;
     private List<TownTypeCard> townTypeCards;
     private transient List<Servant> servantPool;
-    private CouncilorsBalcony boardBalcony;
+    private transient CouncilorsBalcony boardBalcony;
     private transient Region seaRegion;
     private transient Region hillsRegion;
     private transient Region mountainsRegion;
@@ -43,7 +32,7 @@ public class GameBoard implements Subject{
     private transient VictoryPath victoryPath;
 
     private transient List<Player> boardPlayers;
-    private transient List<server.Observer> observers;
+    private transient List<Observer> observers;
 
     public static GameBoard createGameBoard(List<Player> players) {
         GameBoard gameBoard = new GameBoard();
@@ -55,6 +44,8 @@ public class GameBoard implements Subject{
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
             gameBoard.victoryPath.setPlayer(player);
+            gameBoard.registerObserver((ServerConnection) player.getConnection());
+            player.registerObserver((ServerConnection) player.getConnection());
         }
         return gameBoard;
     }
@@ -85,7 +76,7 @@ public class GameBoard implements Subject{
         mountainsRegion = new Region(RegionCard.MOUNTAINS, RegionType.MOUNTAINS, fillBalcony());
 
 
-        boardBalcony = new CouncilorsBalcony();
+        boardBalcony = new CouncilorsBalcony(RegionType.KINGBOARD);
         Arrays.stream(fillBalcony()).forEach(councilor -> boardBalcony.addCouncilor(councilor));
         nobilityPath = new NobilityPath(nobilityBonus());
         wealthPath = new WealthPath();
@@ -93,7 +84,7 @@ public class GameBoard implements Subject{
     }
 
     private void createCouncilors() {
-        ArrayList<CouncilColor> coucilorsColor = new ArrayList<>(Arrays.asList(
+        ArrayList<CouncilColor> councilorsColor = new ArrayList<>(Arrays.asList(
                 CouncilColor.BLACK,
                 CouncilColor.CYAN,
                 CouncilColor.ORANGE,
@@ -102,7 +93,7 @@ public class GameBoard implements Subject{
                 CouncilColor.WHITE
         ));
         int id = 0;
-        for(CouncilColor color: coucilorsColor) {
+        for(CouncilColor color: councilorsColor) {
             for(int i = 0; i < 4; i++) {
                 councilorPool.add(new Councilor(color, id++));
             }
@@ -287,7 +278,7 @@ public class GameBoard implements Subject{
         throw new NoSuchElementException();
     }
 
-    public void checkCompletition(Player player, TownName townName) {
+    public void checkCompletion(Player player, TownName townName) {
         Region buildingRegion = regionFromTownName(townName);
         if(buildingRegion.allTownsCaptured(player)) {
             RegionCard regionCard = buildingRegion.drawRegionCard();
@@ -303,13 +294,39 @@ public class GameBoard implements Subject{
         //TODO: break method, initialize bonus cards and finish this
     }
 
+    public NobilityPath getNobilityPath() {
+        return nobilityPath;
+    }
+
+    public WealthPath getWealthPath() {
+        return wealthPath;
+    }
+
+    public VictoryPath getVictoryPath() {
+        return victoryPath;
+    }
+
     @Override
-    public void registerObserver(server.Observer observer) {
+    public void registerObserver(Observer observer) {
+        boardBalcony.registerObserver(observer);
+        seaRegion.registerObserver(observer);
+        hillsRegion.registerObserver(observer);
+        mountainsRegion.registerObserver(observer);
+        nobilityPath.registerObserver(observer);
+        victoryPath.registerObserver(observer);
+        wealthPath.registerObserver(observer);
         observers.add(observer);
     }
 
     @Override
-    public void removeObserver(server.Observer observer) {
+    public void removeObserver(Observer observer) {
+        boardBalcony.removeObserver(observer);
+        seaRegion.removeObserver(observer);
+        hillsRegion.removeObserver(observer);
+        mountainsRegion.removeObserver(observer);
+        nobilityPath.removeObserver(observer);
+        victoryPath.removeObserver(observer);
+        wealthPath.removeObserver(observer);
         observers.remove(observer);
     }
 

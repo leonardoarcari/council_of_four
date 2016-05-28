@@ -6,7 +6,6 @@ import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.bonus.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -140,7 +139,7 @@ public class ServerProcessor implements InfoProcessor {
                 redeemBonus(bonusIterator.next(),player);
             }
         }
-        game.getGameBoard().checkCompletition(player, townName);
+        game.getGameBoard().checkCompletion(player, townName);
         player.burnPermitCard(permitCard);
     }
 

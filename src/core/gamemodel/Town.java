@@ -3,8 +3,8 @@ package core.gamemodel;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.TownInterface;
 import core.Player;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,23 +20,12 @@ public class Town implements Subject, TownInterface{
     private List<Bonus> townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
-
-    public Vector<Player> getPlayersEmporium() {
-        return playersEmporium;
-    }
-
     private transient List<Observer> observers;
 
     public Town(TownName townName, List<Bonus> townBonus) {
         this.townName = townName;
         this.townBonus = townBonus;
-
-        if(townName.equals(TownName.J)) {
-            kingHere = true;
-        } else {
-            kingHere = false;
-        }
-
+        kingHere = townName.equals(TownName.J);
         playersEmporium = new Vector<>();
         observers = new Vector<>();
         nearbyTowns = new Vector<>();
@@ -95,6 +84,10 @@ public class Town implements Subject, TownInterface{
     public void createEmporium(Player player) {
         playersEmporium.add(player);
         notifyObservers();
+    }
+
+    public Iterator<Player> getPlayersEmporium() {
+        return playersEmporium.iterator();
     }
 
     @Override

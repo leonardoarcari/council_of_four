@@ -6,8 +6,8 @@ import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.RegionInterface;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
  * Created by Matteo on 20/05/16. Need to add LinkTown method and attributes
  */
 public class Region implements RegionInterface, Subject{
-    boolean regionCardTaken;
+    private boolean regionCardTaken;
     private RegionType regionType;
     private transient CouncilorsBalcony regionBalcony;
     private transient List<PermitCard> regionPermitCards;
@@ -32,7 +32,7 @@ public class Region implements RegionInterface, Subject{
         this.regionCard = regionCard;
         this.regionType = regionType;
         regionPermitCards = new Vector<>();
-        regionBalcony = new CouncilorsBalcony();
+        regionBalcony = new CouncilorsBalcony(regionType);
         regionTowns = Collections.synchronizedMap(new HashMap<>());
         createPermitCards(regionType);
         createRegionBalcony(councilors);
@@ -122,8 +122,8 @@ public class Region implements RegionInterface, Subject{
 
     public boolean allTownsCaptured(Player player) {
         Iterator<Town> iterator = townIterator();
-        while(iterator.hasNext()) {
-            if(!iterator.next().getPlayersEmporium().contains(player)) return false;
+        while (iterator.hasNext()) {
+            if (!iterator.next().hasEmporium(player)) return false;
         }
         return true;
     }
@@ -164,11 +164,15 @@ public class Region implements RegionInterface, Subject{
 
     @Override
     public void registerObserver(Observer observer) {
+        regionBalcony.registerObserver(observer);
+        regionTowns.values().stream().forEach(town -> town.registerObserver(observer));
         observers.add(observer);
     }
 
     @Override
     public void removeObserver(Observer observer) {
+        regionBalcony.removeObserver(observer);
+        regionTowns.values().stream().forEach(town -> town.removeObserver(observer));
         observers.remove(observer);
     }
 

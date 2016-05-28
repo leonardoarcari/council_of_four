@@ -1,4 +1,4 @@
-package server;
+package core;
 
 /**
  * Created by Leonardo Arcari on 14/05/2016.

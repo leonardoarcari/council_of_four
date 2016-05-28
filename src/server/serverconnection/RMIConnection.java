@@ -3,8 +3,8 @@ package server.serverconnection;
 import core.connection.InfoProcessor;
 import core.connection.RMIProcessor;
 import core.Player;
-import server.Observer;
-import server.Subject;
+import core.Observer;
+import core.Subject;
 import server.WaitingHall;
 
 import java.rmi.RemoteException;
@@ -13,7 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * Created by Leonardo Arcari on 20/05/2016.
  */
-public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
+public class RMIConnection implements RMIProcessor, ServerConnection {
     private RMIProcessor clientRMIProcessor;
     private InfoProcessor serverProcessor;
     private Player me;
@@ -21,7 +21,6 @@ public class RMIConnection implements RMIProcessor, ServerConnection, Observer {
     public RMIConnection(RMIProcessor clientProcessor) throws RemoteException {
         this.clientRMIProcessor = clientProcessor;
         serverProcessor = WaitingHall.getInstance().getInfoProcessor();
-        //WaitingHall.getInstance().getModel().registerObserver(this);
         UnicastRemoteObject.exportObject(this, 0);
     }
 

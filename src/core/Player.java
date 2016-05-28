@@ -2,30 +2,23 @@ package core;
 
 import core.connection.Connection;
 import core.gamemodel.*;
-import server.Observer;
-import server.Subject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Matteo on 19/05/16.
  */
 public class Player implements Subject, Serializable {
+    private String uniqueID;
     private String username;
     private String nickname;
-    private DummyRef dummyRef;
     private transient Connection connection;
 
-    /**
-     * GameObjects references of the current game
-     */
+    // The hand
     private List<PermitCard> permitCards;
     private List<RegionCard> regionCards;
-    private List<PoliticsCard> politicsCards; // The hand
+    private List<PoliticsCard> politicsCards;
     private List<RoyalCard> royalCards;
     private List<TownTypeCard> townTypeCards;
     private List<Servant> servants;
@@ -35,6 +28,7 @@ public class Player implements Subject, Serializable {
     public Player(Connection connection) {
         this.connection = connection;
 
+        uniqueID = generateID();
         username = null;
         nickname = null;
         permitCards = new ArrayList<>();
@@ -44,6 +38,15 @@ public class Player implements Subject, Serializable {
         townTypeCards = new ArrayList<>();
         servants = new ArrayList<>();
         observers = new Vector<>();
+    }
+
+    private String generateID() {
+        String id = "";
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            id += random.nextInt(10);
+        }
+        return id;
     }
 
     public void setNickname(String nickname) {
@@ -60,14 +63,6 @@ public class Player implements Subject, Serializable {
 
     public String getNickname() {
         return nickname;
-    }
-
-    public void addDummy(DummyRef dummyRef) {
-        this.dummyRef = dummyRef;
-    }
-
-    public DummyRef getDummyRef() {
-        return dummyRef;
     }
 
     public void removePoliticsCard(PoliticsCard card) {
@@ -92,7 +87,7 @@ public class Player implements Subject, Serializable {
 
     public void hireServants(List<Servant> servant) {
         servants.addAll(servant);
-        //notifyObservers();
+        notifyObservers();
     }
 
     public Servant removeServant() {
@@ -124,10 +119,14 @@ public class Player implements Subject, Serializable {
     }
 
     public void burnPermitCard(PermitCard permitCard) {
-        if(permitCards.contains(permitCard)) {
+        if (permitCards.contains(permitCard)) {
             permitCard.burn();
             notifyObservers();
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     @Override
@@ -148,8 +147,23 @@ public class Player implements Subject, Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        Player player = (Player) object;
-        return this.dummyRef.getId() == player.dummyRef.getId();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        if (!uniqueID.equals(player.uniqueID)) return false;
+        if (username != null ? !username.equals(player.username) : player.username != null) return false;
+        return nickname != null ? nickname.equals(player.nickname) : player.nickname == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uniqueID.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
+        return result;
     }
 }

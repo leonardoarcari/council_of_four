@@ -23,7 +23,7 @@ public class GameBoardStatus {
                 towns.add(iterator.next());
             }
             for(Town town : towns) {
-                System.out.print(town.getTownName().toString() + " has " + town.getPlayersEmporium().size() + " || ");
+                System.out.print(town.getTownName().toString() + " has " + " || ");
             }
             System.out.println();
             for(PermitCard permitCard : gameBoard.getRegionBy(type).getRegionPermitCards()) {

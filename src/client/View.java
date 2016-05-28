@@ -1,10 +1,7 @@
 package client;
 
-import core.ModelInterface;
 import core.Player;
 import core.connection.Communicator;
-import core.gamelogic.actions.Action;
-import core.gamelogic.actions.HireServantAction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,9 +40,5 @@ public class View {
     public void setPlayer(Player player) {
         this.player = player;
         System.out.println("Mi sono ricevuto");
-    }
-
-    public void print(ModelInterface modelInterface) {
-        System.out.println(modelInterface.getUsefulStuff());
     }
 }
