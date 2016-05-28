@@ -85,6 +85,11 @@ public class Player implements Subject, Serializable {
         notifyObservers();
     }
 
+    public void addRegionCard(RegionCard regionCard) {
+        regionCards.add(regionCard);
+        notifyObservers();
+    }
+
     public void hireServants(List<Servant> servant) {
         servants.addAll(servant);
         //notifyObservers();

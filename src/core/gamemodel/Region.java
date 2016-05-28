@@ -117,7 +117,15 @@ public class Region implements RegionInterface, Subject{
             regionCardTaken = true;
             notifyObservers(); // RegionCard must disappear from Region
             return regionCard;
-        } else throw  new AlreadyTakenException();
+        } else throw new AlreadyTakenException();
+    }
+
+    public boolean allTownsCaptured(Player player) {
+        Iterator<Town> iterator = townIterator();
+        while(iterator.hasNext()) {
+            if(!iterator.next().getPlayersEmporium().contains(player)) return false;
+        }
+        return true;
     }
 
     public Councilor updateBalcony(Councilor councilor) {

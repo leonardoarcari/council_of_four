@@ -140,6 +140,7 @@ public class ServerProcessor implements InfoProcessor {
                 redeemBonus(bonusIterator.next(),player);
             }
         }
+        game.getGameBoard().checkCompletition(player, townName);
         player.burnPermitCard(permitCard);
     }
 

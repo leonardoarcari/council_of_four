@@ -42,6 +42,7 @@ public class GameBoard implements Subject{
     private transient WealthPath wealthPath;
     private transient VictoryPath victoryPath;
 
+    private transient List<Player> boardPlayers;
     private transient List<server.Observer> observers;
 
     public static GameBoard createGameBoard(List<Player> players) {
@@ -50,6 +51,7 @@ public class GameBoard implements Subject{
         int wealthPos = 10;
         while (iterator.hasNext()) {
             Player player = iterator.next();
+            gameBoard.boardPlayers.add(player);
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
             gameBoard.victoryPath.setPlayer(player);
@@ -65,6 +67,7 @@ public class GameBoard implements Subject{
         councilorPool = new Vector<>();
         townTypeCards = new Vector<>();
         servantPool = new Vector<>();
+        boardPlayers = new Vector<>();
         observers = new Vector<>();
 
         // Pools creation
@@ -267,8 +270,37 @@ public class GameBoard implements Subject{
         }
     }
 
-    public Iterator<Region> regionIterator() {
+    private Iterator<Region> regionIterator() {
         return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
+    }
+
+    private Iterator<Player> playersIterator() {
+        return boardPlayers.iterator();
+    }
+
+    public Player truePlayer(Player player) {
+        Iterator<Player> players = playersIterator();
+        while(players.hasNext()){
+            Player truePlayer = players.next();
+            if(player.equals(truePlayer)) return truePlayer;
+        }
+        throw new NoSuchElementException();
+    }
+
+    public void checkCompletition(Player player, TownName townName) {
+        Region buildingRegion = regionFromTownName(townName);
+        if(buildingRegion.allTownsCaptured(player)) {
+            RegionCard regionCard = buildingRegion.drawRegionCard();
+            player.addRegionCard(regionCard);
+        }
+        Map<TownName,Town> map = getTownsMap();
+        TownType type = map.get(townName).getTownType();
+        for(TownName name : map.keySet()){
+            if(map.get(name).getTownType().equals(name)) {
+                if(!map.get(name).hasEmporium(player)) return;
+            }
+        }
+        //TODO: break method, initialize bonus cards and finish this
     }
 
     @Override
