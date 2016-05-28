@@ -5,6 +5,8 @@ import core.gamemodel.Town;
 import core.gamemodel.TownName;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.util.*;
 
@@ -13,6 +15,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Matteo on 25/05/16.
  */
+@RunWith(value = Parameterized.class)
 public class GraphsAlgorithmsTest {
     private Player player;
     private List<Town> myTowns;
@@ -23,6 +26,31 @@ public class GraphsAlgorithmsTest {
     private Map<TownName, Town> graphNoConn;
     private Map<TownName, Town> graphMid;
     private Map<TownName, Town> graphAllConn;
+
+    // Parameters for testing
+    private int coins;
+    private Map<TownName, Integer> expectedGraph;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                {0, new HashMap<TownName, Integer>(){{put(TownName.A, 0);}} },
+                {2, new HashMap<TownName, Integer>() {{ put(TownName.A, 0);
+                                                        put(TownName.B, 2);
+                                                        put(TownName.C, 2);}}},
+                {6, new HashMap<TownName, Integer>() {{ put(TownName.A, 0);
+                                                        put(TownName.B, 2);
+                                                        put(TownName.C, 2);
+                                                        put(TownName.D, 4);
+                                                        put(TownName.F, 4);
+                                                        put(TownName.E, 6);}}}
+        });
+    }
+
+    public GraphsAlgorithmsTest(int coins, Map<TownName, Integer> expectedGraph) {
+        this.expectedGraph = expectedGraph;
+        this.coins = coins;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -112,5 +140,10 @@ public class GraphsAlgorithmsTest {
     @Test (expected = IllegalArgumentException.class)
     public void testNullParameters() {
         myTowns = GraphsAlgorithms.townsWithEmporiumOf(null, null, player);
+    }
+
+    @Test
+    public void testMoveKingGraph() throws Exception {
+        assertTrue(GraphsAlgorithms.reachableTowns(graphMid, TownName.A, coins).equals(expectedGraph));
     }
 }

@@ -16,7 +16,9 @@ public class GraphsAlgorithms {
         Map<TownName, Boolean> marked = new HashMap<>(graph.size());
         List<Town> returnList = new ArrayList<>();
 
-        graph.keySet().stream().forEach(townName -> marked.put(townName, false));
+        for (TownName townName : graph.keySet())  {
+            marked.put(townName, false);
+        }
         marked.put(source, true);
 
         ArrayDeque<TownName> deque = new ArrayDeque<>();
@@ -35,5 +37,35 @@ public class GraphsAlgorithms {
             marked.put(node, true);
         }
         return returnList;
+    }
+
+    public static Map<TownName, Integer> reachableTowns(Map<TownName, Town> graph, TownName source, int coins) {
+        if(source == null || graph == null) throw new IllegalArgumentException();
+        Map<TownName, Boolean> marked = new HashMap<>(graph.size());
+        Map<TownName, Integer> returnMap = new HashMap<>();
+
+        for (TownName townName : graph.keySet())  {
+            marked.put(townName, false);
+        }
+        marked.put(source, true);
+        returnMap.put(source, 0);
+
+        ArrayDeque<TownName> deque = new ArrayDeque<>();
+        deque.addFirst(source);
+        while (!deque.isEmpty()) {
+            TownName node = deque.removeLast();
+            Iterator<TownName> nearbiesIterator = graph.get(node).nearbiesIterator();
+            while (nearbiesIterator.hasNext()) {
+                TownName nearbyNode = nearbiesIterator.next();
+                int cost = returnMap.get(node) + 2;
+                if (!marked.get(nearbyNode) && cost <= coins) {
+                    marked.put(nearbyNode, true);
+                    returnMap.put(nearbyNode, cost);
+                    deque.addFirst(nearbyNode);
+                }
+            }
+            marked.put(node, true);
+        }
+        return returnMap;
     }
 }
