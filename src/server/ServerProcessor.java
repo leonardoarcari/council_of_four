@@ -75,7 +75,7 @@ public class ServerProcessor implements InfoProcessor {
 
     private void buyPermitCardAction(BuyPermitCardAction action) {
         // Add politics card to discarted deck
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         Iterator<PoliticsCard> cardIterator = action.discartedIterator();
         discardAndPay(cardIterator, player);
 
@@ -118,7 +118,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void councilorElection(CouncilorElectionAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         game.getGameBoard().electCouncilor(action.getNewCouncilor(), action.getRegionType());
         game.getGameBoard().moveWealthPath(player, 4);
     }
@@ -156,7 +156,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void buildEmpoWithPermit(BuildEmpoPCAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         RegionType regionType = action.getRegionType();
         TownName townName = action.getSelectedTown();
 
@@ -165,7 +165,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void buildEmpoKingHelp(BuildEmpoKingAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         RegionType regionType = action.getRegionType();
         TownName townName = action.getBuildingTown();
         Iterator<PoliticsCard> cardIterator = action.getSatCardIterator();
@@ -222,13 +222,13 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void hireServantAction(HireServantAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         player.hireServants(game.getGameBoard().hireServants(1));
         game.getGameBoard().moveWealthPath(player, -3);
     }
 
     private void changePermitsAction(ChangePermitsAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         RegionType regionType = action.getRegionType();
 
         Servant servant = player.removeServant();
@@ -241,7 +241,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void fastCouncilorElection(FastCouncilorElectionAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
 
         Servant servant = player.removeServant();
         game.getGameBoard().returnServant(servant);
@@ -249,7 +249,7 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void pickTownBonus(PickTownBonusAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
 
         redeemTown(player, action.getTownName());
     }
@@ -263,23 +263,14 @@ public class ServerProcessor implements InfoProcessor {
         }
     }
 
-    private Player truePlayer(Player player) {
-        Iterator<Player> players = game.playerIterator();
-        while(players.hasNext()){
-            Player truePlayer = players.next();
-            if(player.equals(truePlayer)) return truePlayer;
-        }
-        throw new NoSuchElementException();
-    }
-
     private void takePermitBonus(TakePermitBonusAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
 
         retrievePermitBonus(action.getMyPermitCard(), player);
     }
 
     private void permitNoPay(PermitNoPayAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
 
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getPosition());
         player.addPermitCard(card);
@@ -296,14 +287,14 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void exposeInShowcase(ExposeSellablesAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         Showcase myShowcase = game.getGameBoard().getShowcase();
 
         myShowcase.addItems(action.getOnSaleItems(), player);
     }
 
     private void buyOnSaleItem(BuyObjectsAction action) {
-        Player player = truePlayer(action.getPlayer());
+        Player player = game.getPlayerInstance(action.getPlayer());
         Showcase myShowcase = game.getGameBoard().getShowcase();
         Iterator<OnSaleItem> iterator = action.itemsIterator();
 
