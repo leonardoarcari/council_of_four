@@ -1,12 +1,14 @@
 package server;
 
 import core.connection.InfoProcessor;
+import core.gamelogic.actions.AnotherMainActionAction;
+import core.gamelogic.actions.SyncAction;
 import core.gamemodel.GameBoard;
 import core.Player;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /**
@@ -19,9 +21,11 @@ public class Game implements Runnable{
 
     private Turn currentTurn;
     private int playerIndex;
+    private boolean marketPhase;
 
     public Game() {
         processor = new ServerProcessor(this);
+        marketPhase = false;
     }
 
     public GameBoard getGameBoard() {
@@ -51,48 +55,95 @@ public class Game implements Runnable{
         currentTurn = new Turn(players.get(playerIndex));
     }
 
-    public void addMainActionToken(Player player) throws NotYourTurnException {
-        if (player.equals(currentTurn.currentPlayer)) {
-            currentTurn.mainActionTokens.push(true);
-        } else throw new NotYourTurnException();
+    public Player getPlayerInstance(Player player) {
+        int playerIndex;
+        playerIndex = players.indexOf(player);
+        if (playerIndex == -1) throw new NoSuchElementException();
+        else return players.get(playerIndex);
     }
 
+    /* Turn synchronization */
     public boolean hasMoreMainActions(Player player) throws NotYourTurnException {
-        if (player.equals(currentTurn.currentPlayer)) {
+        if (isAllowedToGame(player)) {
             return !currentTurn.mainActionTokens.isEmpty();
         } else throw new NotYourTurnException();
     }
 
+    public void addMainActionToken(Player player) throws NotYourTurnException {
+        if (isAllowedToGame(player)) {
+            currentTurn.mainActionTokens.push(true);
+            player.getConnection().sendInfo(SyncAction.MAIN_ACTION_AGAIN);
+        } else throw new NotYourTurnException();
+    }
+
     public void popMainActionToken(Player player) throws NotYourTurnException {
-        if (player.equals(currentTurn.currentPlayer)) {
+        if (isAllowedToGame(player)) {
             if (hasMoreMainActions(player)) currentTurn.mainActionTokens.pop();
         } else throw new NotYourTurnException();
     }
 
+    public boolean hasDoneFastAction(Player player) throws NotYourTurnException {
+        if (isAllowedToGame(player)) {
+            return currentTurn.doneFastAction;
+        } else throw new NotYourTurnException();
+    }
+
+    public void fastActionDone(Player player) throws NotYourTurnException {
+        if (isAllowedToGame(player)) {
+            if (!hasDoneFastAction(player)) currentTurn.doneFastAction = true;
+        } else throw new NotYourTurnException();
+    }
+
     public void endTurn(Player player) throws NotYourTurnException {
-        if (player.equals(currentTurn.currentPlayer)) {
+        if (isAllowedToGame(player)) {
             playerIndex = (playerIndex + 1) % Server.MAX_PLAYERS;
             if (playerIndex == 0) setUpMarket();
             else currentTurn = new Turn(players.get(playerIndex));
         } else throw new NotYourTurnException();
     }
 
+    /* Actions' events methods */
+    public void drawnPermitCard(Player player) {
+        if (isAllowedToGame(player)) {
+            player.getConnection().sendInfo(SyncAction.DRAW_PERMIT_BONUS);
+        }
+    }
+
+    public void redeemPermitCardAgain(Player player) {
+        if (isAllowedToGame(player)) {
+            player.getConnection().sendInfo(SyncAction.PICK_PERMIT_AGAIN);
+        }
+    }
+
+    public void redeemATownBonus(Player player) {
+        if (isAllowedToGame(player)) {
+            player.getConnection().sendInfo(SyncAction.PICK_TOWN_BONUS);
+        }
+    }
+
+    /* Market phase methods */
     public void setUpMarket() {
         //TODO: Add market feature
     }
 
+    private boolean isAllowedToGame(Player player) {
+        return player.equals(currentTurn.currentPlayer) && !marketPhase;
+    }
+
     private class Turn {
         final Player currentPlayer;
-        Stack<Boolean> mainActionTokens;
+        final Stack<Boolean> mainActionTokens;
+        boolean doneFastAction;
 
         public Turn(Player currentPlayer) {
             this.currentPlayer = currentPlayer;
             mainActionTokens = new Stack<>();
             mainActionTokens.push(true);
+            doneFastAction = false;
         }
     }
 
-    private class NotYourTurnException extends Exception {
+    public class NotYourTurnException extends Exception {
         public NotYourTurnException() {
         }
 

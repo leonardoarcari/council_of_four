@@ -30,15 +30,20 @@ public class ServerProcessor implements InfoProcessor {
     public void processInfo(Object info) {
 
         if (info instanceof NormalAction) {
-            //TODO: mark normal action done
-            if(info.getClass().equals(CouncilorElectionAction.class)){
-                councilorElection((CouncilorElectionAction) info);
-            } else if(info.getClass().equals(BuyPermitCardAction.class)) {
-                buyPermitCardAction((BuyPermitCardAction) info);
-            } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
-                buildEmpoWithPermit((BuildEmpoPCAction) info);
-            } else {
-                buildEmpoKingHelp((BuildEmpoKingAction) info);
+            Player player = game.getPlayerInstance(((Action) info).getPlayer());
+            try {
+                game.popMainActionToken(player);
+                if (info.getClass().equals(CouncilorElectionAction.class)){
+                    councilorElection((CouncilorElectionAction) info);
+                } else if(info.getClass().equals(BuyPermitCardAction.class)) {
+                    buyPermitCardAction((BuyPermitCardAction) info);
+                } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
+                    buildEmpoWithPermit((BuildEmpoPCAction) info);
+                } else {
+                    buildEmpoKingHelp((BuildEmpoKingAction) info);
+                }
+            } catch (Game.NotYourTurnException e) {
+                e.printStackTrace();
             }
         } else if(info instanceof MarketAction) {
             if(info.getClass().equals(ExposeSellablesAction.class)) {
@@ -53,7 +58,7 @@ public class ServerProcessor implements InfoProcessor {
             } else if (info.getClass().equals(FastCouncilorElectionAction.class)) {
                 fastCouncilorElection((FastCouncilorElectionAction) info);
             } else {
-                //TODO: inform client of new normal action
+                anotherMainAction((AnotherMainActionAction) info);
             }
         } else if (info instanceof SpecialAction) {
             if(info.getClass().equals(PickTownBonusAction.class)) {
@@ -136,13 +141,17 @@ public class ServerProcessor implements InfoProcessor {
         } else if (bonusType.equals(VictoryPoint.class)) {
             game.getGameBoard().moveVictoryPath(toPlayer, bonus.getValue());
         } else if (bonusType.equals(RainbowStar.class)) {
-            //TODO: un-mark normal action and send to client new action
+            try {
+                game.addMainActionToken(toPlayer);
+            } catch (Game.NotYourTurnException e) {
+                e.printStackTrace();
+            }
         } else if (bonusType.equals(DrawPermitCard.class)) {
-            //TODO: send DRAW_PERMIT_BONUS action to player
+            game.drawnPermitCard(toPlayer);
         } else if (bonusType.equals(GetOwnPermitBonus.class)) {
-            //TODO: send PICK_PERMIT_AGAIN
+            game.redeemPermitCardAgain(toPlayer);
         } else {
-            //TODO: send PICK_TOWN_BONUS
+            game.redeemATownBonus(toPlayer);
         }
     }
 
@@ -275,6 +284,15 @@ public class ServerProcessor implements InfoProcessor {
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getPosition());
         player.addPermitCard(card);
         retrievePermitBonus(card, player);
+    }
+
+    private void anotherMainAction(AnotherMainActionAction action) {
+        Player player = game.getPlayerInstance(action.getPlayer());
+        try {
+            game.addMainActionToken(player);
+        } catch (Game.NotYourTurnException e) {
+            e.printStackTrace();
+        }
     }
 
     private void exposeInShowcase(ExposeSellablesAction action) {

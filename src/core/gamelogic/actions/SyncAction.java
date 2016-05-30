@@ -7,5 +7,6 @@ public enum SyncAction {
     YOUR_TURN,
     DRAW_PERMIT_BONUS,
     PICK_PERMIT_AGAIN,
-    PICK_TOWN_BONUS
+    PICK_TOWN_BONUS,
+    MAIN_ACTION_AGAIN
 }
