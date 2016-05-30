@@ -41,7 +41,10 @@ public class ServerProcessor implements InfoProcessor {
                 buildEmpoKingHelp((BuildEmpoKingAction) info);
             }
         } else if(info instanceof MarketAction) {
-            //TODO: Add Market actions
+            if(info.getClass().equals(ExposeSellablesAction.class)) {
+                exposeInShowcase((ExposeSellablesAction) info);
+            } else
+                buyOnSaleItem((BuyObjectsAction) info);
         } else if(info instanceof FastAction) {
             if (info.getClass().equals(HireServantAction.class)) {
                 hireServantAction((HireServantAction) info);
@@ -74,7 +77,7 @@ public class ServerProcessor implements InfoProcessor {
         // Draw permit card and redeem bonuses
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getDrawnPermitCard());
         player.addPermitCard(card);
-        //card.getBonuses().forEach(bonus -> redeemBonus(bonus, action.getPlayer()));
+
         retrievePermitBonus(card, player);
     }
 
@@ -160,7 +163,7 @@ public class ServerProcessor implements InfoProcessor {
 
         discardAndPay(cardIterator, player);
         buildEmporium(player, regionType, townName);
-        game.getGameBoard().getWealthPath().movePlayer(player, -action.getSpentCoins());
+        game.getGameBoard().moveWealthPath(player, -action.getSpentCoins());
         game.getGameBoard().moveKing(action.getStartingTown(), action.getBuildingTown());
     }
 
@@ -272,5 +275,24 @@ public class ServerProcessor implements InfoProcessor {
         PermitCard card = game.getGameBoard().drawPermitCard(action.getRegionType(), action.getPosition());
         player.addPermitCard(card);
         retrievePermitBonus(card, player);
+    }
+
+    private void exposeInShowcase(ExposeSellablesAction action) {
+        Player player = truePlayer(action.getPlayer());
+        Showcase myShowcase = game.getGameBoard().getShowcase();
+
+        myShowcase.addItems(action.getOnSaleItems(), player);
+    }
+
+    private void buyOnSaleItem(BuyObjectsAction action) {
+        Player player = truePlayer(action.getPlayer());
+        Showcase myShowcase = game.getGameBoard().getShowcase();
+        Iterator<OnSaleItem> iterator = action.itemsIterator();
+
+        while(iterator.hasNext()) {
+            OnSaleItem currentSaled = iterator.next();
+            myShowcase.removeItem(currentSaled, player);
+            game.getGameBoard().moveWealthPath(player, -currentSaled.getPrice());
+        }
     }
 }

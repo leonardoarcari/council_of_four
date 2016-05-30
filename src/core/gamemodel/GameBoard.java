@@ -30,6 +30,7 @@ public class GameBoard implements Subject{
     private transient NobilityPath nobilityPath;
     private transient WealthPath wealthPath;
     private transient VictoryPath victoryPath;
+    private transient Showcase showcase;
 
     private transient List<Observer> observers;
 
@@ -42,6 +43,7 @@ public class GameBoard implements Subject{
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
             gameBoard.victoryPath.setPlayer(player);
+            gameBoard.showcase.setPlayers(player);
             gameBoard.registerObserver((ServerConnection) player.getConnection());
             player.registerObserver((ServerConnection) player.getConnection());
         }
@@ -78,6 +80,7 @@ public class GameBoard implements Subject{
         nobilityPath = new NobilityPath(nobilityBonus());
         wealthPath = new WealthPath();
         victoryPath = new VictoryPath();
+        showcase = new Showcase();
     }
 
     /* Creation methods */
@@ -163,10 +166,6 @@ public class GameBoard implements Subject{
         return region.drawPermitCard(pos);
     }
 
-    public void moveWealthPath (Player player, int increment) {
-        wealthPath.movePlayer(player, increment);
-    }
-
     public void buildEmporium(Player player,RegionType type, TownName townName) {
         getRegionBy(type).buildEmporium(player, townName);
     }
@@ -195,6 +194,10 @@ public class GameBoard implements Subject{
     public List<Bonus> moveNobilityPath(Player player, int increment) {
         nobilityPath.movePlayer(player, increment);
         return nobilityPath.retrieveBonus(player);
+    }
+
+    public void moveWealthPath (Player player, int increment) {
+        wealthPath.movePlayer(player, increment);
     }
 
     public void moveVictoryPath(Player player, int increment) {
@@ -295,6 +298,8 @@ public class GameBoard implements Subject{
         return victoryPath;
     }
 
+    public Showcase getShowcase() { return showcase; }
+
     @Override
     public void registerObserver(Observer observer) {
         boardBalcony.registerObserver(observer);
@@ -304,6 +309,7 @@ public class GameBoard implements Subject{
         nobilityPath.registerObserver(observer);
         victoryPath.registerObserver(observer);
         wealthPath.registerObserver(observer);
+        showcase.registerObserver(observer);
         observers.add(observer);
     }
 
@@ -316,6 +322,7 @@ public class GameBoard implements Subject{
         nobilityPath.removeObserver(observer);
         victoryPath.removeObserver(observer);
         wealthPath.removeObserver(observer);
+        showcase.removeObserver(observer);
         observers.remove(observer);
     }
 

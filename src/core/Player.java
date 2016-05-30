@@ -70,6 +70,11 @@ public class Player implements Subject, Serializable {
         notifyObservers();
     }
 
+    public void removePermitCard(PermitCard card) {
+        permitCards.remove(card);
+        notifyObservers();
+    }
+
     public void addPermitCard(PermitCard permitCard) {
         permitCards.add(permitCard);
         notifyObservers();
