@@ -8,7 +8,6 @@ import core.gamemodel.bonus.*;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
@@ -51,14 +50,20 @@ public class ServerProcessor implements InfoProcessor {
             } else
                 buyOnSaleItem((BuyObjectsAction) info);
         } else if(info instanceof FastAction) {
-            if (info.getClass().equals(HireServantAction.class)) {
-                hireServantAction((HireServantAction) info);
-            } else if (info.getClass().equals(ChangePermitsAction.class)) {
-                changePermitsAction((ChangePermitsAction) info);
-            } else if (info.getClass().equals(FastCouncilorElectionAction.class)) {
-                fastCouncilorElection((FastCouncilorElectionAction) info);
-            } else {
-                anotherMainAction((AnotherMainActionAction) info);
+            Player player = game.getPlayerInstance(((Action) info).getPlayer());
+            try {
+                game.fastActionDone(player);
+                if (info.getClass().equals(HireServantAction.class)) {
+                    hireServantAction((HireServantAction) info);
+                } else if (info.getClass().equals(ChangePermitsAction.class)) {
+                    changePermitsAction((ChangePermitsAction) info);
+                } else if (info.getClass().equals(FastCouncilorElectionAction.class)) {
+                    fastCouncilorElection((FastCouncilorElectionAction) info);
+                } else {
+                    anotherMainAction((AnotherMainActionAction) info);
+                }
+            } catch (Game.NotYourTurnException e) {
+                e.printStackTrace();
             }
         } else if (info instanceof SpecialAction) {
             if(info.getClass().equals(PickTownBonusAction.class)) {
@@ -70,6 +75,8 @@ public class ServerProcessor implements InfoProcessor {
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
+        } else if(info.getClass().equals(EndTurnAction.class)) {
+            endPlayerTurn((EndTurnAction) info);
         }
     }
 
@@ -302,6 +309,15 @@ public class ServerProcessor implements InfoProcessor {
             OnSaleItem currentSaled = iterator.next();
             myShowcase.removeItem(currentSaled, player);
             game.getGameBoard().moveWealthPath(player, -currentSaled.getPrice());
+        }
+    }
+
+    private void endPlayerTurn(EndTurnAction action) {
+        Player player = game.getPlayerInstance(action.getPlayer());
+        try {
+            game.endTurn(player);
+        } catch (Game.NotYourTurnException e) {
+            e.printStackTrace();
         }
     }
 }

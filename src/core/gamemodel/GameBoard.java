@@ -332,4 +332,15 @@ public class GameBoard implements Subject{
             o.update(this);
         }
     }
+
+    public void notifyChildren() {
+        notifyObservers();
+        boardBalcony.notifyObservers();
+        seaRegion.notifyObservers();
+        hillsRegion.notifyObservers();
+        mountainsRegion.notifyObservers();
+        nobilityPath.notifyObservers();
+        victoryPath.notifyObservers();
+        wealthPath.notifyObservers();
+    }
 }

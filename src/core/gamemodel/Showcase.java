@@ -47,6 +47,7 @@ public class Showcase implements Subject {
     public void removeItem(OnSaleItem acquiredItem, Player player) {
         onSaleItems.remove(acquiredItem);
         giveItemTo(player, acquiredItem);
+        notifyObservers();
     }
 
     private void giveItemTo(Player player, OnSaleItem sellableItem) {

@@ -18,7 +18,7 @@ public class ClientProcessor implements InfoProcessor {
     @Override
     public void processInfo(Object info) {
         Class<?> objClass = info.getClass();
-        if (info.getClass().equals(Player.class)) {
+        if (objClass.equals(Player.class)) {
             Player player = (Player) info;
             view.setPlayer(player);
         }
