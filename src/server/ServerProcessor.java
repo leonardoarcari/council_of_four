@@ -27,7 +27,6 @@ public class ServerProcessor implements InfoProcessor {
 
     @Override
     public void processInfo(Object info) {
-
         if (info instanceof NormalAction) {
             Player player = game.getPlayerInstance(((Action) info).getPlayer());
             try {
@@ -296,8 +295,12 @@ public class ServerProcessor implements InfoProcessor {
     private void exposeInShowcase(ExposeSellablesAction action) {
         Player player = game.getPlayerInstance(action.getPlayer());
         Showcase myShowcase = game.getGameBoard().getShowcase();
-
         myShowcase.addItems(action.getOnSaleItems(), player);
+        try {
+            game.sellableExposed(player);
+        } catch (Game.NotYourTurnException e) {
+            e.printStackTrace();
+        }
     }
 
     private void buyOnSaleItem(BuyObjectsAction action) {
@@ -309,6 +312,12 @@ public class ServerProcessor implements InfoProcessor {
             OnSaleItem currentSaled = iterator.next();
             myShowcase.removeItem(currentSaled, player);
             game.getGameBoard().moveWealthPath(player, -currentSaled.getPrice());
+        }
+
+        try {
+            game.endAuctionOf(player);
+        } catch (Game.NotYourTurnException e) {
+            e.printStackTrace();
         }
     }
 

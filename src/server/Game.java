@@ -2,14 +2,12 @@ package server;
 
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.AnotherMainActionAction;
+import core.gamelogic.actions.MarketSyncAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.GameBoard;
 import core.Player;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by Leonardo Arcari on 23/05/2016.
@@ -20,6 +18,8 @@ public class Game implements Runnable{
     private InfoProcessor processor;
 
     private Turn currentTurn;
+    private MarketPhase market;
+
     private int playerIndex;
     private boolean marketPhase;
 
@@ -127,8 +127,48 @@ public class Game implements Runnable{
     }
 
     /* Market phase methods */
-    public void setUpMarket() {
-        //TODO: Add market feature
+    public synchronized void sellableExposed(Player player) throws NotYourTurnException {
+        if (isAllowedToMarket(player)) {
+            if (market.playersReady < players.size()) {
+                market.playersReady++;
+                if (market.playersReady == players.size()) {
+                    market.setUpAction(players);
+                    market.currentPlayer.getConnection().sendInfo(MarketSyncAction.AUCTION_START_ACTION);
+                }
+            } else throw new UnsupportedOperationException("Every player is already ready!");
+        } else throw new NotYourTurnException();
+    }
+
+    public void endAuctionOf(Player player) throws NotYourTurnException {
+        if (isAllowedToMarket(player)) {
+            player.getConnection().sendInfo(MarketSyncAction.END_AUCTION_ACTION);
+            try {
+                market.changePlayer();
+            } catch (MarketPhase.EndMarketException e) {
+                endMarket();
+            }
+        } else throw new NotYourTurnException();
+    }
+
+    private void setUpMarket() {
+        marketPhase = true;
+        for (Player player : players) {
+            player.getConnection().sendInfo(MarketSyncAction.MARKET_START_ACTION);
+        }
+        market = new MarketPhase();
+    }
+
+    public void endMarket() {
+        marketPhase = false;
+        for (Player player : players) {
+            player.getConnection().sendInfo(MarketSyncAction.END_MARKET_ACTION);
+        }
+        currentTurn = new Turn(players.get(playerIndex));
+    }
+
+
+    private boolean isAllowedToMarket(Player player) {
+        return (market.playersReady != players.size() || player.equals(market.currentPlayer)) && marketPhase;
     }
 
     private boolean isAllowedToGame(Player player) {
@@ -145,7 +185,42 @@ public class Game implements Runnable{
             mainActionTokens = new Stack<>();
             mainActionTokens.push(true);
             doneFastAction = false;
+            currentPlayer.getConnection().sendInfo(SyncAction.YOUR_TURN);
         }
+    }
+
+    private class MarketPhase {
+        int playersReady;
+        int playerMarketIndex;
+        Player currentPlayer;
+        List<Player> auctionPlayers;
+
+        public MarketPhase() {
+            playersReady = 0;
+            playerMarketIndex = 0;
+        }
+
+        void setUpAction(List<Player> playerList) {
+            auctionPlayers = new ArrayList<>(playerList);
+            Collections.shuffle(auctionPlayers);
+            currentPlayer = auctionPlayers.get(0);
+        }
+
+        void changePlayer() throws EndMarketException {
+            if (playerMarketIndex < auctionPlayers.size()) {
+                currentPlayer = auctionPlayers.get(++playerMarketIndex);
+            } else throw new EndMarketException();
+        }
+
+        class EndMarketException extends Exception {
+            public EndMarketException() {
+            }
+
+            public EndMarketException(String message) {
+                super(message);
+            }
+        }
+
     }
 
     public class NotYourTurnException extends Exception {
