@@ -14,7 +14,7 @@ public class BuildEmpoPCAction extends Action implements NormalAction {
     PermitCard usedPermitCard;
     RegionType regionType;
 
-    public BuildEmpoPCAction(Player player,RegionType regionType, TownName selectedTown, PermitCard usedPermitCard) {
+    public BuildEmpoPCAction(Player player, RegionType regionType, TownName selectedTown, PermitCard usedPermitCard) {
         super(player);
         this.regionType = regionType;
         this.selectedTown = selectedTown;

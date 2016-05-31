@@ -1,7 +1,5 @@
 package server;
 
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.tools.classfile.TypeAnnotation;
 import core.Player;
 import core.Subject;
 import core.connection.InfoProcessor;
@@ -85,7 +83,7 @@ public class ServerProcessorTest {
         PermitCard permitCard = game.getGameBoard().getRegionBy(RegionType.SEA).drawPermitCard(Region.PermitPos.LEFT);
         pl00.addPermitCard(permitCard);
         TownName townName = permitCard.getCityPermits().get(0);
-        Action buildEmpoPC = new BuildEmpoPCAction(pl00,townName,permitCard);
+        Action buildEmpoPC = new BuildEmpoPCAction(pl00, RegionType.SEA, townName,permitCard);
         serverProcessor.processInfo(buildEmpoPC);
         List<PermitCard> playerPermitCard = new ArrayList<>();
         Iterator<PermitCard> permitCardIterator = pl00.permitCardIterator();
