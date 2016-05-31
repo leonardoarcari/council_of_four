@@ -15,8 +15,11 @@ import java.io.FileInputStream;
  */
 public class GUI extends Application {
     private GridPane gridPane;
+    private final static int GAMEBOARD_HEIGHT = 700;
+    private final static float GAMEBOARD_WIDTH = GAMEBOARD_HEIGHT * 72f/61;
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.out.println(GAMEBOARD_WIDTH + " /// " + GAMEBOARD_HEIGHT);
         gridPane = new GridPane();
         ColumnConstraints boardColumn = new ColumnConstraints();
         boardColumn.setPercentWidth(80);
@@ -35,6 +38,7 @@ public class GUI extends Application {
         // Load GameBoard imageview
         Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard.png"));
         ImageView gameboardIV = new ImageView(gameBoardImage);
+        //gameboardIV.setPreserveRatio(true);
         gameboardIV.setSmooth(true);
         gameboardIV.setCache(true);
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
@@ -55,7 +59,7 @@ public class GUI extends Application {
         gridPane.getChildren().addAll(boardAnchor, dummyChat, dummyHand);
 
         // Scene & Stage setup
-        Scene scene = new Scene(gridPane, 1280, 800);
+        Scene scene = new Scene(gridPane, 1.25*GAMEBOARD_WIDTH, GAMEBOARD_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
 
