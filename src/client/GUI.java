@@ -1,6 +1,7 @@
 package client;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -17,20 +18,24 @@ public class GUI extends Application {
     private GridPane gridPane;
     private final static int GAMEBOARD_HEIGHT = 700;
     private final static float GAMEBOARD_WIDTH = GAMEBOARD_HEIGHT * 72f/61;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        System.out.println(GAMEBOARD_WIDTH + " /// " + GAMEBOARD_HEIGHT);
         gridPane = new GridPane();
+
         ColumnConstraints boardColumn = new ColumnConstraints();
-        boardColumn.setPercentWidth(80);
         boardColumn.setFillWidth(true);
         ColumnConstraints chatColumn = new ColumnConstraints();
-        chatColumn.setPercentWidth(20);
+        chatColumn.setHgrow(Priority.ALWAYS);
+        chatColumn.setHalignment(HPos.CENTER);
+
         gridPane.getColumnConstraints().addAll(boardColumn, chatColumn);
+
         RowConstraints chatRow = new RowConstraints();
         chatRow.setPercentHeight(66);
         RowConstraints handRow = new RowConstraints();
         handRow.setPercentHeight(34);
+
         gridPane.getRowConstraints().addAll(chatRow, handRow);
 
         AnchorPane boardAnchor = new AnchorPane();
@@ -38,11 +43,10 @@ public class GUI extends Application {
         // Load GameBoard imageview
         Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard.png"));
         ImageView gameboardIV = new ImageView(gameBoardImage);
-        //gameboardIV.setPreserveRatio(true);
         gameboardIV.setSmooth(true);
         gameboardIV.setCache(true);
+        gameboardIV.setPreserveRatio(true);
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
-        gameboardIV.fitWidthProperty().bind(primaryStage.widthProperty().multiply(0.8));
 
 
         // Add Nodes to anchorPane
@@ -59,7 +63,7 @@ public class GUI extends Application {
         gridPane.getChildren().addAll(boardAnchor, dummyChat, dummyHand);
 
         // Scene & Stage setup
-        Scene scene = new Scene(gridPane, 1.25*GAMEBOARD_WIDTH, GAMEBOARD_HEIGHT);
+        Scene scene = new Scene(gridPane, 1280, 720);
         primaryStage.setScene(scene);
         primaryStage.show();
 
