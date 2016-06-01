@@ -81,6 +81,9 @@ public class GUI extends Application {
         Image gImage = new Image(new FileInputStream("src/client/g.png"));
         Image hImage = new Image(new FileInputStream("src/client/h.png"));
         Image iImage = new Image(new FileInputStream("src/client/i.png"));
+        Image jImage = new Image(new FileInputStream("src/client/j.png"));
+        Image kImage = new Image(new FileInputStream("src/client/k.png"));
+        Image lImage = new Image(new FileInputStream("src/client/l.png"));
         Image mImage = new Image(new FileInputStream("src/client/m.png"));
         Image nImage = new Image(new FileInputStream("src/client/n.png"));
         Image oImage = new Image(new FileInputStream("src/client/o.png"));
@@ -93,6 +96,9 @@ public class GUI extends Application {
         boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2467627118644068, 0.10285385614803205));
         boardObjects.add(new ObjectImageView(hImage, 0.40973005099866394, 0.3864406779661017, 0.09912460333496036));
         boardObjects.add(new ObjectImageView(iImage, 0.5466258390659746, 0.08813559322033898, 0.0967313203267906));
+        boardObjects.add(new ObjectImageView(jImage, 0.5349027170062496, 0.2830508474576271, 0.0973074585507204));
+        boardObjects.add(new ObjectImageView(kImage, 0.7117437356463746, 0.07401129943502825, 0.0999579670574619));
+        boardObjects.add(new ObjectImageView(lImage, 0.684200387088455, 0.24884182660489743, 0.1078307727656072));
         boardObjects.add(new ObjectImageView(mImage, 0.6729745030117486, 0.416462482946794, 0.120203003974608));
         boardObjects.add(new ObjectImageView(nImage, 0.82539565232543, 0.16800354706684858, 0.113268215283765));
         boardObjects.add(new ObjectImageView(oImage, 0.829096739437645, 0.3542896174863388, 0.106006559623886));
@@ -153,3 +159,5 @@ public class GUI extends Application {
         iv.setOnMouseExited(event -> iv.setEffect(null));
     }
 }
+
+
