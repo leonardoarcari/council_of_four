@@ -64,7 +64,8 @@ public class GUI extends Application {
         boardAnchor = new AnchorPane();
 
         // Load GameBoard imageview
-        Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard_scaled.png"));
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        Image gameBoardImage = new Image(classLoader.getResourceAsStream("gameboard_scaled.png"));
         gameboardIV = new ImageView(gameBoardImage);
         gameboardIV.setSmooth(true);
         gameboardIV.setCache(true);
@@ -72,21 +73,21 @@ public class GUI extends Application {
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 
         // Town IVs
-        Image aImage = new Image(new FileInputStream("src/client/a.png"));
-        Image bImage = new Image(new FileInputStream("src/client/b.png"));
-        Image cImage = new Image(new FileInputStream("src/client/c.png"));
-        Image dImage = new Image(new FileInputStream("src/client/d.png"));
-        Image eImage = new Image(new FileInputStream("src/client/e.png"));
-        Image fImage = new Image(new FileInputStream("src/client/f.png"));
-        Image gImage = new Image(new FileInputStream("src/client/g.png"));
-        Image hImage = new Image(new FileInputStream("src/client/h.png"));
-        Image iImage = new Image(new FileInputStream("src/client/i.png"));
-        Image jImage = new Image(new FileInputStream("src/client/j.png"));
-        Image kImage = new Image(new FileInputStream("src/client/k.png"));
-        Image lImage = new Image(new FileInputStream("src/client/l.png"));
-        Image mImage = new Image(new FileInputStream("src/client/m.png"));
-        Image nImage = new Image(new FileInputStream("src/client/n.png"));
-        Image oImage = new Image(new FileInputStream("src/client/o.png"));
+        Image aImage = new Image(new FileInputStream("a.png"));
+        Image bImage = new Image(new FileInputStream("b.png"));
+        Image cImage = new Image(new FileInputStream("c.png"));
+        Image dImage = new Image(new FileInputStream("d.png"));
+        Image eImage = new Image(new FileInputStream("e.png"));
+        Image fImage = new Image(new FileInputStream("f.png"));
+        Image gImage = new Image(new FileInputStream("g.png"));
+        Image hImage = new Image(new FileInputStream("h.png"));
+        Image iImage = new Image(new FileInputStream("i.png"));
+        Image jImage = new Image(new FileInputStream("j.png"));
+        Image kImage = new Image(new FileInputStream("k.png"));
+        Image lImage = new Image(new FileInputStream("l.png"));
+        Image mImage = new Image(new FileInputStream("m.png"));
+        Image nImage = new Image(new FileInputStream("n.png"));
+        Image oImage = new Image(new FileInputStream("o.png"));
         boardObjects.add(new ObjectImageView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197));
         boardObjects.add(new ObjectImageView(bImage, 0.061042592592592594, 0.24180327868852458, 0.114425925925926));
         boardObjects.add(new ObjectImageView(cImage, 0.2155925925925926, 0.11958469945355191, 0.114583333333333));
