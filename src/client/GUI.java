@@ -2,8 +2,11 @@ package client;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -13,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.controlsfx.control.PopOver;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -47,6 +51,22 @@ public class GUI extends Application {
         borderglow.setHeight(70);
         borderglow.setInput(glow);
         borderglow.setBlurType(BlurType.GAUSSIAN);
+        PopOver popOver = new PopOver();
+        //popOver.setMaxSize(100.0,100.0);
+        popOver.setPrefWidth(50.0);
+        popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+
+        ScrollPane scrollPane = new ScrollPane();
+        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
+        flowPane.setPadding(new Insets(10));
+        Button merda = new Button("Cliccami se\n hai coraggio");
+        /*Button merda2 = new Button("Porca merda");
+        Button merda3 = new Button("La maiala");
+        Button merda4 = new Button("Ti prego funziona");
+
+        /*scrollPane.setContent(flowPane);
+        flowPane.getChildren().addAll(merda,merda2,merda3,merda4);
+        popOver.setContentNode(scrollPane);*/
 
         ColumnConstraints boardColumn = new ColumnConstraints();
         boardColumn.setFillWidth(true);
@@ -73,6 +93,8 @@ public class GUI extends Application {
         gameboardIV.setCache(true);
         gameboardIV.setPreserveRatio(true);
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
+
+        gameboardIV.setOnMouseEntered(event -> popOver.hide());
 
         // Town IVs
         Image aImage = new Image(classLoader.getResourceAsStream("a.png"));
@@ -105,7 +127,7 @@ public class GUI extends Application {
         boardObjects.add(new ObjectImageView(mImage, 0.6729745030117486, 0.416462482946794, 0.120203003974608));
         boardObjects.add(new ObjectImageView(nImage, 0.82539565232543, 0.16800354706684858, 0.113268215283765));
         boardObjects.add(new ObjectImageView(oImage, 0.829096739437645, 0.3542896174863388, 0.106006559623886));
-        boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, borderglow));
+        boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, borderglow, popOver));
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
@@ -157,10 +179,9 @@ public class GUI extends Application {
         AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
     }
 
-    private void setObjectGlow(ObjectImageView iv, Effect effect) {
+    private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
         iv.setOnMouseEntered(event -> iv.setEffect(effect));
         iv.setOnMouseExited(event -> iv.setEffect(null));
+        iv.setOnMouseClicked(event -> popOver.show(iv, 60));
     }
 }
-
-
