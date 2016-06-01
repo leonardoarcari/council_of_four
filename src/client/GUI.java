@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
@@ -39,12 +40,13 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         gridPane = new GridPane();
-        final Glow glow = new Glow(1.0);
+        final Glow glow = new Glow(0.8);
         final DropShadow borderglow = new DropShadow();
         borderglow.setColor(Color.WHITE);
         borderglow.setWidth(70);
         borderglow.setHeight(70);
-        glow.setInput(borderglow);
+        borderglow.setInput(glow);
+        borderglow.setBlurType(BlurType.GAUSSIAN);
 
         ColumnConstraints boardColumn = new ColumnConstraints();
         boardColumn.setFillWidth(true);
@@ -73,21 +75,21 @@ public class GUI extends Application {
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 
         // Town IVs
-        Image aImage = new Image(new FileInputStream("a.png"));
-        Image bImage = new Image(new FileInputStream("b.png"));
-        Image cImage = new Image(new FileInputStream("c.png"));
-        Image dImage = new Image(new FileInputStream("d.png"));
-        Image eImage = new Image(new FileInputStream("e.png"));
-        Image fImage = new Image(new FileInputStream("f.png"));
-        Image gImage = new Image(new FileInputStream("g.png"));
-        Image hImage = new Image(new FileInputStream("h.png"));
-        Image iImage = new Image(new FileInputStream("i.png"));
-        Image jImage = new Image(new FileInputStream("j.png"));
-        Image kImage = new Image(new FileInputStream("k.png"));
-        Image lImage = new Image(new FileInputStream("l.png"));
-        Image mImage = new Image(new FileInputStream("m.png"));
-        Image nImage = new Image(new FileInputStream("n.png"));
-        Image oImage = new Image(new FileInputStream("o.png"));
+        Image aImage = new Image(classLoader.getResourceAsStream("a.png"));
+        Image bImage = new Image(classLoader.getResourceAsStream("b.png"));
+        Image cImage = new Image(classLoader.getResourceAsStream("c.png"));
+        Image dImage = new Image(classLoader.getResourceAsStream("d.png"));
+        Image eImage = new Image(classLoader.getResourceAsStream("e.png"));
+        Image fImage = new Image(classLoader.getResourceAsStream("f.png"));
+        Image gImage = new Image(classLoader.getResourceAsStream("g.png"));
+        Image hImage = new Image(classLoader.getResourceAsStream("h.png"));
+        Image iImage = new Image(classLoader.getResourceAsStream("i.png"));
+        Image jImage = new Image(classLoader.getResourceAsStream("j.png"));
+        Image kImage = new Image(classLoader.getResourceAsStream("k.png"));
+        Image lImage = new Image(classLoader.getResourceAsStream("l.png"));
+        Image mImage = new Image(classLoader.getResourceAsStream("m.png"));
+        Image nImage = new Image(classLoader.getResourceAsStream("n.png"));
+        Image oImage = new Image(classLoader.getResourceAsStream("o.png"));
         boardObjects.add(new ObjectImageView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197));
         boardObjects.add(new ObjectImageView(bImage, 0.061042592592592594, 0.24180327868852458, 0.114425925925926));
         boardObjects.add(new ObjectImageView(cImage, 0.2155925925925926, 0.11958469945355191, 0.114583333333333));
@@ -103,7 +105,7 @@ public class GUI extends Application {
         boardObjects.add(new ObjectImageView(mImage, 0.6729745030117486, 0.416462482946794, 0.120203003974608));
         boardObjects.add(new ObjectImageView(nImage, 0.82539565232543, 0.16800354706684858, 0.113268215283765));
         boardObjects.add(new ObjectImageView(oImage, 0.829096739437645, 0.3542896174863388, 0.106006559623886));
-        boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, glow));
+        boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, borderglow));
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
