@@ -10,14 +10,27 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Leonardo Arcari on 31/05/2016.
  */
 public class GUI extends Application {
     private GridPane gridPane;
+    private ImageView gameboardIV;
+    private AnchorPane boardAnchor;
+
+    private List<ObjectImageView> boardObjects;
+
     private final static int GAMEBOARD_HEIGHT = 700;
     private final static float GAMEBOARD_WIDTH = GAMEBOARD_HEIGHT * 72f/61;
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        boardObjects = new ArrayList<>();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -38,11 +51,11 @@ public class GUI extends Application {
 
         gridPane.getRowConstraints().addAll(chatRow, handRow);
 
-        AnchorPane boardAnchor = new AnchorPane();
+        boardAnchor = new AnchorPane();
 
         // Load GameBoard imageview
         Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard.png"));
-        ImageView gameboardIV = new ImageView(gameBoardImage);
+        gameboardIV = new ImageView(gameBoardImage);
         gameboardIV.setSmooth(true);
         gameboardIV.setCache(true);
         gameboardIV.setPreserveRatio(true);
@@ -50,13 +63,11 @@ public class GUI extends Application {
 
         // Town IVs
         Image gImage = new Image(new FileInputStream("src/client/g.png"));
-        ImageView gIV = new ImageView(gImage);
-        gameboardIV.setSmooth(true);
-        gameboardIV.setCache(true);
-        gameboardIV.setPreserveRatio(true);
+        boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2457627118644068, 0.10195385614803205));
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
+        boardAnchor.getChildren().addAll(boardObjects);
 
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
@@ -73,11 +84,34 @@ public class GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        // Set listeners
+        boardObjects.forEach(objectImageView -> {
+            setImageViewListener(objectImageView);
+            setObjectConstraints(objectImageView);
+        });
+
         // Debug
         gridPane.setGridLinesVisible(true);
         gameboardIV.setOnMouseClicked(event -> System.out.println("X scaled: " +
                 event.getX()/gameboardIV.getBoundsInParent().getWidth() + " Y scaled " +
                 event.getY()/ gameboardIV.getBoundsInParent().getHeight())
         );
+    }
+
+    private void setImageViewListener(ObjectImageView iv) {
+        gameboardIV.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+            iv.setFitWidth(iv.getWidth() * newValue.getWidth());
+        });
+
+        boardAnchor.heightProperty().addListener((observable, oldValue, newValue) -> {
+            AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
+            AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
+        });
+    }
+
+    private void setObjectConstraints(ObjectImageView iv) {
+        iv.setFitWidth(iv.getWidth() * gameboardIV.getBoundsInParent().getWidth());
+        AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
+        AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
     }
 }
