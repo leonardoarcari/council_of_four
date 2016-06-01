@@ -93,13 +93,14 @@ public class GUI extends Application {
 
         //Nobility setup
         Image nobilityPath = new Image(classLoader.getResourceAsStream("nobility.png"));
-        Canvas nobilityCanvas = new Canvas(1710,145);
-        nobilityCanvas.getGraphicsContext2D().drawImage(nobilityPath, 0, 0, 1710, 145);
-        WritableImage nobi = new WritableImage(1710,145);
+        Canvas nobilityCanvas = new Canvas(1705,150);
+        nobilityCanvas.getGraphicsContext2D().clearRect(0,0,1705,150);
+        nobilityCanvas.getGraphicsContext2D().drawImage(nobilityPath, 0, 0, 1705, 150);
+        WritableImage nobi = new WritableImage(1705,150);
         nobilityCanvas.snapshot(null,nobi);
         BufferedImage bi = SwingFXUtils.fromFXImage(nobi, null);
         Image image = SwingFXUtils.toFXImage(bi, null);
-        boardObjects.add(new ObjectImageView(image, 0.04808196834915602, 0.8200382513661202, 0.68753772));
+        boardObjects.add(new ObjectImageView(image, 0.04968196834915602, 0.8150382513661202, 0.68253772));
 
 
         setBoardObjects(boardObjects, classLoader);
