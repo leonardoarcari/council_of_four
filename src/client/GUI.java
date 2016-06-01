@@ -48,6 +48,12 @@ public class GUI extends Application {
         gameboardIV.setPreserveRatio(true);
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 
+        // Town IVs
+        Image gImage = new Image(new FileInputStream("src/client/g.png"));
+        ImageView gIV = new ImageView(gImage);
+        gameboardIV.setSmooth(true);
+        gameboardIV.setCache(true);
+        gameboardIV.setPreserveRatio(true);
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
