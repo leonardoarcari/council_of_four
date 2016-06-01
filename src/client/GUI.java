@@ -4,9 +4,13 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -35,6 +39,12 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         gridPane = new GridPane();
+        final Glow glow = new Glow(1.0);
+        final DropShadow borderglow = new DropShadow();
+        borderglow.setColor(Color.WHITE);
+        borderglow.setWidth(70);
+        borderglow.setHeight(70);
+        glow.setInput(borderglow);
 
         ColumnConstraints boardColumn = new ColumnConstraints();
         boardColumn.setFillWidth(true);
@@ -62,8 +72,13 @@ public class GUI extends Application {
         gameboardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 
         // Town IVs
+        Image aImage = new Image(new FileInputStream("src/client/a.png"));
+        Image bImage = new Image(new FileInputStream("src/client/b.png"));
         Image gImage = new Image(new FileInputStream("src/client/g.png"));
+        boardObjects.add(new ObjectImageView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197));
+        boardObjects.add(new ObjectImageView(bImage, 0.061342592592592594, 0.24180327868852458, 0.113425925925926));
         boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2457627118644068, 0.10195385614803205));
+        boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, glow));
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
@@ -113,5 +128,10 @@ public class GUI extends Application {
         iv.setFitWidth(iv.getWidth() * gameboardIV.getBoundsInParent().getWidth());
         AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
         AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
+    }
+
+    private void setObjectGlow(ObjectImageView iv, Effect effect) {
+        iv.setOnMouseEntered(event -> iv.setEffect(effect));
+        iv.setOnMouseExited(event -> iv.setEffect(null));
     }
 }
