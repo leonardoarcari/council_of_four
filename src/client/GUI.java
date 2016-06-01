@@ -64,7 +64,7 @@ public class GUI extends Application {
         boardAnchor = new AnchorPane();
 
         // Load GameBoard imageview
-        Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard.png"));
+        Image gameBoardImage = new Image(new FileInputStream("src/client/gameboard_scaled.png"));
         gameboardIV = new ImageView(gameBoardImage);
         gameboardIV.setSmooth(true);
         gameboardIV.setCache(true);
@@ -75,9 +75,13 @@ public class GUI extends Application {
         Image aImage = new Image(new FileInputStream("src/client/a.png"));
         Image bImage = new Image(new FileInputStream("src/client/b.png"));
         Image gImage = new Image(new FileInputStream("src/client/g.png"));
+        Image hImage = new Image(new FileInputStream("src/client/h.png"));
+        Image iImage = new Image(new FileInputStream("src/client/i.png"));
         boardObjects.add(new ObjectImageView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197));
         boardObjects.add(new ObjectImageView(bImage, 0.061342592592592594, 0.24180327868852458, 0.113425925925926));
-        boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2457627118644068, 0.10195385614803205));
+        boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2467627118644068, 0.10285385614803205));
+        boardObjects.add(new ObjectImageView(hImage, 0.40973005099866394, 0.3864406779661017, 0.09912460333496036));
+        boardObjects.add(new ObjectImageView(iImage, 0.5466258390659746, 0.08813559322033898, 0.0967313203267906));
         boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, glow));
 
         // Add Nodes to anchorPane
