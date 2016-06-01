@@ -1,5 +1,6 @@
 package client;
 
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -10,7 +11,6 @@ public class ObjectImageView extends ImageView {
     private double leftX;
     private double topY;
     private double width;
-    private Image image;
 
     public ObjectImageView(Image image, double leftX, double topY, double width) {
         super(image);
