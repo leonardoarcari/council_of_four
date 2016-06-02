@@ -1,5 +1,10 @@
 package client;
 
+import core.gamelogic.AbstractBonusFactory;
+import core.gamelogic.BonusFactory;
+import core.gamelogic.BonusOwner;
+import core.gamemodel.NobilityPath;
+import core.gamemodel.bonus.Bonus;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.HPos;
@@ -100,7 +105,8 @@ public class GUI extends Application {
         nobilityCanvas.snapshot(null,nobi);
         BufferedImage bi = SwingFXUtils.fromFXImage(nobi, null);
         Image image = SwingFXUtils.toFXImage(bi, null);
-        boardObjects.add(new ObjectImageView(image, 0.04968196834915602, 0.8150382513661202, 0.68253772));
+        ObjectImageView nobilityIV = new ObjectImageView(image, 0.04968196834915602, 0.8150382513661202, 0.68253772);
+        boardObjects.add(nobilityIV);
 
 
         setBoardObjects(boardObjects, classLoader);
@@ -113,6 +119,17 @@ public class GUI extends Application {
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
         Button dummyHand = new Button("I'm a dummy hand button");
+        dummyHand.setOnAction(event -> {
+            AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.NOBILITY);
+            List<List<Bonus>> bonusPath = new ArrayList<>(21);
+            bonusPath.add(new ArrayList<>());
+            for (int i = 1; i < 21; i++) {
+                bonusPath.add(bonusFactory.generateBonuses());
+            }
+            NobilityPath path = new NobilityPath(bonusPath);
+            NobilityDrawer drawer = new NobilityDrawer(path, image);
+            nobilityIV.setImage(drawer.drawPath());
+        });
 
         // Add Nodes to gridPane
         GridPane.setConstraints(boardAnchor, 0, 0, 1, 2);
