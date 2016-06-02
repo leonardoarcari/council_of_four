@@ -45,7 +45,7 @@ public class NobilityDrawer {
     private void drawBonuses(GraphicsContext gc, List<Bonus> list, int index) {
         ClassLoader loader = this.getClass().getClassLoader();
         int ident = (index < 10) ? 23:20;
-        int yPos = (list.size() == 1) ? 45:30;
+        int yPos = (list.size() == 1) ? 45:35;
         int i = 0;
 
         for(Bonus bonus : list) {
@@ -53,7 +53,7 @@ public class NobilityDrawer {
             bonusName = "BonusImages/" + bonusName;
             System.out.println(bonusName + " ||| " + index);
             Image bonusImage = new Image(loader.getResourceAsStream(bonusName));
-            gc.drawImage(bonusImage,ident+81*index,yPos+50*i,50,50);
+            gc.drawImage(bonusImage,ident+81*index,yPos+35*i,50,50);
             i++;
         }
     }
