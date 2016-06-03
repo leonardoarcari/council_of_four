@@ -1,5 +1,7 @@
-package client;
+package client.View;
 
+import client.ControllerUI;
+import core.Player;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
@@ -7,12 +9,9 @@ import core.gamemodel.*;
 import core.gamemodel.bonus.Bonus;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
@@ -28,8 +27,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,6 +38,8 @@ public class GUI extends Application {
     private GridPane gridPane;
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
+    private ControllerUI controllerUI;
+    private TownView testTown;
 
     private List<ObjectImageView> boardObjects;
 
@@ -49,6 +50,7 @@ public class GUI extends Application {
     public void init() throws Exception {
         super.init();
         boardObjects = new ArrayList<>();
+        ControllerUI controllerUI = new ControllerUI(this);
     }
 
     @Override
@@ -60,13 +62,14 @@ public class GUI extends Application {
         popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
 
         ScrollPane scrollPane = new ScrollPane();
-        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
-        scrollPane.setPrefViewportWidth(100);
-        flowPane.setPadding(new Insets(10));
+        //FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
+        //flowPane.setPadding(new Insets(10));
+        FlowPane pane = new FlowPane(Orientation.HORIZONTAL, 5, 5);
         Button merda = new Button("Cliccami se\n hai coraggio");
 
-        scrollPane.setContent(flowPane);
-        flowPane.getChildren().addAll(merda);
+        //flowPane.getChildren().addAll(merda);
+        scrollPane.setContent(merda);
+        scrollPane.prefViewportHeightProperty().bind(merda.heightProperty());
         popOver.setContentNode(scrollPane);
 
         ColumnConstraints boardColumn = new ColumnConstraints();
@@ -155,6 +158,10 @@ public class GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        testTown.setEmporiums(Arrays.asList(new Player(null), new Player(null)));
+
+        scrollPane.prefViewportWidthProperty().bind(boardAnchor.widthProperty().multiply(1.5).multiply(boardObjects.get(1).getWidth()));
+
         // Set listeners
         boardObjects.forEach(objectImageView -> {
             setImageViewListener(objectImageView);
@@ -189,7 +196,21 @@ public class GUI extends Application {
     private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
         iv.setOnMouseEntered(event -> iv.setEffect(effect));
         iv.setOnMouseExited(event -> iv.setEffect(null));
-        iv.setOnMouseClicked(event -> popOver.show(iv, 60));
+        iv.setOnMouseClicked(event -> {
+            ObjectImageView imageView = (ObjectImageView) event.getSource();
+            if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1/4) {
+                popOver.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
+            } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3/4) {
+                popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+            } else {
+                popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
+            }
+            if (imageView.getClass().equals(TownView.class)) {
+                popOver.setContentNode(((TownView)imageView).getEmporiumNode());
+                popOver.show(iv, 60);
+            }
+            else popOver.show(iv, 60);
+        });
     }
 
     private void setBoardObjects(List<ObjectImageView> boardObjects, ClassLoader classLoader) {
@@ -209,8 +230,9 @@ public class GUI extends Application {
         Image mImage = new Image(classLoader.getResourceAsStream("m.png"));
         Image nImage = new Image(classLoader.getResourceAsStream("n.png"));
         Image oImage = new Image(classLoader.getResourceAsStream("o.png"));
-        boardObjects.add(new ObjectImageView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197));
-        boardObjects.add(new ObjectImageView(bImage, 0.061042592592592594, 0.24180327868852458, 0.114425925925926));
+        testTown = new TownView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197);
+        boardObjects.add(testTown);
+        boardObjects.add(new TownView(bImage, 0.061042592592592594, 0.24180327868852458, 0.114425925925926));
         boardObjects.add(new ObjectImageView(cImage, 0.2155925925925926, 0.11958469945355191, 0.114583333333333));
         boardObjects.add(new ObjectImageView(dImage, 0.2084852504710498, 0.2786885245901639, 0.105321313772738));
         boardObjects.add(new ObjectImageView(eImage, 0.11026557621929187, 0.40846994535519127, 0.102691805475035));
@@ -235,5 +257,9 @@ public class GUI extends Application {
         borderglow.setInput(glow);
         borderglow.setBlurType(BlurType.GAUSSIAN);
         return borderglow;
+    }
+
+    public void setEmporiumTestTown(List<Player> emporiumList) {
+        testTown.setEmporiums(emporiumList);
     }
 }

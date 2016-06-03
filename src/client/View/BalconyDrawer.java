@@ -1,14 +1,12 @@
-package client;
+package client.View;
 
 import core.gamemodel.Councilor;
 import core.gamemodel.CouncilorsBalcony;
-import core.gamemodel.bonus.Bonus;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 import java.awt.image.BufferedImage;
 import java.util.Iterator;

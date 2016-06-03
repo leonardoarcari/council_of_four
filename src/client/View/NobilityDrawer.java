@@ -1,4 +1,4 @@
-package client;
+package client.View;
 
 import core.gamemodel.NobilityPath;
 import core.gamemodel.bonus.Bonus;
