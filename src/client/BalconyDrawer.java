@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
@@ -21,13 +20,15 @@ public class BalconyDrawer {
         ClassLoader loader = BalconyDrawer.class.getClassLoader();
         Canvas free = new Canvas(255, 140);
         GraphicsContext gc = free.getGraphicsContext2D();
+        Image backImage = new Image(loader.getResourceAsStream("backbalcony.png"));
+        gc.drawImage(backImage,0,0,255,140);
 
         Iterator<Councilor> councilorIterator = balcony.councilorsIterator();
         int index = 0;
         while(councilorIterator.hasNext()) {
             Councilor councilor = councilorIterator.next();
             Image councImage = loadCouncilorImage(councilor, loader);
-            gc.drawImage(councImage,index*63.75,0,66.75,140);
+            gc.drawImage(councImage,15+index*56.25,5,56.25,140);
             index++;
         }
         Image balcImage = new Image(loader.getResourceAsStream("balcony.png"));
