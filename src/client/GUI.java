@@ -3,7 +3,7 @@ package client;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
-import core.gamemodel.NobilityPath;
+import core.gamemodel.*;
 import core.gamemodel.bonus.Bonus;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
@@ -108,6 +108,15 @@ public class GUI extends Application {
         ObjectImageView nobilityIV = new ObjectImageView(image, 0.04968196834915602, 0.8150382513661202, 0.68253772);
         boardObjects.add(nobilityIV);
 
+        Image balcony1 = new Image(classLoader.getResourceAsStream("balcony.png"));
+        ObjectImageView seaBalcony = new ObjectImageView(balcony1, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
+        boardObjects.add(seaBalcony);
+
+        CouncilorsBalcony balcony = new CouncilorsBalcony(RegionType.SEA);
+        balcony.addCouncilor(new Councilor(CouncilColor.BLACK,0));
+        balcony.addCouncilor(new Councilor(CouncilColor.PINK,0));
+        balcony.addCouncilor(new Councilor(CouncilColor.PURPLE,0));
+        balcony.addCouncilor(new Councilor(CouncilColor.WHITE,0));
 
         setBoardObjects(boardObjects, classLoader);
         boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, borderglow, popOver));
@@ -119,6 +128,10 @@ public class GUI extends Application {
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
         Button dummyHand = new Button("I'm a dummy hand button");
+        dummyChat.setOnAction(event -> {
+            balcony.addCouncilor(new Councilor(CouncilColor.CYAN,0));
+            seaBalcony.setImage(BalconyDrawer.drawBalcony(balcony));
+        });
         dummyHand.setOnAction(event -> {
             AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.NOBILITY);
             List<List<Bonus>> bonusPath = new ArrayList<>(21);
