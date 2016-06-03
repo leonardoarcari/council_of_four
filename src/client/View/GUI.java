@@ -230,9 +230,9 @@ public class GUI extends Application {
         Image mImage = new Image(classLoader.getResourceAsStream("m.png"));
         Image nImage = new Image(classLoader.getResourceAsStream("n.png"));
         Image oImage = new Image(classLoader.getResourceAsStream("o.png"));
-        testTown = new TownView(aImage, 0.07257407407407407, 0.059109289617486336, 0.10459153122197);
+        testTown = new TownView(TownName.A, 0.07257407407407407, 0.059109289617486336, 0.10459153122197, aImage);
         boardObjects.add(testTown);
-        boardObjects.add(new TownView(bImage, 0.061042592592592594, 0.24180327868852458, 0.114425925925926));
+        boardObjects.add(new TownView(TownName.B, 0.061042592592592594, 0.24180327868852458, 0.114425925925926, bImage));
         boardObjects.add(new ObjectImageView(cImage, 0.2155925925925926, 0.11958469945355191, 0.114583333333333));
         boardObjects.add(new ObjectImageView(dImage, 0.2084852504710498, 0.2786885245901639, 0.105321313772738));
         boardObjects.add(new ObjectImageView(eImage, 0.11026557621929187, 0.40846994535519127, 0.102691805475035));

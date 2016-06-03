@@ -1,6 +1,8 @@
 package client.View;
 
 import core.Player;
+import core.gamemodel.Town;
+import core.gamemodel.TownName;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -24,9 +25,12 @@ import java.util.List;
 public class TownView extends ObjectImageView {
     private ObservableList<Player> emporiums;
     private VBox emporiumNode;
+    private Town town;
+    private TownName townName;
 
-    public TownView(Image image, double leftX, double topY, double width) {
+    public TownView(TownName townName, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
+        this.townName = townName;
         emporiums = FXCollections.observableArrayList();
         emporiumNode = new VBox(5);
         emporiumNode.setPadding(new Insets(5));
@@ -51,6 +55,10 @@ public class TownView extends ObjectImageView {
     public void setEmporiums(List<Player> emporiums) {
         this.emporiums.clear();
         this.emporiums.addAll(emporiums);
+    }
+
+    public void setTown(Town town) {
+        this.town = town;
     }
 
     public Node getEmporiumNode() {
