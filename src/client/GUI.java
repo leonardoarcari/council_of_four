@@ -10,11 +10,11 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -25,20 +25,35 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Leonardo Arcari on 31/05/2016.
  */
 public class GUI extends Application {
+    private ClassLoader classLoader = this.getClass().getClassLoader();
     private GridPane gridPane;
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
+
+    private StackPane actionBoard;
+    private HiddenSidesPane choicePane;
+    private TreeView<String> actionChoice;
+
+    private ObjectImageView seaBalcony;
+    private ObjectImageView hillsBalcony;
+    private ObjectImageView mountainsBalcony;
+    private ObjectImageView boardBalcony;
+    private GridPane balconyPane;
+    private Button electCouncilor;
+    private Button satisfyCouncil;
 
     private List<ObjectImageView> boardObjects;
 
@@ -86,8 +101,25 @@ public class GUI extends Application {
 
         boardAnchor = new AnchorPane();
 
+        //Choice tree setup
+        TreeItem<String> choiceItem = new TreeItem<>("Make a choice");
+        TreeItem<String> servantsPool = new TreeItem<>("See servants pool");
+        TreeItem<String> myHand = new TreeItem<>("Show my hand");
+        choiceItem.getChildren().addAll(servantsPool, myHand);
+        actionChoice = new TreeView<>(choiceItem);
+
+        actionBoard = new StackPane();
+        choicePane = new HiddenSidesPane();
+
+        Label content = new Label("Content Node");
+        content.setStyle("-fx-background-color: white; -fx-border-color: black;");
+        content.setAlignment(Pos.CENTER);
+        content.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        choicePane.setTop(actionChoice);
+        actionBoard.getChildren().add(choicePane);
+
+
         // Load GameBoard imageview
-        ClassLoader classLoader = this.getClass().getClassLoader();
         Image gameBoardImage = new Image(classLoader.getResourceAsStream("gameboard_scaled.png"));
         gameboardIV = new ImageView(gameBoardImage);
         gameboardIV.setSmooth(true);
@@ -108,9 +140,26 @@ public class GUI extends Application {
         ObjectImageView nobilityIV = new ObjectImageView(image, 0.04968196834915602, 0.8150382513661202, 0.68253772);
         boardObjects.add(nobilityIV);
 
-        Image balcony1 = new Image(classLoader.getResourceAsStream("balcony.png"));
-        ObjectImageView seaBalcony = new ObjectImageView(balcony1, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
-        boardObjects.add(seaBalcony);
+        //Balconies setup
+        Image fullBalcony = new Image(classLoader.getResourceAsStream("fullbalcony.png"));
+        seaBalcony = new ObjectImageView(fullBalcony, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
+        hillsBalcony = new ObjectImageView(fullBalcony, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
+        mountainsBalcony = new ObjectImageView(fullBalcony, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
+        boardBalcony = new ObjectImageView(fullBalcony, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
+        boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
+
+        balconyPane = new GridPane();
+        balconyPane.setPadding(new Insets(15.0));
+        balconyPane.setHgap(10.0);
+        electCouncilor = new Button("Elect Councilor");
+        satisfyCouncil = new Button("Satisfy Council");
+        balconyPane.add(electCouncilor,0,0);
+        balconyPane.add(satisfyCouncil,1,0);
+        seaBalcony.setOnMouseClicked(event-> {
+            popOver.setContentNode(balconyPane);
+            popOver.setHeight(balconyPane.getHeight());
+            popOver.show(seaBalcony, 50);
+        });
 
         CouncilorsBalcony balcony = new CouncilorsBalcony(RegionType.SEA);
         balcony.addCouncilor(new Councilor(CouncilColor.BLACK,0));
@@ -146,9 +195,9 @@ public class GUI extends Application {
 
         // Add Nodes to gridPane
         GridPane.setConstraints(boardAnchor, 0, 0, 1, 2);
-        GridPane.setConstraints(dummyChat, 1, 0, 1, 1);
+        GridPane.setConstraints(actionBoard, 1, 0, 1, 1);
         GridPane.setConstraints(dummyHand, 1, 1, 1, 1);
-        gridPane.getChildren().addAll(boardAnchor, dummyChat, dummyHand);
+        gridPane.getChildren().addAll(boardAnchor, actionBoard, dummyHand);
 
         // Scene & Stage setup
         Scene scene = new Scene(gridPane, 1280, 720);
@@ -189,7 +238,7 @@ public class GUI extends Application {
     private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
         iv.setOnMouseEntered(event -> iv.setEffect(effect));
         iv.setOnMouseExited(event -> iv.setEffect(null));
-        iv.setOnMouseClicked(event -> popOver.show(iv, 60));
+        //iv.setOnMouseClicked(event -> popOver.show(iv, 60));
     }
 
     private void setBoardObjects(List<ObjectImageView> boardObjects, ClassLoader classLoader) {
@@ -235,5 +284,19 @@ public class GUI extends Application {
         borderglow.setInput(glow);
         borderglow.setBlurType(BlurType.GAUSSIAN);
         return borderglow;
+    }
+
+    public void modifyBalcony(CouncilorsBalcony balcony) {
+        RegionType type = balcony.getRegion();
+        ObjectImageView balconyIV;
+        if(type.equals(RegionType.SEA)) {
+            balconyIV = seaBalcony;
+        } else if(type.equals(RegionType.HILLS)) {
+            balconyIV = hillsBalcony;
+        } else if(type.equals(RegionType.MOUNTAINS)) {
+            balconyIV = mountainsBalcony;
+        } else balconyIV = boardBalcony;
+
+        balconyIV.setImage(BalconyDrawer.drawBalcony(balcony));
     }
 }
