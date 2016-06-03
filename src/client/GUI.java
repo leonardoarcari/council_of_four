@@ -7,10 +7,7 @@ import core.gamemodel.*;
 import core.gamemodel.bonus.Bonus;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,6 +23,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.controlsfx.control.HiddenSidesPane;
+import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;
@@ -43,8 +41,7 @@ public class GUI extends Application {
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
 
-    private StackPane actionBoard;
-    private HiddenSidesPane choicePane;
+    private MasterDetailPane choicePane;
     private TreeView<String> actionChoice;
 
     private ObjectImageView seaBalcony;
@@ -107,17 +104,12 @@ public class GUI extends Application {
         TreeItem<String> myHand = new TreeItem<>("Show my hand");
         choiceItem.getChildren().addAll(servantsPool, myHand);
         actionChoice = new TreeView<>(choiceItem);
-
-        actionBoard = new StackPane();
-        choicePane = new HiddenSidesPane();
-
-        Label content = new Label("Content Node");
-        content.setStyle("-fx-background-color: white; -fx-border-color: black;");
-        content.setAlignment(Pos.CENTER);
-        content.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        choicePane.setTop(actionChoice);
-        actionBoard.getChildren().add(choicePane);
-
+        choicePane = new MasterDetailPane();
+        choicePane.setDetailNode(actionChoice);
+        choicePane.setMasterNode(new Label("prova"));
+        choicePane.setDetailSide(Side.TOP);
+        choicePane.setDividerPosition(0.1); //Percentage...
+        choicePane.setShowDetailNode(true);
 
         // Load GameBoard imageview
         Image gameBoardImage = new Image(classLoader.getResourceAsStream("gameboard_scaled.png"));
@@ -195,9 +187,9 @@ public class GUI extends Application {
 
         // Add Nodes to gridPane
         GridPane.setConstraints(boardAnchor, 0, 0, 1, 2);
-        GridPane.setConstraints(actionBoard, 1, 0, 1, 1);
+        GridPane.setConstraints(choicePane, 1, 0, 1, 1);
         GridPane.setConstraints(dummyHand, 1, 1, 1, 1);
-        gridPane.getChildren().addAll(boardAnchor, actionBoard, dummyHand);
+        gridPane.getChildren().addAll(boardAnchor, choicePane, dummyHand);
 
         // Scene & Stage setup
         Scene scene = new Scene(gridPane, 1280, 720);
