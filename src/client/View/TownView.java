@@ -61,12 +61,13 @@ public class TownView extends ObjectImageView {
     private void setUpEmporiumNode() {
         emporiumNode = new VBox(5);
         emporiumNode.setPadding(new Insets(5));
-        Text title = new Text("Emporiums built");
+        Text title = new Text("No Emporiums built");
         title.setFont(Font.font(title.getFont().getFamily(), FontWeight.BOLD, title.getFont().getSize()));
         HBox emporiumsList = new HBox(5);
         emporiums.addListener((ListChangeListener<Player>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
+                    title.setText("Emporiums built");
                     emporiumsList.getChildren().clear();
                     c.getList().forEach(o -> {
                         Circle circle = new Circle(20, o.getColor());
