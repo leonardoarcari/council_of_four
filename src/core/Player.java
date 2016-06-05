@@ -138,9 +138,15 @@ public class Player implements Subject, Serializable {
         return townTypeCards.iterator();
     }
 
-    public int servantsNumber() {
+    public int getServantsNumber() {
         return servants.size();
     }
+
+    public int getPermitCardsNumber() { return permitCards.size(); }
+
+    public int getPoliticsCardsNumber() { return politicsCards.size(); }
+
+    public int getRoyalCardsNumber() { return royalCards.size(); }
 
     public Color getColor() {
         return color;

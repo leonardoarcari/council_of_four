@@ -39,12 +39,7 @@ public class TownView extends ObjectImageView {
 
     }
 
-    private void setEmporiums(List<Player> emporiums) {
-        this.emporiums.clear();
-        this.emporiums.addAll(emporiums);
-    }
-
-    public void setTown(Town town) {
+    public void update(Town town) {
         if (this.town == null) this.town = town;
         List<Player> emporiums = new ArrayList<>();
         Iterator<Player> emporiumIterator = town.getPlayersEmporium();
@@ -54,8 +49,17 @@ public class TownView extends ObjectImageView {
         setEmporiums(emporiums);
     }
 
+    private void setEmporiums(List<Player> emporiums) {
+        this.emporiums.clear();
+        this.emporiums.addAll(emporiums);
+    }
+
     public Node getEmporiumNode() {
         return emporiumNode;
+    }
+
+    public TownName getTownName() {
+        return townName;
     }
 
     private void setUpEmporiumNode() {
