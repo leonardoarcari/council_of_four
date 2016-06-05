@@ -106,7 +106,7 @@ public class GUI extends Application {
         actionChoice = new TreeView<>(choiceItem);
         choicePane = new MasterDetailPane();
         choicePane.setDetailNode(actionChoice);
-        choicePane.setMasterNode(new Label("prova"));
+
         choicePane.setDetailSide(Side.TOP);
         choicePane.setDividerPosition(0.1); //Percentage...
         choicePane.setShowDetailNode(true);
@@ -168,6 +168,7 @@ public class GUI extends Application {
 
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
+        choicePane.setMasterNode(dummyChat);
         Button dummyHand = new Button("I'm a dummy hand button");
         dummyChat.setOnAction(event -> {
             balcony.addCouncilor(new Councilor(CouncilColor.CYAN,0));
