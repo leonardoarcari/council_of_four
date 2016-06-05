@@ -150,11 +150,28 @@ public class GUI extends Application {
             nobilityIV.setImage(drawer.drawPath());
         });
 
+        /********************* TESTING PLAYER'S HAND ***************************/
+        PlayerView playerView = new PlayerView();
+        Player test = new Player(null);
+        test.setNickname("Lippy");
+        test.setUsername("Leonardo Arcari");
+        test.hireServants(Arrays.asList(new Servant(), new Servant(), new Servant()));
+        test.addPermitCard(null);
+        test.addPoliticsCard(new PoliticsCard(CouncilColor.ORANGE));
+        test.addPoliticsCard(new PoliticsCard(CouncilColor.RAINBOW));
+        test.addRoyalCard(RoyalCard.FIRST);
+        test.addRoyalCard(RoyalCard.SECOND);
+        test.addRoyalCard(RoyalCard.THIRD);
+        test.addRoyalCard(RoyalCard.FOURTH);
+        playerView.setPlayerProperty(test);
+        GridPane.setConstraints(playerView.getPlayerNode(), 1, 0, 1, 1);
+        /************************** END ****************************************/
+
         // Add Nodes to gridPane
         GridPane.setConstraints(boardAnchor, 0, 0, 1, 2);
-        GridPane.setConstraints(dummyChat, 1, 0, 1, 1);
+        //GridPane.setConstraints(dummyChat, 1, 0, 1, 1);
         GridPane.setConstraints(dummyHand, 1, 1, 1, 1);
-        gridPane.getChildren().addAll(boardAnchor, dummyChat, dummyHand);
+        gridPane.getChildren().addAll(boardAnchor, playerView.getPlayerNode(), dummyHand);
 
         // Scene & Stage setup
         Scene scene = new Scene(gridPane, 1280, 720);

@@ -7,6 +7,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
@@ -30,10 +31,10 @@ public class PlayerView {
     private void setUpPlayerNode() {
         playerNode = new VBox(10);
         playerNode.setAlignment(Pos.CENTER);
-        playerNode.setFillWidth(true);
 
         // User info
         GridPane userInfoPane = new GridPane();
+        userInfoPane.setPadding(new Insets(0, 20, 0, 20));
 
         ColumnConstraints c0 = new ColumnConstraints();
         c0.setPercentWidth(20);
@@ -42,7 +43,7 @@ public class PlayerView {
         c1.setPercentWidth(80);
         c1.setFillWidth(true);
         c1.setHgrow(Priority.ALWAYS);
-        c1.setHalignment(HPos.CENTER);
+        c1.setHalignment(HPos.LEFT);
 
         userInfoPane.getColumnConstraints().addAll(c0, c1);
 
@@ -55,35 +56,47 @@ public class PlayerView {
         userInfoPane.add(nickname, 1, 1);
 
         // Player's hand
-        TilePane handPane = new TilePane(Orientation.HORIZONTAL);
-        handPane.setPrefColumns(2);
-        handPane.setTileAlignment(Pos.CENTER);
+        GridPane handPane = new GridPane();
+        ColumnConstraints c2 = new ColumnConstraints();
+        c2.setPercentWidth(50);
+        c2.setHalignment(HPos.CENTER);
+        c2.setHgrow(Priority.ALWAYS);
+        ColumnConstraints c3 = new ColumnConstraints();
+        c3.setPercentWidth(50);
+        c3.setHgrow(Priority.ALWAYS);
+        c3.setHalignment(HPos.CENTER);
+
+        handPane.getColumnConstraints().addAll(c2, c3);
+        handPane.setVgap(20);
 
         HBox servantsBox = new HBox(10);
         servantsBox.setAlignment(Pos.CENTER);
-        Circle servantsCircle = new Circle(10, Color.BLACK);
+        Circle servantsCircle = new Circle(25, Color.BLACK);
         Text servantsNo = new Text();
         servantsBox.getChildren().addAll(servantsCircle, servantsNo);
 
         HBox politicsBox = new HBox(10);
         politicsBox.setAlignment(Pos.CENTER);
-        Circle politicsCircle = new Circle(10, Color.BLUE);
+        Circle politicsCircle = new Circle(25, Color.BLUE);
         Text politicsNo = new Text();
-        servantsBox.getChildren().addAll(politicsCircle, politicsNo);
+        politicsBox.getChildren().addAll(politicsCircle, politicsNo);
 
         HBox permitBox = new HBox(10);
         permitBox.setAlignment(Pos.CENTER);
-        Circle permitCircle = new Circle(10, Color.DARKGREEN);
+        Circle permitCircle = new Circle(25, Color.DARKGREEN);
         Text permitsNo = new Text();
-        servantsBox.getChildren().addAll(permitCircle, permitsNo);
+        permitBox.getChildren().addAll(permitCircle, permitsNo);
 
         HBox royalBox = new HBox(10);
         royalBox.setAlignment(Pos.CENTER);
-        Circle royalCircle = new Circle(10, Color.RED);
+        Circle royalCircle = new Circle(25, Color.RED);
         Text royalNo = new Text();
-        servantsBox.getChildren().addAll(royalCircle, royalNo);
+        royalBox.getChildren().addAll(royalCircle, royalNo);
 
-        handPane.getChildren().addAll(servantsBox, politicsBox, permitBox, royalBox);
+        handPane.add(servantsBox, 0, 0);
+        handPane.add(politicsBox, 1, 0);
+        handPane.add(permitBox, 0, 1);
+        handPane.add(royalBox, 1, 1);
 
         // Separators
         Separator first = new Separator(Orientation.HORIZONTAL);
@@ -105,15 +118,33 @@ public class PlayerView {
 
         // Set Listener
         playerProperty.addListener((observable, oldValue, newValue) -> {
-            playerColor.setFill(newValue.getColor());
-            username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
-            nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
-            servantsNo.setText(String.valueOf(newValue.getServantsNumber()));
-            politicsNo.setText(String.valueOf(newValue.getPoliticsCardsNumber()));
-            permitsNo.setText(String.valueOf(newValue.getPermitCardsNumber()));
-            royalNo.setText(String.valueOf(newValue.getRoyalCardsNumber()));
+            if (newValue != null) {
+                playerColor.setFill(newValue.getColor());
+                username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
+                nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
+                servantsNo.setText(String.valueOf(newValue.getServantsNumber()));
+                politicsNo.setText(String.valueOf(newValue.getPoliticsCardsNumber()));
+                permitsNo.setText(String.valueOf(newValue.getPermitCardsNumber()));
+                royalNo.setText(String.valueOf(newValue.getRoyalCardsNumber()));
 
-            //TODO: Add PopOvers and ScrollPane Cards views
+                //TODO: Add PopOvers and ScrollPane Cards views
+            }
         });
+    }
+
+    public Node getPlayerNode() {
+        return playerNode;
+    }
+
+    public Player getPlayerProperty() {
+        return playerProperty.get();
+    }
+
+    public ObjectProperty<Player> playerPropertyProperty() {
+        return playerProperty;
+    }
+
+    public void setPlayerProperty(Player playerProperty) {
+        this.playerProperty.set(playerProperty);
     }
 }
