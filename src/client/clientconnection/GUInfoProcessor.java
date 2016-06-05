@@ -1,6 +1,7 @@
 package client.clientconnection;
 
 import client.View.GUI;
+import client.View.TownView;
 import core.Player;
 import core.connection.InfoProcessor;
 import core.gamemodel.Town;
@@ -26,12 +27,8 @@ public class GUInfoProcessor implements InfoProcessor, Runnable {
     @Override
     public void processInfo(Object info) {
         if (info.getClass().equals(Town.class)) {
-            Iterator<Player> playerIterator = ((Town) info).getPlayersEmporium();
-            List<Player> emporiumList = new ArrayList<>();
-            while (playerIterator.hasNext()) {
-                emporiumList.add(playerIterator.next());
-            }
-            gui.setEmporiumTestTown(emporiumList);
+            Town town = (Town) info;
+            gui.getTownView(town.getTownName()).setTown(town);
         }
     }
 

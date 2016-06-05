@@ -54,14 +54,8 @@ public class Player implements Subject, Serializable {
     }
 
     private Color generateColor() {
-        Field[] colors = Color.class.getDeclaredFields();
-        int index = Double.valueOf(Math.random() * colors.length).intValue();
-        boolean accessible = false;
-        while (true) {
-            try {
-                return (Color) colors[index].get(null);
-            } catch (IllegalAccessException e) {}
-        }
+        PlayerColor[] colors = PlayerColor.values();
+        return colors[Double.valueOf(Math.random() * colors.length).intValue()].getColor();
     }
 
     public void setNickname(String nickname) {

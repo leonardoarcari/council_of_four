@@ -8,6 +8,9 @@
       <root url="jar://$MAVEN_REPOSITORY$/org/controlsfx/controlsfx-samples/8.40.10/controlsfx-samples-8.40.10.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/controlsfx-8.40.10-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/controlsfx/controlsfx-samples/8.40.10/controlsfx-samples-8.40.10-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

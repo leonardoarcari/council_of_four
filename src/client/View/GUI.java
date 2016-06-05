@@ -27,21 +27,20 @@ import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Leonardo Arcari on 31/05/2016.
  */
 public class GUI extends Application {
+    private ClassLoader classLoader;
     private GridPane gridPane;
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
     private ControllerUI controllerUI;
-    private TownView testTown;
 
     private List<ObjectImageView> boardObjects;
+    private Map<TownName, TownView> townsView;
 
     private final static int GAMEBOARD_HEIGHT = 700;
     private final static float GAMEBOARD_WIDTH = GAMEBOARD_HEIGHT * 72f/61;
@@ -56,6 +55,7 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         gridPane = new GridPane();
+        classLoader = this.getClass().getClassLoader();
         final DropShadow borderglow = setShadowEffect();
 
         PopOver popOver = new PopOver();
@@ -121,12 +121,15 @@ public class GUI extends Application {
         balcony.addCouncilor(new Councilor(CouncilColor.PURPLE,0));
         balcony.addCouncilor(new Councilor(CouncilColor.WHITE,0));
 
-        setBoardObjects(boardObjects, classLoader);
+        townsView = new HashMap<>();
+        setBoardObjects();
         boardObjects.forEach(objectImageView -> setObjectGlow(objectImageView, borderglow, popOver));
+        townsView.values().forEach(objectImageView -> setObjectGlow(objectImageView, borderglow, popOver));
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
         boardAnchor.getChildren().addAll(boardObjects);
+        boardAnchor.getChildren().addAll(townsView.values());
 
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
@@ -158,12 +161,15 @@ public class GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        testTown.setEmporiums(Arrays.asList(new Player(null), new Player(null)));
-
         scrollPane.prefViewportWidthProperty().bind(boardAnchor.widthProperty().multiply(1.5).multiply(boardObjects.get(1).getWidth()));
 
         // Set listeners
         boardObjects.forEach(objectImageView -> {
+            setImageViewListener(objectImageView);
+            setObjectConstraints(objectImageView);
+        });
+
+        townsView.values().forEach(objectImageView -> {
             setImageViewListener(objectImageView);
             setObjectConstraints(objectImageView);
         });
@@ -213,7 +219,7 @@ public class GUI extends Application {
         });
     }
 
-    private void setBoardObjects(List<ObjectImageView> boardObjects, ClassLoader classLoader) {
+    private void setBoardObjects() {
         // Town IVs
         Image aImage = new Image(classLoader.getResourceAsStream("a.png"));
         Image bImage = new Image(classLoader.getResourceAsStream("b.png"));
@@ -230,22 +236,21 @@ public class GUI extends Application {
         Image mImage = new Image(classLoader.getResourceAsStream("m.png"));
         Image nImage = new Image(classLoader.getResourceAsStream("n.png"));
         Image oImage = new Image(classLoader.getResourceAsStream("o.png"));
-        testTown = new TownView(TownName.A, 0.07257407407407407, 0.059109289617486336, 0.10459153122197, aImage);
-        boardObjects.add(testTown);
-        boardObjects.add(new TownView(TownName.B, 0.061042592592592594, 0.24180327868852458, 0.114425925925926, bImage));
-        boardObjects.add(new ObjectImageView(cImage, 0.2155925925925926, 0.11958469945355191, 0.114583333333333));
-        boardObjects.add(new ObjectImageView(dImage, 0.2084852504710498, 0.2786885245901639, 0.105321313772738));
-        boardObjects.add(new ObjectImageView(eImage, 0.11026557621929187, 0.40846994535519127, 0.102691805475035));
-        boardObjects.add(new ObjectImageView(fImage, 0.3811597344042335, 0.0868013698630137, 0.104449317367015));
-        boardObjects.add(new ObjectImageView(gImage, 0.3948916963480114, 0.2467627118644068, 0.10285385614803205));
-        boardObjects.add(new ObjectImageView(hImage, 0.40973005099866394, 0.3864406779661017, 0.09912460333496036));
-        boardObjects.add(new ObjectImageView(iImage, 0.5466258390659746, 0.08813559322033898, 0.0967313203267906));
-        boardObjects.add(new ObjectImageView(jImage, 0.5349027170062496, 0.2830508474576271, 0.0973074585507204));
-        boardObjects.add(new ObjectImageView(kImage, 0.7117437356463746, 0.07401129943502825, 0.0999579670574619));
-        boardObjects.add(new ObjectImageView(lImage, 0.684200387088455, 0.24884182660489743, 0.1078307727656072));
-        boardObjects.add(new ObjectImageView(mImage, 0.6729745030117486, 0.416462482946794, 0.120203003974608));
-        boardObjects.add(new ObjectImageView(nImage, 0.82539565232543, 0.16800354706684858, 0.113268215283765));
-        boardObjects.add(new ObjectImageView(oImage, 0.829096739437645, 0.3542896174863388, 0.106006559623886));
+        townsView.put(TownName.A, new TownView(TownName.A, 0.07257407407407407, 0.059109289617486336, 0.10459153122197, aImage));
+        townsView.put(TownName.B, new TownView(TownName.B, 0.061042592592592594, 0.24180327868852458, 0.114425925925926, bImage));
+        townsView.put(TownName.C, new TownView(TownName.C, 0.2155925925925926, 0.11958469945355191, 0.114583333333333, cImage));
+        townsView.put(TownName.D, new TownView(TownName.D, 0.2084852504710498, 0.2786885245901639, 0.105321313772738, dImage));
+        townsView.put(TownName.E, new TownView(TownName.E, 0.11026557621929187, 0.40846994535519127, 0.102691805475035, eImage));
+        townsView.put(TownName.F, new TownView(TownName.F, 0.3811597344042335, 0.0868013698630137, 0.104449317367015, fImage));
+        townsView.put(TownName.G, new TownView(TownName.G, 0.3948916963480114, 0.2467627118644068, 0.10285385614803205, gImage));
+        townsView.put(TownName.H, new TownView(TownName.H, 0.40973005099866394, 0.3864406779661017, 0.09912460333496036, hImage));
+        townsView.put(TownName.I, new TownView(TownName.I, 0.5466258390659746, 0.08813559322033898, 0.0967313203267906, iImage));
+        townsView.put(TownName.J, new TownView(TownName.J, 0.5349027170062496, 0.2830508474576271, 0.0973074585507204, jImage));
+        townsView.put(TownName.K, new TownView(TownName.K, 0.7117437356463746, 0.07401129943502825, 0.0999579670574619, kImage));
+        townsView.put(TownName.L, new TownView(TownName.L, 0.684200387088455, 0.24884182660489743, 0.1078307727656072, lImage));
+        townsView.put(TownName.M, new TownView(TownName.M, 0.6729745030117486, 0.416462482946794, 0.120203003974608, mImage));
+        townsView.put(TownName.N, new TownView(TownName.N, 0.82539565232543, 0.16800354706684858, 0.113268215283765, nImage));
+        townsView.put(TownName.O, new TownView(TownName.O, 0.829096739437645, 0.3542896174863388, 0.106006559623886, oImage));
     }
 
     private DropShadow setShadowEffect() {
@@ -259,7 +264,21 @@ public class GUI extends Application {
         return borderglow;
     }
 
-    public void setEmporiumTestTown(List<Player> emporiumList) {
-        testTown.setEmporiums(emporiumList);
+    /*public void modifyBalcony(CouncilorsBalcony balcony) {
+        RegionType type = balcony.getRegion();
+        ObjectImageView balconyIV;
+        if (type.equals(RegionType.SEA)) {
+            balconyIV = seaBalcony;
+        } else if (type.equals(RegionType.HILLS)) {
+            balconyIV = hillsBalcony;
+        } else if (type.equals(RegionType.MOUNTAINS)) {
+            balconyIV = mountainsBalcony;
+        } else balconyIV = boardBalcony;
+
+        balconyIV.setImage(BalconyDrawer.drawBalcony(balcony));
+    }*/
+
+    public TownView getTownView(TownName name) {
+        return townsView.get(name);
     }
 }

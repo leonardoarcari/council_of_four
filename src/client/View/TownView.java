@@ -17,6 +17,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,7 +33,32 @@ public class TownView extends ObjectImageView {
     public TownView(TownName townName, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
         this.townName = townName;
+        this.town = null;
         emporiums = FXCollections.observableArrayList();
+        setUpEmporiumNode();
+
+    }
+
+    private void setEmporiums(List<Player> emporiums) {
+        this.emporiums.clear();
+        this.emporiums.addAll(emporiums);
+    }
+
+    public void setTown(Town town) {
+        if (this.town == null) this.town = town;
+        List<Player> emporiums = new ArrayList<>();
+        Iterator<Player> emporiumIterator = town.getPlayersEmporium();
+        while (emporiumIterator.hasNext()) {
+            emporiums.add(emporiumIterator.next());
+        }
+        setEmporiums(emporiums);
+    }
+
+    public Node getEmporiumNode() {
+        return emporiumNode;
+    }
+
+    private void setUpEmporiumNode() {
         emporiumNode = new VBox(5);
         emporiumNode.setPadding(new Insets(5));
         Text title = new Text("Emporiums built");
@@ -50,18 +77,5 @@ public class TownView extends ObjectImageView {
         });
         emporiumNode.setAlignment(Pos.CENTER);
         emporiumNode.getChildren().addAll(title, emporiumsList);
-    }
-
-    public void setEmporiums(List<Player> emporiums) {
-        this.emporiums.clear();
-        this.emporiums.addAll(emporiums);
-    }
-
-    public void setTown(Town town) {
-        this.town = town;
-    }
-
-    public Node getEmporiumNode() {
-        return emporiumNode;
     }
 }
