@@ -2,13 +2,14 @@ package core.gamemodel;
 
 import core.gamemodel.bonus.Bonus;
 import core.Player;
+import core.gamemodel.modelinterface.NobilityPathInterface;
 
 import java.util.*;
 
 /**
  * Created by Matteo on 23/05/16.
  */
-public class NobilityPath extends AbstractPath{
+public class NobilityPath extends AbstractPath implements NobilityPathInterface{
     private List<List<Bonus>> bonusPath;
 
     public List<List<Bonus>> getBonusPath() {

@@ -171,6 +171,11 @@ public class Region implements RegionInterface, Subject{
         } else return RegionCard.NULL;
     }
 
+    @Override
+    public RegionType getRegionType() {
+        return regionType;
+    }
+
     public Iterator<Town> townIterator() {
         return regionTowns.values().iterator();
     }

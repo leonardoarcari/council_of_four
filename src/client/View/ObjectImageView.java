@@ -1,6 +1,5 @@
 package client.View;
 
-import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 

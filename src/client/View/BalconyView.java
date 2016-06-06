@@ -34,13 +34,11 @@ public class BalconyView extends ObjectImageView {
     private ObservableList<Councilor> councilors;
     private List<Image> councilorImages;
     private PopOver popOver;
-    private Effect borderGlow;
 
     public BalconyView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         councilorImages = new ArrayList<>();
         councilors = FXCollections.observableArrayList();
-        borderGlow = setShadowEffect();
         buildPopOver();
         setUpCouncilors();
     }
@@ -100,17 +98,6 @@ public class BalconyView extends ObjectImageView {
         return new Image(loader.getResourceAsStream(counColor));
     }
 
-    private DropShadow setShadowEffect() {
-        Glow glow = new Glow(0.8);
-        DropShadow borderglow = new DropShadow();
-        borderglow.setColor(Color.WHITE);
-        borderglow.setWidth(70);
-        borderglow.setHeight(70);
-        borderglow.setInput(glow);
-        borderglow.setBlurType(BlurType.GAUSSIAN);
-        return borderglow;
-    }
-
     private void buildPopOver() {
         popOver = new PopOver();
         popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
@@ -121,8 +108,6 @@ public class BalconyView extends ObjectImageView {
         Button satisfyCouncil = new Button("Satisfy Council");
         balconyPane.add(electCouncilor,0,0);
         balconyPane.add(satisfyCouncil,1,0);
-        setOnMouseEntered(event -> setEffect(borderGlow));
-        setOnMouseExited(event -> setEffect(null));
         setOnMouseClicked(event-> {
             popOver.setContentNode(balconyPane);
             popOver.setHeight(balconyPane.getHeight());

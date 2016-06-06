@@ -65,7 +65,7 @@ public class CouncilorPoolView {
         });
         pool.addListener((ListChangeListener<CouncilorView>) c ->{
             while(c.next()) {
-                if(c.wasAdded() || c.wasRemoved() || c.wasPermutated()) {
+                if(c.wasAdded()) {
                     flowNode.getChildren().clear();
                     c.getList().forEach(o ->{
                         Image councImage = selectFromColor(o.getCouncilor().getCouncilorColor());

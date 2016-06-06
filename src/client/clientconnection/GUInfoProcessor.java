@@ -3,9 +3,7 @@ package client.clientconnection;
 import client.View.GUI;
 import core.connection.InfoProcessor;
 import core.gamemodel.WealthPath;
-import core.gamemodel.modelinterface.BalconyInterface;
-import core.gamemodel.modelinterface.TownInterface;
-import core.gamemodel.modelinterface.WealthPathInterface;
+import core.gamemodel.modelinterface.*;
 
 
 /**
@@ -27,6 +25,10 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updateBalcony((BalconyInterface) info);
         } else if (info instanceof WealthPathInterface) {
             gui.updateWealthPath((WealthPath) info);
+        } else if (info instanceof RegionInterface) {
+            gui.updatePermitCard((RegionInterface) info);
+        } else if (info instanceof NobilityPathInterface) {
+            gui.updateNobilityPath((NobilityPathInterface) info);
         }
     }
 }
