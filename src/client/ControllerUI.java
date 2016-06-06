@@ -1,6 +1,7 @@
 package client;
 
-import client.clientconnection.ClientProcessor;
+import client.View.GUI;
+import client.clientconnection.GUInfoProcessor;
 import client.clientconnection.RMIConnection;
 import core.connection.Connection;
 import core.connection.InfoProcessor;
@@ -18,12 +19,12 @@ public class ControllerUI {
     private Connection connection;
     private InfoProcessor processor;
     private SocketConnection socketConnection;
-    private View view;
+    private GUI gui;
 
-    public ControllerUI() {
-        view = new View(this);
-        processor = new ClientProcessor(view);
-        view.chooseOption();
+    public ControllerUI(GUI gui) {
+        this.gui = gui;
+        processor = new GUInfoProcessor(gui);
+        new Thread((GUInfoProcessor) processor).start();
     }
 
     public void rmiConnection() {

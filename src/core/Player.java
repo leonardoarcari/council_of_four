@@ -2,8 +2,10 @@ package core;
 
 import core.connection.Connection;
 import core.gamemodel.*;
+import javafx.scene.paint.Color;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -13,6 +15,7 @@ public class Player implements Subject, Serializable {
     private String uniqueID;
     private String username;
     private String nickname;
+    private Color color;
     private transient Connection connection;
 
     // The hand
@@ -29,6 +32,7 @@ public class Player implements Subject, Serializable {
         this.connection = connection;
 
         uniqueID = generateID();
+        color = generateColor();
         username = null;
         nickname = null;
         permitCards = new ArrayList<>();
@@ -47,6 +51,11 @@ public class Player implements Subject, Serializable {
             id += random.nextInt(10);
         }
         return id;
+    }
+
+    private Color generateColor() {
+        PlayerColor[] colors = PlayerColor.values();
+        return colors[Double.valueOf(Math.random() * colors.length).intValue()].getColor();
     }
 
     public void setNickname(String nickname) {
@@ -129,8 +138,18 @@ public class Player implements Subject, Serializable {
         return townTypeCards.iterator();
     }
 
-    public int servantsNumber() {
+    public int getServantsNumber() {
         return servants.size();
+    }
+
+    public int getPermitCardsNumber() { return permitCards.size(); }
+
+    public int getPoliticsCardsNumber() { return politicsCards.size(); }
+
+    public int getRoyalCardsNumber() { return royalCards.size(); }
+
+    public Color getColor() {
+        return color;
     }
 
     public void burnPermitCard(PermitCard permitCard) {
