@@ -8,6 +8,7 @@ import core.gamemodel.bonus.Bonus;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -101,11 +102,32 @@ public class GUI extends Application {
         //Choice tree setup
         TreeItem<String> choiceItem = new TreeItem<>("Make a choice");
         TreeItem<String> servantsPool = new TreeItem<>("See servants pool");
-        TreeItem<String> myHand = new TreeItem<>("Show my hand");
-        choiceItem.getChildren().addAll(servantsPool, myHand);
+        TreeItem<String> councilorPool = new TreeItem<>(new String("See councilor pool"));
+        choiceItem.getChildren().addAll(servantsPool, councilorPool);
         actionChoice = new TreeView<>(choiceItem);
+
         choicePane = new MasterDetailPane();
         choicePane.setDetailNode(actionChoice);
+        CouncilorPoolView coPool = new CouncilorPoolView();
+        coPool.setPool(Arrays.asList(
+                new Councilor(CouncilColor.CYAN,0),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1),
+                new Councilor(CouncilColor.BLACK,1)
+                ));
+        actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.equals(councilorPool)) {
+                choicePane.setMasterNode(coPool.getFlowNode());
+            } else choicePane.setMasterNode(new Label("Ciao"));
+        });
 
         choicePane.setDetailSide(Side.TOP);
         choicePane.setDividerPosition(0.1); //Percentage...
@@ -168,11 +190,11 @@ public class GUI extends Application {
 
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
-        choicePane.setMasterNode(dummyChat);
+        //choicePane.setMasterNode(dummyChat);
         Button dummyHand = new Button("I'm a dummy hand button");
         dummyChat.setOnAction(event -> {
             balcony.addCouncilor(new Councilor(CouncilColor.CYAN,0));
-            seaBalcony.setImage(BalconyDrawer.drawBalcony(balcony));
+            //seaBalcony.setImage(BalconyDrawer.drawBalcony(balcony));
         });
         dummyHand.setOnAction(event -> {
             AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.NOBILITY);
@@ -290,6 +312,6 @@ public class GUI extends Application {
             balconyIV = mountainsBalcony;
         } else balconyIV = boardBalcony;
 
-        balconyIV.setImage(BalconyDrawer.drawBalcony(balcony));
+        //balconyIV.setImage(BalconyDrawer.drawBalcony(balcony));
     }
 }
