@@ -10,6 +10,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,12 +24,12 @@ import java.util.List;
 /**
  * Created by Leonardo Arcari on 06/06/2016.
  */
-public class WealthPathView {
+public class WealthPathView implements PathViewInterface {
     private double[] posX;
     private final double width = 0.01952073703854243;
     private final double posY = 0.9066843150231635;
     private final double m = - 0.0072799470549305 / 0.66721905047932958;
-    private ObservableList<Holder> players;
+    private ObservableList<ObjectImageView> players;
     private PopOver popOver;
     private Effect effect;
 
@@ -37,28 +38,24 @@ public class WealthPathView {
         players = FXCollections.observableArrayList();
         popOver = new PopOver();
         popOver.setArrowLocation(PopOver.ArrowLocation.BOTTOM_CENTER);
-        effect = setShadowEffect();
+        effect = new DropShadow(20,Color.WHITE);
         initializePosX();
     }
 
-    public void addListener(ListChangeListener<? super Holder> listener) {
+    public void addListener(ListChangeListener<? super ObjectImageView> listener) {
         players.addListener(listener);
     }
 
     public void updateWealthPath(WealthPathInterface wealthPath) {
         players.clear();
         List<List<Player>> pathList = wealthPath.getPlayers();
-        List<Holder> holders = new ArrayList<>();
+        List<ObjectImageView> holders = new ArrayList<>();
         for (int i = 0; i < pathList.size(); i++) {
             List<Player> sameSpotPlayers = pathList.get(i);
             if (sameSpotPlayers.size() > 0) {
-                Holder marker = new Holder(width / 2, posX[i]);
-                marker.anchorY = posY + m * posX[i];
-                if (sameSpotPlayers.size() == 1) {
-                    marker.setFill(Color.DEEPSKYBLUE);
-                } else if (sameSpotPlayers.size() > 1) {
-                    marker.setFill(Color.DARKVIOLET);
-                }
+                Image icon = new Image(this.getClass().getClassLoader().getResourceAsStream("merchant.png"));
+                ObjectImageView marker = new ObjectImageView(icon, posX[i], posY, width);
+
                 VBox popBox = new VBox(5);
                 popBox.setAlignment(Pos.CENTER);
                 Text title = new Text("Players");
@@ -73,8 +70,9 @@ public class WealthPathView {
                     popOver.setContentNode(popBox);
                     popOver.show(marker, 30);
                 });
+                marker.setEffect(new Glow(1.0));
                 marker.setOnMouseEntered(event -> marker.setEffect(effect));
-                marker.setOnMouseExited(event -> marker.setEffect(null));
+                marker.setOnMouseExited(event -> marker.setEffect(new Glow(1.0)));
                 holders.add(marker);
             }
 
@@ -112,36 +110,5 @@ public class WealthPathView {
         posX[18] = 0.6543064469593773 ;
         posX[19] = 0.6882901760991841 ;
         posX[20] = 0.7213166170942075 ;
-    }
-
-    private DropShadow setShadowEffect() {
-        Glow glow = new Glow(0.8);
-        DropShadow borderglow = new DropShadow();
-        borderglow.setColor(Color.WHITE);
-        borderglow.setWidth(70);
-        borderglow.setHeight(70);
-        borderglow.setInput(glow);
-        borderglow.setBlurType(BlurType.GAUSSIAN);
-        return borderglow;
-    }
-
-    public class Holder extends Circle {
-        double baseRadius;
-        double anchorX;
-        double anchorY;
-
-        public Holder(double radius, double anchorX) {
-            super(radius);
-            this.baseRadius = radius;
-            this.anchorX = anchorX;
-        }
-
-        public double getBaseRadius() {
-            return baseRadius;
-        }
-
-        public double getAnchorX() {
-            return anchorX;
-        }
     }
 }

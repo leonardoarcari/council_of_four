@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Created by Matteo on 02/06/16.
  */
-public class NobilityPathView extends ObjectImageView {
+public class NobilityPathView extends ObjectImageView implements PathViewInterface {
     private double[] posX;
     private boolean alreadyDrawn;
     private final double width = 0.02352073703854243;

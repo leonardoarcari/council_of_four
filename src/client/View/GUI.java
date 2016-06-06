@@ -275,21 +275,7 @@ public class GUI extends Application {
     private void buildNobility() {
         Image nobilityImage = new Image(classLoader.getResourceAsStream("nobility.png"));
         nobilityPath = new NobilityPathView(nobilityImage, 0.04968196834915602, 0.8150382513661202, 0.68253772);
-        nobilityPath.addListener(c -> {
-            while (c.next()) {
-                if (c.wasRemoved()) {
-                    boardAnchor.getChildren().removeAll(c.getRemoved());
-                } if (c.wasAdded()) {
-                    Iterator<? extends ObjectImageView> iterator = c.getList().iterator();
-                    while (iterator.hasNext()) {
-                        ObjectImageView view = iterator.next();
-                        setObjectConstraints(view);
-                        setImageViewListener(view);
-                        boardAnchor.getChildren().add(view);
-                    }
-                }
-            }
-        });
+        addListener(nobilityPath);
     }
 
     private void buildActionTree() {
@@ -361,28 +347,21 @@ public class GUI extends Application {
 
     private void buildWealthPath() {
         wealthPath = new WealthPathView();
-        wealthPath.addListener(c -> {
+        addListener(wealthPath);
+    }
+
+    private void addListener(PathViewInterface path) {
+        path.addListener(c -> {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     boardAnchor.getChildren().removeAll(c.getRemoved());
                 } if (c.wasAdded()) {
-                    Iterator<? extends WealthPathView.Holder> iterator = c.getList().iterator();
+                    Iterator<? extends ObjectImageView> iterator = c.getList().iterator();
                     while (iterator.hasNext()) {
-                        WealthPathView.Holder circle = iterator.next();
-
-                        // Draw properties
-                        circle.setRadius(circle.getBaseRadius() * gameboardIV.getBoundsInParent().getWidth());
-                        AnchorPane.setLeftAnchor(circle, circle.getAnchorX() * gameboardIV.getBoundsInParent().getWidth());
-                        AnchorPane.setTopAnchor(circle, circle.anchorY * gameboardIV.getBoundsInParent().getHeight());
-
-                        // Resize Listeners
-                        gameboardIV.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
-                            circle.setRadius(circle.getBaseRadius() * newValue.getWidth()));
-                        boardAnchor.heightProperty().addListener((observable, oldValue, newValue) -> {
-                            AnchorPane.setLeftAnchor(circle, circle.getAnchorX() * gameboardIV.getBoundsInParent().getWidth());
-                            AnchorPane.setTopAnchor(circle, circle.anchorY * gameboardIV.getBoundsInParent().getHeight());
-                        });
-                        boardAnchor.getChildren().add(circle);
+                        ObjectImageView view = iterator.next();
+                        setObjectConstraints(view);
+                        setImageViewListener(view);
+                        boardAnchor.getChildren().add(view);
                     }
                 }
             }
