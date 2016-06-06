@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by Leonardo Arcari on 03/06/2016.
  */
-public class GUInfoProcessor implements InfoProcessor, Runnable {
+public class GUInfoProcessor implements InfoProcessor {
     private GUI gui;
 
     public GUInfoProcessor(GUI gui) {
@@ -26,25 +26,6 @@ public class GUInfoProcessor implements InfoProcessor, Runnable {
         if (info.getClass().equals(Town.class)) {
             Town town = (Town) info;
             gui.getTownView(town.getTownName()).update(town);
-        }
-    }
-
-    @Override
-    public void run() {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            try {
-                String command = in.readLine();
-                if (command.equals("1")) {
-                    Town town = new Town(TownName.A, new ArrayList<>());
-                    town.createEmporium(new Player(null));
-                    town.createEmporium(new Player(null));
-                    town.createEmporium(new Player(null));
-                    processInfo(town);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
