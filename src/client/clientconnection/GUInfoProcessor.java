@@ -1,7 +1,6 @@
 package client.clientconnection;
 
 import client.View.GUI;
-import core.Player;
 import core.connection.InfoProcessor;
 import core.gamemodel.Town;
 import core.gamemodel.TownName;

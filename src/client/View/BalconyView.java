@@ -1,15 +1,25 @@
-package client;
+package client.View;
 
+import client.View.ObjectImageView;
 import core.gamemodel.Councilor;
 import core.gamemodel.CouncilorsBalcony;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -22,11 +32,15 @@ import java.util.List;
 public class BalconyView extends ObjectImageView {
     private ObservableList<Councilor> councilors;
     private List<Image> councilorImages;
+    private PopOver popOver;
+    private Effect borderGlow;
 
     public BalconyView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         councilorImages = new ArrayList<>();
         councilors = FXCollections.observableArrayList();
+        borderGlow = setShadowEffect();
+        buildPopOver();
         setUpCouncilors();
     }
 
@@ -46,7 +60,7 @@ public class BalconyView extends ObjectImageView {
 
     private void setUpCouncilors() {
         councilors.addListener((ListChangeListener<Councilor>) c -> {
-            ClassLoader loader = BalconyDrawer.class.getClassLoader();
+            ClassLoader loader = this.getClass().getClassLoader();
             while(c.next()) {
                 if(c.wasAdded()) {
                     councilorImages.clear();
@@ -83,5 +97,35 @@ public class BalconyView extends ObjectImageView {
         counColor = counColor + "_councilor.png";
         counColor = counColor.toLowerCase();
         return new Image(loader.getResourceAsStream(counColor));
+    }
+
+    private DropShadow setShadowEffect() {
+        Glow glow = new Glow(0.8);
+        DropShadow borderglow = new DropShadow();
+        borderglow.setColor(Color.WHITE);
+        borderglow.setWidth(70);
+        borderglow.setHeight(70);
+        borderglow.setInput(glow);
+        borderglow.setBlurType(BlurType.GAUSSIAN);
+        return borderglow;
+    }
+
+    private void buildPopOver() {
+        popOver = new PopOver();
+        popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+        GridPane balconyPane = new GridPane();
+        balconyPane.setPadding(new Insets(15.0));
+        balconyPane.setHgap(10.0);
+        Button electCouncilor = new Button("Elect Councilor");
+        Button satisfyCouncil = new Button("Satisfy Council");
+        balconyPane.add(electCouncilor,0,0);
+        balconyPane.add(satisfyCouncil,1,0);
+        setOnMouseEntered(event -> setEffect(borderGlow));
+        setOnMouseExited(event -> setEffect(null));
+        setOnMouseClicked(event-> {
+            popOver.setContentNode(balconyPane);
+            popOver.setHeight(balconyPane.getHeight());
+            popOver.show(this, 30);
+        });
     }
 }

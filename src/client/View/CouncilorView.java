@@ -1,4 +1,4 @@
-package client;
+package client.View;
 
 import core.gamemodel.CouncilColor;
 import core.gamemodel.Councilor;

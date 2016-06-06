@@ -1,5 +1,4 @@
 package client;
-
 import client.View.GUI;
 import javafx.application.Application;
 

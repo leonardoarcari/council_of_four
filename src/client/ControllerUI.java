@@ -24,7 +24,6 @@ public class ControllerUI {
     public ControllerUI(GUI gui) {
         this.gui = gui;
         processor = new GUInfoProcessor(gui);
-        new Thread((GUInfoProcessor) processor).start();
     }
 
     public void rmiConnection() {
