@@ -27,6 +27,7 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updateWealthPath((WealthPath) info);
         } else if (info instanceof RegionInterface) {
             gui.updatePermitCard((RegionInterface) info);
+            gui.updateRegionBonus((RegionInterface) info);
         } else if (info instanceof NobilityPathInterface) {
             gui.updateNobilityPath((NobilityPathInterface) info);
         }

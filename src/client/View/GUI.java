@@ -12,10 +12,8 @@ import core.gamemodel.modelinterface.NobilityPathInterface;
 import core.gamemodel.modelinterface.RegionInterface;
 import core.gamemodel.modelinterface.WealthPathInterface;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.*;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -25,7 +23,6 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -33,7 +30,6 @@ import javafx.util.Duration;
 import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,6 +75,10 @@ public class GUI extends Application {
     private PermitCardView hillsRightCard;
     private PermitCardView mountainsLeftCard;
     private PermitCardView mountainsRightCard;
+
+    private ObjectImageView seaBonusCard;
+    private ObjectImageView hillsBonusCard;
+    private ObjectImageView mountainsBonusCard;
 
     @Override
     public void init() throws Exception {
@@ -151,6 +151,9 @@ public class GUI extends Application {
         buildWealthPath();
         townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
 
+        //Bonus card setup
+        buildBonusCards();
+
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
         boardAnchor.getChildren().addAll(boardObjects);
@@ -179,6 +182,7 @@ public class GUI extends Application {
             setObjectConstraints(objectImageView);
         });
 
+        //Test zone, has to be deleted
         WealthPath wealth = new WealthPath();
         wealth.setPlayer(new Player(null),3);
         wealth.setPlayer(new Player(null),3);
@@ -193,6 +197,13 @@ public class GUI extends Application {
         path.setPlayer(new Player(null));
         path.setPlayer(new Player(null));
         nobilityPath.updateNobilityPath(path);
+
+        Councilor[] councHelper = new Councilor[4];
+        for( int i = 0; i < 4; i++) {
+            councHelper[i] = new Councilor(CouncilColor.BLACK,1);
+        }
+        Region region = new Region(null,RegionType.SEA, councHelper);
+        updateRegionBonus(region);
 
         townsView.values().forEach(townView -> {
             setImageViewListener(townView);
@@ -368,6 +379,17 @@ public class GUI extends Application {
         });
     }
 
+    private void buildBonusCards() {
+        ClassLoader loader = this.getClass().getClassLoader();
+        seaBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("seaBonus.png")),
+                0.2522803334480774,0.5274207650273224,0.0634);
+        hillsBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("hillsBonus.png")),
+                0.5490688645010539,0.5274207650273224,0.0634);
+        mountainsBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("mountainsBonus.png")),
+                0.8742918224146726,0.5274207650273224,0.0634);
+        boardObjects.addAll(Arrays.asList(seaBonusCard,hillsBonusCard,mountainsBonusCard));
+    }
+
     private void buildTabPane() {
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
@@ -434,5 +456,12 @@ public class GUI extends Application {
 
     public void updateNobilityPath(NobilityPathInterface nobility) {
         nobilityPath.updateNobilityPath(nobility);
+    }
+
+    public void updateRegionBonus(RegionInterface regionInterface) {
+        RegionType type = regionInterface.getRegionType();
+        if(type.equals(RegionType.SEA)) {if(seaBonusCard.getImage() != null) seaBonusCard.setImage(null);}
+        else if(type.equals(RegionType.HILLS)) {if(hillsBonusCard.getImage() != null) hillsBonusCard.setImage(null);}
+        else {if(mountainsBonusCard.getImage() != null) mountainsBonusCard.setImage(null);}
     }
 }
