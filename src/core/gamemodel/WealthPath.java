@@ -1,6 +1,7 @@
 package core.gamemodel;
 
 import core.Player;
+import core.gamemodel.modelinterface.WealthPathInterface;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -8,7 +9,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by Matteo on 23/05/16.
  */
-public class WealthPath extends AbstractPath{
+public class WealthPath extends AbstractPath implements WealthPathInterface{
 
     public WealthPath() {
         players = new ArrayList<>(21);

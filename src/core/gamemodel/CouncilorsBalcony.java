@@ -36,6 +36,7 @@ public class CouncilorsBalcony implements BalconyInterface, Subject{
         return councilorToAddToPool;
     }
 
+    @Override
     public RegionType getRegion() {
         return region;
     }

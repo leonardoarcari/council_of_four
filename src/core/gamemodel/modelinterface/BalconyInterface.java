@@ -1,6 +1,7 @@
 package core.gamemodel.modelinterface;
 
 import core.gamemodel.Councilor;
+import core.gamemodel.RegionType;
 
 import java.util.Iterator;
 
@@ -9,4 +10,5 @@ import java.util.Iterator;
  */
 public interface BalconyInterface {
     Iterator<Councilor> councilorsIterator();
+    RegionType getRegion();
 }

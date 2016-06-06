@@ -3,6 +3,7 @@ package client.View;
 import core.Player;
 import core.gamemodel.Town;
 import core.gamemodel.TownName;
+import core.gamemodel.modelinterface.TownInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -27,7 +28,7 @@ import java.util.List;
 public class TownView extends ObjectImageView {
     private ObservableList<Player> emporiums;
     private VBox emporiumNode;
-    private Town town;
+    private TownInterface town;
     private TownName townName;
 
     public TownView(TownName townName, double leftX, double topY, double width, Image image) {
@@ -39,7 +40,7 @@ public class TownView extends ObjectImageView {
 
     }
 
-    public void update(Town town) {
+    public void update(TownInterface town) {
         if (this.town == null) this.town = town;
         List<Player> emporiums = new ArrayList<>();
         Iterator<Player> emporiumIterator = town.getPlayersEmporium();

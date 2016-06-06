@@ -1,5 +1,6 @@
 package core.gamemodel.modelinterface;
 
+import core.gamemodel.TownName;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.TownType;
 import core.Player;
@@ -12,6 +13,8 @@ import java.util.Iterator;
 public interface TownInterface {
     boolean isKingHere();
     TownType getTownType();
+    TownName getTownName();
     boolean hasEmporium(Player player);
+    Iterator<Player> getPlayersEmporium();
     Iterator<Bonus> bonusIterator();
 }

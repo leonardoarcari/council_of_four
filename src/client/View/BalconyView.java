@@ -3,6 +3,7 @@ package client.View;
 import client.View.ObjectImageView;
 import core.gamemodel.Councilor;
 import core.gamemodel.CouncilorsBalcony;
+import core.gamemodel.modelinterface.BalconyInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -49,7 +50,7 @@ public class BalconyView extends ObjectImageView {
         this.councilors.addAll(councilors);
     }
 
-    public void setBalcony(CouncilorsBalcony balcony) {
+    public void setBalcony(BalconyInterface balcony) {
         List<Councilor> councilors = new ArrayList<>();
         Iterator<Councilor> councilorIterator = balcony.councilorsIterator();
         while(councilorIterator.hasNext()) {

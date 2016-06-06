@@ -1,6 +1,7 @@
 package client.View;
 
 import core.gamemodel.*;
+import core.gamemodel.modelinterface.BalconyInterface;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.*;
@@ -42,10 +43,10 @@ public class GUI extends Application {
     private MasterDetailPane choicePane;
 
     private PlayerView playerView;
-    private ObjectImageView seaBalcony;
-    private ObjectImageView hillsBalcony;
-    private ObjectImageView mountainsBalcony;
-    private ObjectImageView boardBalcony;
+    private BalconyView seaBalcony;
+    private BalconyView hillsBalcony;
+    private BalconyView mountainsBalcony;
+    private BalconyView boardBalcony;
 
     private List<ObjectImageView> boardObjects;
     private Map<TownName, TownView> townsView;
@@ -287,8 +288,10 @@ public class GUI extends Application {
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
         Tab playerHandTab = new Tab("Your Hand");
+        playerHandTab.setClosable(false);
         playerHandTab.setContent(playerView.getPlayerNode());
         Tab actionTreeTab = new Tab("Actions and Gameboard");
+        actionTreeTab.setClosable(false);
         actionTreeTab.setContent(choicePane);
         tabPane.getTabs().addAll(playerHandTab, actionTreeTab);
     }
@@ -304,9 +307,9 @@ public class GUI extends Application {
         return borderglow;
     }
 
-    /*public void modifyBalcony(CouncilorsBalcony balcony) {
+    public void updateBalcony(BalconyInterface balcony) {
         RegionType type = balcony.getRegion();
-        ObjectImageView balconyIV;
+        BalconyView balconyIV;
         if(type.equals(RegionType.SEA)) {
             balconyIV = seaBalcony;
         } else if(type.equals(RegionType.HILLS)) {
@@ -315,8 +318,8 @@ public class GUI extends Application {
             balconyIV = mountainsBalcony;
         } else balconyIV = boardBalcony;
 
-        balconyIV.setImage(BalconyDrawer.drawBalcony(balcony));
-    }*/
+        balconyIV.setBalcony(balcony);
+    }
 
     public TownView getTownView(TownName name) {
         return townsView.get(name);

@@ -49,9 +49,9 @@ public class PlayerView {
         GridPane userInfoPane = buildUserInfoPane();
 
         Circle playerColor = new Circle(20);
-        Text username = new Text();
+        Text username = new Text("N/A");
         setUserNameText(username);
-        Text nickname = new Text();
+        Text nickname = new Text("N/A");
         setNickNameText(nickname);
 
         userInfoPane.add(playerColor, 0, 0, 1, 2);
@@ -66,7 +66,7 @@ public class PlayerView {
         HBox servantsBox = new HBox(10);
         servantsBox.setAlignment(Pos.CENTER);
         Circle servantsCircle = new Circle(25, Color.BLACK);
-        Text servantsNo = new Text();
+        Text servantsNo = new Text("N/A");
         setNumberText(servantsNo);
         servantsBox.getChildren().addAll(servantsCircle, servantsNo);
 
@@ -76,7 +76,7 @@ public class PlayerView {
         politicsCircle.setOnMouseEntered(event -> politicsCircle.setEffect(dropShadow));
         politicsCircle.setOnMouseExited(event -> politicsCircle.setEffect(null));
         politicsCircle.setOnMouseClicked(event -> popOver.show(politicsCircle, 10));
-        Text politicsNo = new Text();
+        Text politicsNo = new Text("N/A");
         setNumberText(politicsNo);
         politicsBox.getChildren().addAll(politicsCircle, politicsNo);
 
@@ -86,7 +86,7 @@ public class PlayerView {
         permitCircle.setOnMouseEntered(event -> permitCircle.setEffect(dropShadow));
         permitCircle.setOnMouseExited(event -> permitCircle.setEffect(null));
         permitCircle.setOnMouseClicked(event -> popOver.show(permitCircle, 10));
-        Text permitsNo = new Text();
+        Text permitsNo = new Text("N/A");
         setNumberText(permitsNo);
         permitBox.getChildren().addAll(permitCircle, permitsNo);
 
@@ -96,7 +96,7 @@ public class PlayerView {
         royalCircle.setOnMouseEntered(event -> royalCircle.setEffect(dropShadow));
         royalCircle.setOnMouseExited(event -> royalCircle.setEffect(null));
         royalCircle.setOnMouseClicked(event -> popOver.show(royalCircle, 10));
-        Text royalNo = new Text();
+        Text royalNo = new Text("N/A");
         setNumberText(royalNo);
         royalBox.getChildren().addAll(royalCircle, royalNo);
 

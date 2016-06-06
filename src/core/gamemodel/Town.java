@@ -79,6 +79,7 @@ public class Town implements Subject, TownInterface{
         return townType;
     }
 
+    @Override
     public TownName getTownName() { return townName; }
 
     public void createEmporium(Player player) {
@@ -86,6 +87,7 @@ public class Town implements Subject, TownInterface{
         notifyObservers();
     }
 
+    @Override
     public Iterator<Player> getPlayersEmporium() {
         return playersEmporium.iterator();
     }
