@@ -24,7 +24,6 @@ public class WealthPath extends AbstractPath implements WealthPathInterface{
         for (int i = 0; i < players.size(); i++) {
             for(Player play : getPlayers().get(i)) {
                 if (play.equals(player)) {
-
                     players.get(i).remove(play);
                     int newPos = (i + variation < 20) ? ((i + variation >= 0) ? i + variation : 0) : 20;
                     players.get(newPos).add(play);

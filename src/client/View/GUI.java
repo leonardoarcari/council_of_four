@@ -1,7 +1,9 @@
 package client.View;
 
+import core.Player;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.BalconyInterface;
+import core.gamemodel.modelinterface.WealthPathInterface;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.*;
@@ -19,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
@@ -48,6 +51,7 @@ public class GUI extends Application {
     private BalconyView mountainsBalcony;
     private BalconyView boardBalcony;
 
+    private WealthPathView wealthPath;
     private List<ObjectImageView> boardObjects;
     private Map<TownName, TownView> townsView;
 
@@ -106,7 +110,9 @@ public class GUI extends Application {
         boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
 
         buildTownViews();
+        buildWealthPath();
         townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
+
 
         // Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
@@ -284,6 +290,36 @@ public class GUI extends Application {
         townsView.put(TownName.O, new TownView(TownName.O, 0.829096739437645, 0.3542896174863388, 0.106006559623886, oImage));
     }
 
+    private void buildWealthPath() {
+        wealthPath = new WealthPathView();
+        wealthPath.addListener(c -> {
+            while (c.next()) {
+                if (c.wasRemoved()) {
+                    boardAnchor.getChildren().removeAll(c.getRemoved());
+                } if (c.wasAdded()) {
+                    Iterator<? extends WealthPathView.Holder> iterator = c.getList().iterator();
+                    while (iterator.hasNext()) {
+                        WealthPathView.Holder circle = iterator.next();
+
+                        // Draw properties
+                        circle.setRadius(circle.getBaseRadius() * gameboardIV.getBoundsInParent().getWidth());
+                        AnchorPane.setLeftAnchor(circle, circle.getAnchorX() * gameboardIV.getBoundsInParent().getWidth());
+                        AnchorPane.setTopAnchor(circle, circle.anchorY * gameboardIV.getBoundsInParent().getHeight());
+
+                        // Resize Listeners
+                        gameboardIV.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
+                            circle.setRadius(circle.getBaseRadius() * newValue.getWidth()));
+                        boardAnchor.heightProperty().addListener((observable, oldValue, newValue) -> {
+                            AnchorPane.setLeftAnchor(circle, circle.getAnchorX() * gameboardIV.getBoundsInParent().getWidth());
+                            AnchorPane.setTopAnchor(circle, circle.anchorY * gameboardIV.getBoundsInParent().getHeight());
+                        });
+                        boardAnchor.getChildren().add(circle);
+                    }
+                }
+            }
+        });
+    }
+
     private void buildTabPane() {
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
@@ -319,6 +355,10 @@ public class GUI extends Application {
         } else balconyIV = boardBalcony;
 
         balconyIV.setBalcony(balcony);
+    }
+
+    public void updateWealthPath(WealthPathInterface wealthPath) {
+        this.wealthPath.updateWealthPath(wealthPath);
     }
 
     public TownView getTownView(TownName name) {
