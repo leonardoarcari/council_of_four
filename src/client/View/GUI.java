@@ -165,6 +165,7 @@ public class GUI extends Application {
         test.addRoyalCard(RoyalCard.FOURTH);
         playerView.setPlayerProperty(test);
         GridPane.setConstraints(playerView.getPlayerNode(), 1, 0, 1, 1);
+        GridPane.setValignment(playerView.getPlayerNode(), VPos.TOP);
         /************************** END ****************************************/
 
         // Add Nodes to gridPane
