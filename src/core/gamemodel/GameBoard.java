@@ -1,5 +1,6 @@
 package core.gamemodel;
 
+import core.connection.GameBoardInterface;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * Created by Matteo on 21/05/16.
  */
-public class GameBoard implements Subject{
+public class GameBoard implements Subject, GameBoardInterface{
     private transient RegionType boardType;
     private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
@@ -271,7 +272,11 @@ public class GameBoard implements Subject{
         return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
     }
 
-    private Iterator<TownTypeCard> townTypeCardIterator() {
+    public Iterator<RoyalCard> royalCardIterator() {
+        return royalCardPool.iterator();
+    }
+
+    public Iterator<TownTypeCard> townTypeCardIterator() {
         return townTypeCards.iterator();
     }
 

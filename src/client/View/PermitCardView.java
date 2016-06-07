@@ -1,4 +1,4 @@
-package client;
+package client.View;
 
 import client.View.ObjectImageView;
 import core.gamemodel.PermitCard;
@@ -26,6 +26,7 @@ public class PermitCardView extends ObjectImageView {
         super(image, leftX, topY, width);
         myPopover = new PopOver();
         myPopover.setArrowSize(0.0);
+        myPopover.setContentNode(new ImageView(this.getImage()));
     }
 
     public void setPermitCard(PermitCard permitCard) {
