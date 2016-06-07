@@ -1,6 +1,7 @@
 package client.clientconnection;
 
 import client.View.GUI;
+import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
@@ -30,6 +31,8 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updateRegionBonus((RegionInterface) info);
         } else if (info instanceof NobilityPathInterface) {
             gui.updateNobilityPath((NobilityPathInterface) info);
+        } else if (info instanceof GameBoardInterface) {
+            gui.updateGameBoardData((GameBoardInterface) info);
         }
     }
 }
