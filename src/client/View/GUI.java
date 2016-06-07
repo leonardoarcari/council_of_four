@@ -16,7 +16,6 @@ import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -103,31 +102,24 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
         borderGlow = setShadowEffect();
         townPopOver = new PopOver();
-        this.primaryStage = primaryStage;
 
-        ScrollPane scrollPane = new ScrollPane();
-        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
-        scrollPane.setPrefViewportWidth(100);
-        flowPane.setPadding(new Insets(10));
-
-        scrollPane.setContent(flowPane);
-        townPopOver.setContentNode(scrollPane);
-
+        //Creates the gridPane
         buildMainPane();
         boardAnchor = new AnchorPane();
 
-        //Choice tree setup
-        buildActionTree();
+        //Choice tree (and children) setup
         buildMasterDetailPane();
+        buildActionTree();
 
-        // Load GameBoard imageview
+        //Load GameBoard imageview
         buildGameboard();
 
-        //Nobility setup
+        //Paths setup
         buildNobility();
-        boardObjects.add(nobilityPath);
+        buildWealthPath();
 
         //Balconies setup
         buildBalconies();
@@ -135,15 +127,14 @@ public class GUI extends Application {
         //PermitCards setup
         buildPermitsModel();
 
+        //Towns setup
         buildTownViews();
-        buildWealthPath();
-        townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
 
-        //Bonus card setup
+        //Bonus Cards setup
         loadRoyalImages();
         buildBonusCards();
 
-        // Add Nodes to anchorPane
+        //Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
         boardAnchor.getChildren().addAll(boardObjects);
         boardAnchor.getChildren().addAll(townsView.values());
@@ -151,8 +142,6 @@ public class GUI extends Application {
         // Chat column Nodes
         Button dummyChat = new Button("I'm a dummy chat button");
         playerView = new PlayerView();
-        fastActionsView = new FastActionsView();
-        councilorPool = new CouncilorPoolView();
         buildTabPane();
 
         // Add Nodes to gridPane
@@ -207,7 +196,7 @@ public class GUI extends Application {
         GameBoard fakegame = GameBoard.createGameBoard(Arrays.asList(new Player(null), new Player(null)));
         updateGameBoardData(fakegame);
 
-        // Debug
+        //Debug
         gridPane.setGridLinesVisible(true);
         gameboardIV.setOnMouseClicked(event -> System.out.println("X scaled: " +
                 event.getX()/gameboardIV.getBoundsInParent().getWidth() + " Y scaled " +
@@ -215,43 +204,7 @@ public class GUI extends Application {
         );
     }
 
-    private void setImageViewListener(ObjectImageView iv) {
-        gameboardIV.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-            iv.setFitWidth(iv.getWidth() * newValue.getWidth());
-        });
-
-        boardAnchor.heightProperty().addListener((observable, oldValue, newValue) -> {
-            AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
-            AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
-        });
-    }
-
-    private void setObjectConstraints(ObjectImageView iv) {
-        iv.setFitWidth(iv.getWidth() * gameboardIV.getBoundsInParent().getWidth());
-        AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
-        AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
-    }
-
-    private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
-        iv.setOnMouseEntered(event -> iv.setEffect(effect));
-        iv.setOnMouseExited(event -> iv.setEffect(null));
-        iv.setOnMouseClicked(event -> {
-            ObjectImageView imageView = (ObjectImageView) event.getSource();
-            if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1/4) {
-                popOver.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
-            } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3/4) {
-                popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
-            } else {
-                popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
-            }
-            if (imageView.getClass().equals(TownView.class)) {
-                popOver.setContentNode(((TownView)imageView).getEmporiumNode());
-                popOver.show(iv, 60);
-            }
-            else popOver.show(iv, 60);
-        });
-    }
-
+    //Build methods
     private void buildMainPane() {
         gridPane = new GridPane();
         ColumnConstraints boardColumn = new ColumnConstraints();
@@ -270,6 +223,39 @@ public class GUI extends Application {
         gridPane.getRowConstraints().addAll(chatRow, handRow);
     }
 
+    private void buildMasterDetailPane() {
+        choicePane = new MasterDetailPane();
+        choicePane.setDetailNode(actionChoice);
+        choicePane.setDetailSide(Side.TOP);
+        choicePane.setDividerPosition(0.1); //Percentage...
+        choicePane.setShowDetailNode(true);
+
+        choicePane.dividerPositionProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue.doubleValue()>0.5) choicePane.setDividerPosition(0.4);  //Fix divider position
+        }));
+
+        fastActionsView = new FastActionsView();
+        councilorPool = new CouncilorPoolView();
+    }
+
+    private void buildActionTree() {
+        choiceItem = new TreeItem<>("Make a choice");
+        fastSelector = new TreeItem<>("Select Fast action");
+        servantsPoolSelector = new TreeItem<>("See servants pool");
+        councilorPoolSelector = new TreeItem<>("See councilor pool");
+        choiceItem.getChildren().addAll(fastSelector, servantsPoolSelector, councilorPoolSelector);
+        actionChoice = new TreeView<>(choiceItem);
+
+        actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.equals(councilorPoolSelector)) {
+                choicePane.setMasterNode(councilorPool.getFlowNode());
+            } else if(newValue.equals(fastSelector)) {
+                choicePane.setMasterNode(fastActionsView.getBoxNode());
+            } else choicePane.setMasterNode(new Label("ciao"));
+            choicePane.setDividerPosition(0.3);
+        });
+    }
+
     private void buildGameboard() {
         Image gameBoardImage = new Image(classLoader.getResourceAsStream("gameboard_scaled.png"));
         gameboardIV = new ImageView(gameBoardImage);
@@ -283,7 +269,31 @@ public class GUI extends Application {
     private void buildNobility() {
         Image nobilityImage = new Image(classLoader.getResourceAsStream("nobility.png"));
         nobilityPath = new NobilityPathView(nobilityImage, 0.04968196834915602, 0.8150382513661202, 0.68253772);
-        addListener(nobilityPath);
+        pathPlayersListener(nobilityPath);
+        boardObjects.add(nobilityPath);
+    }
+
+    private void buildWealthPath() {
+        wealthPath = new WealthPathView();
+        pathPlayersListener(wealthPath);
+    }
+
+    private void pathPlayersListener(PathViewInterface path) {
+        path.addListener(c -> {
+            while (c.next()) {
+                if (c.wasRemoved()) {
+                    boardAnchor.getChildren().removeAll(c.getRemoved());
+                } if (c.wasAdded()) {
+                    Iterator<? extends ObjectImageView> iterator = c.getList().iterator();
+                    while (iterator.hasNext()) {
+                        ObjectImageView view = iterator.next();
+                        setObjectConstraints(view);
+                        setImageViewListener(view);
+                        boardAnchor.getChildren().add(view);
+                    }
+                }
+            }
+        });
     }
 
     private void buildBalconies() {
@@ -322,37 +332,6 @@ public class GUI extends Application {
         });
     }
 
-    private void buildActionTree() {
-        choiceItem = new TreeItem<>("Make a choice");
-        fastSelector = new TreeItem<>("Select Fast action");
-        servantsPoolSelector = new TreeItem<>("See servants pool");
-        councilorPoolSelector = new TreeItem<>("See councilor pool");
-        choiceItem.getChildren().addAll(fastSelector,servantsPoolSelector, councilorPoolSelector);
-        actionChoice = new TreeView<>(choiceItem);
-    }
-
-    private void buildMasterDetailPane() {
-        choicePane = new MasterDetailPane();
-        choicePane.setDetailNode(actionChoice);
-        choicePane.setMasterNode(new Label("prova"));
-        choicePane.setDetailSide(Side.TOP);
-        choicePane.setDividerPosition(0.1); //Percentage...
-        choicePane.setShowDetailNode(true);
-
-        choicePane.dividerPositionProperty().addListener(((observable, oldValue, newValue) -> {
-            if(newValue.doubleValue()>0.5) choicePane.setDividerPosition(0.4);
-        }));
-
-        actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals(councilorPoolSelector)) {
-                choicePane.setMasterNode(councilorPool.getFlowNode());
-            } else if(newValue.equals(fastSelector)) {
-                choicePane.setMasterNode(fastActionsView.getBoxNode());
-            } else choicePane.setMasterNode(new Label("ciao"));
-            choicePane.setDividerPosition(0.3);
-        });
-    }
-
     private void buildTownViews () {
         Image aImage = new Image(classLoader.getResourceAsStream("a.png"));
         Image bImage = new Image(classLoader.getResourceAsStream("b.png"));
@@ -384,28 +363,27 @@ public class GUI extends Application {
         townsView.put(TownName.M, new TownView(TownName.M, 0.6729745030117486, 0.416462482946794, 0.120203003974608, mImage));
         townsView.put(TownName.N, new TownView(TownName.N, 0.82539565232543, 0.16800354706684858, 0.113268215283765, nImage));
         townsView.put(TownName.O, new TownView(TownName.O, 0.829096739437645, 0.3542896174863388, 0.106006559623886, oImage));
+
+        townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
     }
 
-    private void buildWealthPath() {
-        wealthPath = new WealthPathView();
-        addListener(wealthPath);
-    }
-
-    private void addListener(PathViewInterface path) {
-        path.addListener(c -> {
-            while (c.next()) {
-                if (c.wasRemoved()) {
-                    boardAnchor.getChildren().removeAll(c.getRemoved());
-                } if (c.wasAdded()) {
-                    Iterator<? extends ObjectImageView> iterator = c.getList().iterator();
-                    while (iterator.hasNext()) {
-                        ObjectImageView view = iterator.next();
-                        setObjectConstraints(view);
-                        setImageViewListener(view);
-                        boardAnchor.getChildren().add(view);
-                    }
-                }
+    private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
+        iv.setOnMouseEntered(event -> iv.setEffect(effect));
+        iv.setOnMouseExited(event -> iv.setEffect(null));
+        iv.setOnMouseClicked(event -> {
+            ObjectImageView imageView = (ObjectImageView) event.getSource();
+            if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1/4) {
+                popOver.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
+            } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3/4) {
+                popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+            } else {
+                popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
             }
+            if (imageView.getClass().equals(TownView.class)) {
+                popOver.setContentNode(((TownView)imageView).getEmporiumNode());
+                popOver.show(iv, 60);
+            }
+            else popOver.show(iv, 60);
         });
     }
 
@@ -453,6 +431,23 @@ public class GUI extends Application {
         tabPane.getTabs().addAll(playerHandTab, actionTreeTab);
     }
 
+    private void setImageViewListener(ObjectImageView iv) {
+        gameboardIV.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+            iv.setFitWidth(iv.getWidth() * newValue.getWidth());
+        });
+
+        boardAnchor.heightProperty().addListener((observable, oldValue, newValue) -> {
+            AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
+            AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
+        });
+    }
+
+    private void setObjectConstraints(ObjectImageView iv) {
+        iv.setFitWidth(iv.getWidth() * gameboardIV.getBoundsInParent().getWidth());
+        AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
+        AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
+    }
+
     private DropShadow setShadowEffect() {
         Glow glow = new Glow(0.8);
         DropShadow borderglow = new DropShadow();
@@ -464,6 +459,7 @@ public class GUI extends Application {
         return borderglow;
     }
 
+    //Update methods
     public void updateBalcony(BalconyInterface balcony) {
         RegionType type = balcony.getRegion();
         BalconyView balconyIV;
@@ -476,6 +472,10 @@ public class GUI extends Application {
         } else balconyIV = boardBalcony;
 
         balconyIV.setBalcony(balcony);
+    }
+
+    public void updateNobilityPath(NobilityPathInterface nobility) {
+        nobilityPath.updateNobilityPath(nobility);
     }
 
     public void updateWealthPath(WealthPathInterface wealthPath) {
@@ -503,10 +503,6 @@ public class GUI extends Application {
 
         left.setPermitCard(region.getLeftPermitCard());
         right.setPermitCard(region.getRightPermitCard());
-    }
-
-    public void updateNobilityPath(NobilityPathInterface nobility) {
-        nobilityPath.updateNobilityPath(nobility);
     }
 
     public void updateRegionBonus(RegionInterface regionInterface) {
