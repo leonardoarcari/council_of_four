@@ -2,6 +2,7 @@ package client.View;
 
 import client.PermitCardView;
 import core.Player;
+import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.*;
@@ -159,7 +160,7 @@ public class GUI extends Application {
         boardAnchor.getChildren().addAll(boardObjects);
         boardAnchor.getChildren().addAll(townsView.values());
 
-        // Chat column Nodes
+        // Side bar nodes
         Button dummyChat = new Button("I'm a dummy chat button");
         playerView = new PlayerView();
         fastActionsView = new FastActionsView();
@@ -208,6 +209,22 @@ public class GUI extends Application {
         townsView.values().forEach(townView -> {
             setImageViewListener(townView);
             setObjectConstraints(townView);
+        });
+
+        // Leo's testZone
+        dummyChat.setOnMouseClicked(event -> {
+            ShowPane showpane = new ShowPane(scene, gridPane);
+            Player player = new Player(null);
+            AbstractBonusFactory factory = BonusFactory.getFactory(BonusOwner.PERMIT);
+            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 1));
+            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 2));
+            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 3));
+            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 4));
+            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 5));
+            RedeemPermitView view = new RedeemPermitView(player);
+            view.addClickListener(event1 -> showpane.hide());
+            showpane.setContent(view);
+            showpane.show();
         });
 
         // Debug
