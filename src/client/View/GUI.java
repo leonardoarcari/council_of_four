@@ -203,9 +203,13 @@ public class GUI extends Application {
         // Leo's testZone
         dummyChat.setOnMouseClicked(event -> {
             ShowPane showpane = new ShowPane(scene, gridPane);
-            RedeemPermitView view = new RedeemPermitView(player);
+            /* RedeemPermitView view = new RedeemPermitView(player);
             view.addClickListener(event1 -> showpane.hide());
-            showpane.setContent(view);
+            showpane.setContent(view); */
+            List<PoliticsCard> politicsCards = new ArrayList<>();
+            Arrays.asList(CouncilColor.values()).forEach(councilColor -> politicsCards.add(new PoliticsCard(councilColor)));
+            SelectPoliticsView politicsView = new SelectPoliticsView(politicsCards);
+            showpane.setContent(politicsView);
             showpane.show();
         });
 
