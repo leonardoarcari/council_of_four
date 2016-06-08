@@ -1,19 +1,12 @@
 package client.View;
 
 import client.ControllerUI;
-import core.Player;
 import core.connection.GameBoardInterface;
-import core.gamelogic.AbstractBonusFactory;
-import core.gamelogic.BonusFactory;
-import core.gamelogic.BonusOwner;
 import core.gamemodel.*;
-import core.gamemodel.Region;
-import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
-import javafx.collections.ListChangeListener;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -256,17 +249,7 @@ public class GUI extends Application {
         updateBalcony(balcony);
 
         // Leo's testZone
-        selectPoliticsView = new SelectPoliticsView();
-        selectPoliticsView.getSelectedCards().addListener(new ListChangeListener<PoliticsCard>() {
-            @Override
-            public void onChanged(Change<? extends PoliticsCard> c) {
-                while(c.next()) {
-                    if (c.wasAdded() || c.wasRemoved()) {
-                        seaBalcony.setSelectedPolitics(selectPoliticsView.getSelectedCards());
-                    }
-                }
-            }
-        });updatePlayer(player);
+        updatePlayer(player);
         dummyChat.setOnMouseClicked(event -> {
             ShowPane showpane = new ShowPane(scene, gridPane);
             RedeemPermitView view = new RedeemPermitView(player);
@@ -282,6 +265,15 @@ public class GUI extends Application {
             showpane.setContent(politicsView);
             showpane.show();
         }); */
+
+        selectPoliticsView = new SelectPoliticsView();
+        selectPoliticsView.getSelectedCards().addListener((ListChangeListener<PoliticsCard>) c -> {
+            while(c.next()) {
+                if (c.wasAdded() || c.wasRemoved()) {
+                    seaBalcony.setSelectedPolitics(selectPoliticsView.getSelectedCards());
+                }
+            }
+        });
 
         townsView.values().forEach(townView -> {
             setImageViewListener(townView);

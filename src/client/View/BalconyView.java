@@ -1,6 +1,5 @@
 package client.View;
 
-import com.sun.tools.classfile.ConstantPool;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.BuyPermitCardAction;
@@ -148,7 +147,6 @@ public class BalconyView extends ObjectImageView {
         fastElection.setMaxWidth(Double.MAX_VALUE);
         electCouncilor.setOnAction(event -> {
             currentAction = new FastCouncilorElectionAction(new Player(null), balconyRegion, selectedCouncilor);
-            System.out.println(((CouncilorElectionAction)currentAction).getNewCouncilor().getCouncilorColor().name() + "   " + ((CouncilorElectionAction)currentAction).getRegionType());
         });
         Separator separator = new Separator(Orientation.HORIZONTAL);
         separator.setPadding(new Insets(5,5,5,5));
