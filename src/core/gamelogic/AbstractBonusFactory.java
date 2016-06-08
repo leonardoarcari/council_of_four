@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface AbstractBonusFactory {
     List<Bonus> generateBonuses();
+    Bonus createOneBonus();
 }

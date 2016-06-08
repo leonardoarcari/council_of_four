@@ -1,5 +1,8 @@
 package client.View;
 
+import core.Player;
+import core.gamelogic.actions.*;
+import core.gamemodel.RegionType;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -20,6 +23,8 @@ public class FastActionsView {
     private VBox actionPane;
     private VBox actionNode;
     private VBox regionNode;
+    private Button goBack;
+    private Action currentAction;
 
     private List<Button> actionButton;
     private Button hireServant;
@@ -31,7 +36,6 @@ public class FastActionsView {
     private Button seaRegion;
     private Button hillsRegion;
     private Button mountainsRegion;
-    private Button boardRegion;
 
     public FastActionsView() {
         actionPane = new VBox();
@@ -40,18 +44,19 @@ public class FastActionsView {
 
         hireServant = new Button("HIRE SERVANT");
         changePermit = new Button("CHANGE PERMIT");
-        electCouncilor = new Button("ELECT COUNCILOR");
         anotherAction = new Button("MAKE ANOTHER ACTION");
-        actionButton = new ArrayList<>(Arrays.asList(hireServant,changePermit,electCouncilor,anotherAction));
+        actionButton = new ArrayList<>(Arrays.asList(hireServant,changePermit,anotherAction));
 
         seaRegion = new Button("Sea Balcony");
         hillsRegion = new Button("Hills Balcony");
         mountainsRegion = new Button("Mountains Balcony");
-        boardRegion = new Button("King Balcony");
-        regionButton = new ArrayList<>(Arrays.asList(seaRegion,hillsRegion,mountainsRegion,boardRegion));
+        regionButton = new ArrayList<>(Arrays.asList(seaRegion,hillsRegion,mountainsRegion));
 
         setUpLayer(actionNode, actionButton);
         setUpLayer(regionNode, regionButton);
+        goBack = new Button("<-- Select another action!");
+        goBack.setMaxWidth(Double.MAX_VALUE);
+        regionNode.getChildren().add(0,goBack);
         actionPane.getChildren().add(actionNode);
         VBox.setVgrow(actionNode, Priority.ALWAYS);
         VBox.setVgrow(regionNode, Priority.ALWAYS);
@@ -84,7 +89,7 @@ public class FastActionsView {
 
         node.heightProperty().addListener((observable, oldValue, newValue) -> {
             for(Button button : buttons) {
-                button.setPrefHeight(newValue.doubleValue()/5);
+                button.setPrefHeight(newValue.doubleValue()/4);
             }
         });
 
@@ -93,14 +98,34 @@ public class FastActionsView {
     }
 
     private void createHandlers() {
+        goBack.setOnAction(event -> {
+            actionPane.getChildren().clear();
+            actionPane.getChildren().add(actionNode);
+        });
+
         hireServant.setOnAction(event ->
-                //TODO: send new HireServantAction)
-                System.out.println()
+                currentAction = new HireServantAction(new Player(null))
         );
 
         changePermit.setOnAction(event -> {
             actionPane.getChildren().clear();
             actionPane.getChildren().add(regionNode);
+        });
+
+        anotherAction.setOnAction(event -> {
+            currentAction = new AnotherMainActionAction(new Player(null));
+        });
+
+        seaRegion.setOnAction(event -> {
+            currentAction = new ChangePermitsAction(new Player(null),RegionType.SEA);
+        });
+
+        hillsRegion.setOnAction(event -> {
+            currentAction = new ChangePermitsAction(new Player(null),RegionType.HILLS);
+        });
+
+        mountainsRegion.setOnAction(event -> {
+            currentAction = new ChangePermitsAction(new Player(null),RegionType.MOUNTAINS);
         });
     }
 

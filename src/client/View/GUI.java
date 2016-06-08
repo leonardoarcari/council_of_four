@@ -10,6 +10,7 @@ import core.gamemodel.Region;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
@@ -53,6 +54,7 @@ public class GUI extends Application {
     private NobilityPathView nobilityPath;
     private List<ObjectImageView> boardObjects;
     private Map<TownName, TownView> townsView;
+    private Map<TownName, ObjectImageView> townBonusView;
 
     private PopOver townPopOver;
     private Effect borderGlow;
@@ -64,6 +66,7 @@ public class GUI extends Application {
     private TreeItem<String> councilorPoolSelector;
 
     private CouncilorPoolView councilorPool;
+    private SelectPoliticsView selectPoliticsView;
 
     private PermitCardView seaLeftCard;
     private PermitCardView seaRightCard;
@@ -92,6 +95,7 @@ public class GUI extends Application {
         super.init();
         boardObjects = new ArrayList<>();
         townsView = new HashMap<>();
+        townBonusView = new HashMap<>();
         classLoader = this.getClass().getClassLoader();
     }
 
@@ -124,6 +128,7 @@ public class GUI extends Application {
 
         //Towns setup
         buildTownViews();
+        buildTownBonusViews();
 
         //Bonus Cards setup
         loadRoyalImages();
@@ -131,8 +136,8 @@ public class GUI extends Application {
 
         //Add Nodes to anchorPane
         boardAnchor.getChildren().add(gameboardIV);
-        boardAnchor.getChildren().addAll(boardObjects);
         boardAnchor.getChildren().addAll(townsView.values());
+        boardAnchor.getChildren().addAll(boardObjects);
 
         // Side bar nodes
         Button dummyChat = new Button("I'm a dummy chat button");
@@ -151,6 +156,10 @@ public class GUI extends Application {
         primaryStage.show();
 
         // Set listeners
+        townsView.values().forEach(townView -> {
+            setImageViewListener(townView);
+            setObjectConstraints(townView);
+        });
         boardObjects.forEach(objectImageView -> {
             setImageViewListener(objectImageView);
             setObjectConstraints(objectImageView);
@@ -182,11 +191,9 @@ public class GUI extends Application {
         }
         Region region = new Region(null,RegionType.SEA, councHelper);
         updateRegionBonus(region);
-
-        townsView.values().forEach(townView -> {
-            setImageViewListener(townView);
-            setObjectConstraints(townView);
-        });
+        Iterator<Town> townIterator = region.townIterator();
+        while(townIterator.hasNext())
+            populateTownBonus(townIterator.next());
 
         Player player = new Player(null);
         player.setUsername("Matteo");
@@ -194,22 +201,45 @@ public class GUI extends Application {
         player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
         player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
         player.addRegionCard(RegionCard.HILLS);
+        player.addRoyalCard(RoyalCard.FIFTH);
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.RAINBOW));
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.CYAN));
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.ORANGE));
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.CYAN));
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.BLACK));
+        player.addPoliticsCard(new PoliticsCard(CouncilColor.WHITE));
 
         GameBoard fakegame = GameBoard.createGameBoard(Arrays.asList(player, new Player(null)));
         updateGameBoardData(fakegame);
 
-        updatePlayer(player);
+        CouncilorsBalcony balcony = new CouncilorsBalcony(RegionType.SEA);
+        balcony.addCouncilor(new Councilor(CouncilColor.BLACK,2));
+        balcony.addCouncilor(new Councilor(CouncilColor.CYAN,2));
+        balcony.addCouncilor(new Councilor(CouncilColor.ORANGE,2));
+        balcony.addCouncilor(new Councilor(CouncilColor.CYAN,2));
+        updateBalcony(balcony);
 
         // Leo's testZone
+        selectPoliticsView = new SelectPoliticsView();
+        selectPoliticsView.getSelectedCards().addListener(new ListChangeListener<PoliticsCard>() {
+            @Override
+            public void onChanged(Change<? extends PoliticsCard> c) {
+                while(c.next()) {
+                    if (c.wasAdded() || c.wasRemoved()) {
+                        seaBalcony.setSelectedPolitics(selectPoliticsView.getSelectedCards());
+                    }
+                }
+            }
+        });updatePlayer(player);
         dummyChat.setOnMouseClicked(event -> {
             ShowPane showpane = new ShowPane(scene, gridPane);
-            /* RedeemPermitView view = new RedeemPermitView(player);
-            view.addClickListener(event1 -> showpane.hide());
-            showpane.setContent(view); */
-            List<PoliticsCard> politicsCards = new ArrayList<>();
+            RedeemPermitView view = new RedeemPermitView(player);
+            selectPoliticsView.addClickListener(event1 -> showpane.hide());
+            showpane.setContent(selectPoliticsView);
+            /*List<PoliticsCard> politicsCards = new ArrayList<>();
             Arrays.asList(CouncilColor.values()).forEach(councilColor -> politicsCards.add(new PoliticsCard(councilColor)));
             SelectPoliticsView politicsView = new SelectPoliticsView(politicsCards);
-            showpane.setContent(politicsView);
+            showpane.setContent(politicsView);*/
             showpane.show();
         });
 
@@ -250,6 +280,11 @@ public class GUI extends Application {
 
         fastActionsView = new FastActionsView();
         councilorPool = new CouncilorPoolView();
+        councilorPool.councilorPickedPropertyProperty().addListener(((observable, oldValue, newValue) -> {
+                seaBalcony.enableButton(newValue);
+            if(newValue) seaBalcony.setSelectedCouncilor(councilorPool.getSelectedCouncilor());
+            else seaBalcony.setSelectedCouncilor(null);
+        }));
 
         actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.equals(councilorPoolSelector)) {
@@ -316,10 +351,10 @@ public class GUI extends Application {
 
     private void buildBalconies() {
         Image fullBalcony = new Image(classLoader.getResourceAsStream("fullbalcony.png"));
-        seaBalcony = new BalconyView(fullBalcony, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
-        hillsBalcony = new BalconyView(fullBalcony, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
-        mountainsBalcony = new BalconyView(fullBalcony, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
-        boardBalcony = new BalconyView(fullBalcony, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
+        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
+        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
+        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
+        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
         boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
     }
 
@@ -383,6 +418,26 @@ public class GUI extends Application {
         townsView.put(TownName.O, new TownView(TownName.O, 0.829096739437645, 0.3542896174863388, 0.106006559623886, oImage));
 
         townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
+    }
+
+    private void buildTownBonusViews() {
+        townBonusView.put(TownName.A,new ObjectImageView(null,0.08028267559927046,0.07499708049113233,0.037));
+        townBonusView.put(TownName.B,new ObjectImageView(null,0.07129208879328723,0.24587339699863574,0.037));
+        townBonusView.put(TownName.C,new ObjectImageView(null,0.22129004564640675,0.12388308321964529,0.037));
+        townBonusView.put(TownName.D,new ObjectImageView(null,0.21219945884042354,0.28812960436562074,0.037));
+        townBonusView.put(TownName.E,new ObjectImageView(null,0.11973560962918661,0.41191268758526605,0.037));
+        townBonusView.put(TownName.F,new ObjectImageView(null,0.38903657045691414,0.08858390177353342,0.037));
+        townBonusView.put(TownName.G,new ObjectImageView(null,0.39681556103261644,0.24956616643929058,0.037));
+        townBonusView.put(TownName.H,new ObjectImageView(null,0.41330833087486385,0.3880845839017735,0.037));
+        townBonusView.put(TownName.I,new ObjectImageView(null,0.5485367103462978,0.08994815825375171,0.037));
+        townBonusView.put(TownName.K,new ObjectImageView(null,0.7146600426962434,0.07976261937244201,0.037));
+        townBonusView.put(TownName.L,new ObjectImageView(null,0.6872324841631532,0.2598444747612551,0.037));
+        townBonusView.put(TownName.M,new ObjectImageView(null,0.676830301126889,0.4351050477489768,0.037));
+        townBonusView.put(TownName.N,new ObjectImageView(null,0.8409536334768346,0.17562482946793997,0.037));
+        townBonusView.put(TownName.O,new ObjectImageView(null,0.8455768259373965,0.35770668485675305,0.037));
+
+        boardObjects.addAll(townBonusView.values());
+
     }
 
     private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
@@ -511,6 +566,17 @@ public class GUI extends Application {
         return townsView.get(name);
     }
 
+    public void populateTownBonus(TownInterface town) {
+        if(town.getTownName().equals(TownName.J)) return;
+        if(townBonusView.get(town.getTownName()).getImage() == null) {
+            String className = town.getTownBonus().getClass().getName();
+            String toLoad;
+            toLoad = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
+            toLoad = "BonusImages/" + toLoad + "_" + town.getTownBonus().getValue() + ".png";
+            townBonusView.get(town.getTownName()).setImage(new Image(classLoader.getResourceAsStream(toLoad)));
+        }
+    }
+
     public void updatePermitCard(RegionInterface region) {
         RegionType type = region.getRegionType();
         PermitCardView left;
@@ -598,5 +664,6 @@ public class GUI extends Application {
 
     public void updatePlayer(PlayerInterface player) {
         playerView.setPlayerProperty(player);
+        selectPoliticsView.updatePoliticsCards(player.politicsCardIterator());
     }
 }

@@ -6,7 +6,7 @@ import core.gamemodel.PermitCard;
 /**
  * Created by Matteo on 25/05/16.
  */
-public class SelectAgainPermitAction extends Action {
+public class SelectAgainPermitAction extends Action implements SpecialAction{
     private PermitCard permitCard;
 
     public SelectAgainPermitAction(Player player, PermitCard permitCard) {

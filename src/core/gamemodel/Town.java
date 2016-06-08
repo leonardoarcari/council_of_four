@@ -17,12 +17,12 @@ public class Town implements Subject, TownInterface{
     private TownName townName;
     private TownType townType;
     private List<TownName> nearbyTowns;
-    private List<Bonus> townBonus;
+    private Bonus townBonus;
     private Vector<Player> playersEmporium;
     private boolean kingHere;
     private transient List<Observer> observers;
 
-    public Town(TownName townName, List<Bonus> townBonus) {
+    public Town(TownName townName, Bonus townBonus) {
         this.townName = townName;
         this.townBonus = townBonus;
         kingHere = townName.equals(TownName.J);
@@ -98,8 +98,8 @@ public class Town implements Subject, TownInterface{
     }
 
     @Override
-    public Iterator<Bonus> bonusIterator() {
-        return townBonus.iterator();
+    public Bonus getTownBonus() {
+        return townBonus;
     }
 
     @Override

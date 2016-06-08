@@ -16,6 +16,10 @@ public class TownBonusFactory implements AbstractBonusFactory {
     private static final ArrayList<Float> TOWN_HIGH_PROBABILITIES = new ArrayList<>(Arrays.asList(
             1f/5, 2f/5, 3f/5, 4f/5, 1f));
 
+    public Bonus createOneBonus() {
+        return bonusFrom(TOWN_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);
+    }
+
     @Override
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();

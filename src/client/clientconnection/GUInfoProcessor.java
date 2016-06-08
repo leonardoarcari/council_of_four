@@ -23,6 +23,7 @@ public class GUInfoProcessor implements InfoProcessor {
         if (info instanceof TownInterface) {
             TownInterface town = (TownInterface) info;
             gui.getTownView(town.getTownName()).update(town);
+            gui.populateTownBonus(town);
         } else if (info instanceof BalconyInterface) {
             gui.updateBalcony((BalconyInterface) info);
         } else if (info instanceof WealthPathInterface) {

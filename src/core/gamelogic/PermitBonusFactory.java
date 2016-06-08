@@ -19,6 +19,9 @@ public class PermitBonusFactory implements AbstractBonusFactory{
             2f/10, 4f/10, 6f/10, 8f/10, 9.7f/10, 1f));
 
     @Override
+    public Bonus createOneBonus() {return bonusFrom(CARD_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);}
+
+    @Override
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         return bonusList(bonusNumber);

@@ -17,6 +17,9 @@ public class NobilityBonusFactory implements AbstractBonusFactory {
             8f/44, 9f/44, 25f/44, 26f/44, 32f/44, 34f/44, 36f/44, 38f/44, 1f));
 
     @Override
+    public Bonus createOneBonus() {return bonusFrom(NOBILITY_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);}
+
+    @Override
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         if (bonusNumber.equals(BonusNumber.NO_PROBABILITY)) return new ArrayList<>();

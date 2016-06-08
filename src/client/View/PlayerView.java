@@ -27,13 +27,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 05/06/2016.
  */
 public class PlayerView {
-
     private ObjectProperty<PlayerInterface> playerProperty;
     private VBox playerNode;
     private PopOver popOver;
@@ -44,6 +45,8 @@ public class PlayerView {
     private ScrollPane politicsScroll;
     private HBox politicsBox;
     private ScrollPane otherPane;
+
+    private Map<String,Image> cardImages;
 
     public PlayerView() {
         playerProperty = new SimpleObjectProperty<>(null);
@@ -64,9 +67,41 @@ public class PlayerView {
         politicsScroll.setPrefViewportWidth(200);
         politicsBox = new HBox(5);
         politicsBox.setPadding(new Insets(10.0));
+        politicsScroll.setContent(politicsBox);
         politicsScroll.setFitToHeight(true);
+        politicsScroll.prefViewportHeightProperty().bind(politicsBox.heightProperty());
 
+        cardImages = new HashMap<>();
+        loadImages();
         setUpPlayerNode();
+    }
+
+    private void loadImages() {
+        ClassLoader loader = this.getClass().getClassLoader();
+        Image fifthRoyal = new Image(loader.getResourceAsStream("fifthRoyal.png"));
+        Image fourthRoyal = new Image(loader.getResourceAsStream("fourthRoyal.png"));
+        Image thirdRoyal = new Image(loader.getResourceAsStream("thirdRoyal.png"));
+        Image secondRoyal = new Image(loader.getResourceAsStream("secondRoyal.png"));
+        Image firstRoyal = new Image(loader.getResourceAsStream("firstRoyal.png"));
+        Image whitePolitics = new Image(loader.getResourceAsStream("whitePolitics.png"));
+        Image blackPolitics = new Image(loader.getResourceAsStream("blackPolitics.png"));
+        Image orangePolitics = new Image(loader.getResourceAsStream("orangePolitics.png"));
+        Image pinkPolitics = new Image(loader.getResourceAsStream("pinkPolitics.png"));
+        Image cyanPolitics = new Image(loader.getResourceAsStream("bluePolitics.png"));
+        Image purplePolitics = new Image(loader.getResourceAsStream("purplePolitics.png"));
+        Image rainbowPolitics = new Image(loader.getResourceAsStream("rainbowPolitics.png"));
+        cardImages.put("3",fifthRoyal);
+        cardImages.put("7",fourthRoyal);
+        cardImages.put("12",thirdRoyal);
+        cardImages.put("18",secondRoyal);
+        cardImages.put("25",firstRoyal);
+        cardImages.put("WHITE",whitePolitics);
+        cardImages.put("BLACK",blackPolitics);
+        cardImages.put("ORANGE",orangePolitics);
+        cardImages.put("PINK",pinkPolitics);
+        cardImages.put("CYAN",cyanPolitics);
+        cardImages.put("PURPLE",purplePolitics);
+        cardImages.put("RAINBOW",rainbowPolitics);
     }
 
     private void setUpPlayerNode() {
@@ -131,11 +166,11 @@ public class PlayerView {
 
         // Other cards
         otherPane = new ScrollPane();
+        otherPane.setFitToHeight(true);
         HBox otherCards = new HBox(10);
         otherCards.setAlignment(Pos.CENTER);
         otherCards.setPadding(new Insets(5));
 
-        otherPane.prefViewportHeightProperty().bind(otherCards.heightProperty());
         otherPane.prefViewportWidthProperty().bind(playerNode.widthProperty());
 
         // Pack VBox
@@ -183,7 +218,7 @@ public class PlayerView {
         } else
             while(royalCardIterator.hasNext()) {
                 RoyalCard currentRoyal = royalCardIterator.next();
-                Image myRoyal = loadRoyal(currentRoyal);
+                Image myRoyal = cardImages.get(String.valueOf(currentRoyal.getRoyalBonus().getValue()));
                 ObjectImageView currentView = new ObjectImageView(myRoyal,0,0,0);
                 currentView.setFitHeight(80);
                 royalBox.getChildren().add(currentView);
@@ -198,12 +233,11 @@ public class PlayerView {
         } else
             while(politicsCardIterator.hasNext()) {
                 PoliticsCard currentPolitic = politicsCardIterator.next();
-                Image myPolitic = loadPolitics(currentPolitic);
+                Image myPolitic = cardImages.get(currentPolitic.getCardColor().name());
                 ObjectImageView currentView = new ObjectImageView(myPolitic,0,0,0);
                 currentView.setFitHeight(80);
                 politicsBox.getChildren().add(currentView);
             }
-        politicsScroll.setContent(politicsBox);
     }
 
     private void setOtherCards(Iterator<RegionCard> regionCardIterator, Iterator<TownTypeCard> townTypeCardIterator, HBox otherCards) {
@@ -218,20 +252,6 @@ public class PlayerView {
         while(townTypeCardIterator.hasNext()) {
             //load shit 2
         }
-    }
-
-    private Image loadRoyal(RoyalCard royal) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        if(royal.getRoyalBonus().getValue() == 3) return new Image(loader.getResourceAsStream("fifthRoyal.png"));
-        if(royal.getRoyalBonus().getValue() == 7) return new Image(loader.getResourceAsStream("fourthRoyal.png"));
-        if(royal.getRoyalBonus().getValue() == 12) return new Image(loader.getResourceAsStream("thirdRoyal.png"));
-        if(royal.getRoyalBonus().getValue() == 18) return new Image(loader.getResourceAsStream("secondRoyal.png"));
-        else return new Image(loader.getResourceAsStream("firstRoyal.png"));
-    }
-
-    private Image loadPolitics(PoliticsCard politicsCard) {
-        //TODO add images...
-        return null;
     }
 
     public Node getPlayerNode() {

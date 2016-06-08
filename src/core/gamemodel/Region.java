@@ -65,25 +65,25 @@ public class Region implements RegionInterface, Subject{
         AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.TOWN);
         switch(regionType) {
             case SEA:
-                regionTowns.put(TownName.A, new Town(TownName.A, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.B, new Town(TownName.B, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.C, new Town(TownName.C, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.D, new Town(TownName.D, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.E, new Town(TownName.E, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.A, new Town(TownName.A, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.B, new Town(TownName.B, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.C, new Town(TownName.C, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.D, new Town(TownName.D, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.E, new Town(TownName.E, bonusFactory.createOneBonus()));
                 break;
             case HILLS:
-                regionTowns.put(TownName.F, new Town(TownName.F, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.G, new Town(TownName.G, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.H, new Town(TownName.H, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.I, new Town(TownName.I, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.J, new Town(TownName.J, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.F, new Town(TownName.F, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.G, new Town(TownName.G, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.H, new Town(TownName.H, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.I, new Town(TownName.I, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.J, new Town(TownName.J, bonusFactory.createOneBonus()));
                 break;
             case MOUNTAINS:
-                regionTowns.put(TownName.K, new Town(TownName.K, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.L, new Town(TownName.L, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.M, new Town(TownName.M, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.N, new Town(TownName.N, bonusFactory.generateBonuses()));
-                regionTowns.put(TownName.O, new Town(TownName.O, bonusFactory.generateBonuses()));
+                regionTowns.put(TownName.K, new Town(TownName.K, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.L, new Town(TownName.L, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.M, new Town(TownName.M, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.N, new Town(TownName.N, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.O, new Town(TownName.O, bonusFactory.createOneBonus()));
                 break;
         }
     }

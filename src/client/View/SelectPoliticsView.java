@@ -1,12 +1,17 @@
 package client.View;
 
 import core.gamemodel.PoliticsCard;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -15,10 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Leonardo Arcari on 08/06/2016.
@@ -28,11 +30,11 @@ public class SelectPoliticsView extends BorderPane {
     private ScrollPane scrollPane;
     private Text selectedNo;
     private Map<String, Image> politicsImages;
-    private List<PoliticsCard> selectedCards;
+    private ObservableList<PoliticsCard> selectedCards;
 
-    public SelectPoliticsView(List<PoliticsCard> politicsCards) {
+    public SelectPoliticsView() {
         politicsImages = new HashMap<>();
-        selectedCards = new ArrayList<>();
+        selectedCards = FXCollections.observableArrayList();
         ClassLoader loader = this.getClass().getClassLoader();
         politicsImages.put("CYAN", new Image(loader.getResourceAsStream("bluePolitics.png")));
         politicsImages.put("PINK", new Image(loader.getResourceAsStream("pinkPolitics.png")));
@@ -48,7 +50,7 @@ public class SelectPoliticsView extends BorderPane {
         cardsBox = new HBox(20);
         cardsBox.setAlignment(Pos.CENTER);
         cardsBox.setPadding(new Insets(0, 30, 0, 30));
-        politicsCards.forEach(card -> cardsBox.getChildren().add(buildCardNode(card)));
+        //politicsCards.forEach(card -> cardsBox.getChildren().add(buildCardNode(card)));
 
         scrollPane = new ScrollPane(cardsBox);
         scrollPane.setFitToHeight(true);
@@ -58,6 +60,14 @@ public class SelectPoliticsView extends BorderPane {
         setBottom(selectedNo);
         BorderPane.setAlignment(scrollPane, Pos.CENTER);
         BorderPane.setAlignment(selectedNo, Pos.CENTER);
+    }
+
+    public void updatePoliticsCards(Iterator<PoliticsCard> politicsCardIterator) {
+        cardsBox.getChildren().clear();
+        cardsBox.getChildren().add(new Button("Back"));
+        while(politicsCardIterator.hasNext()) {
+            cardsBox.getChildren().add(buildCardNode(politicsCardIterator.next()));
+        }
     }
 
     private VBox buildCardNode(PoliticsCard card) {
@@ -79,5 +89,13 @@ public class SelectPoliticsView extends BorderPane {
 
         node.getChildren().addAll(iv, checkBox);
         return node;
+    }
+
+    public ObservableList<PoliticsCard> getSelectedCards() {
+        return selectedCards;
+    }
+
+    public void addClickListener(EventHandler<? super MouseEvent> value) {
+        cardsBox.getChildren().get(0).setOnMouseClicked(value);
     }
 }

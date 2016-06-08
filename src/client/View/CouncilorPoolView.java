@@ -107,9 +107,7 @@ public class CouncilorPoolView {
         pinkCouncilor = new Image(loader.getResourceAsStream("pink_councilor.png"));
     }
 
-    public boolean getCouncilorPickedProperty() {
-        return councilorPickedProperty.get();
-    }
+    public Councilor getSelectedCouncilor() { return selectedCouncilor; }
 
     public BooleanProperty councilorPickedPropertyProperty() {
         return councilorPickedProperty;

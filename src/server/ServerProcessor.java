@@ -188,10 +188,8 @@ public class ServerProcessor implements InfoProcessor {
     private void redeemLinkedTowns(Player player, TownName townName) {
         List<Town> playerTowns = GraphsAlgorithms.townsWithEmporiumOf(game.getGameBoard().getTownsMap(), townName, player);
         for(Town myTown : playerTowns) {
-            Iterator<Bonus> bonusIterator = myTown.bonusIterator();
-            while(bonusIterator.hasNext()) {
-                redeemBonus(bonusIterator.next(), player);
-            }
+            Bonus townBonus = myTown.getTownBonus();
+            redeemBonus(townBonus, player);
         }
     }
 
@@ -258,10 +256,8 @@ public class ServerProcessor implements InfoProcessor {
     private void redeemTown(Player player, TownName townName) {
         Region myRegion = game.getGameBoard().regionFromTownName(townName);
         Town myTown = myRegion.getTownByName(townName);
-        Iterator<Bonus> bonusIterator = myTown.bonusIterator();
-        while(bonusIterator.hasNext()) {
-            redeemBonus(bonusIterator.next(), player);
-        }
+        Bonus townBonus = myTown.getTownBonus();
+        redeemBonus(townBonus, player);
     }
 
     private void takePermitBonus(TakePermitBonusAction action) {
