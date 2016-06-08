@@ -1,10 +1,12 @@
 package core.gamemodel.bonus;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 16/05/16.
  */
-public abstract class Bonus {
-    private final int value;
+public abstract class Bonus implements Serializable {
+    private int value;
 
     public Bonus(BonusNumber bonusNumber) {
         value = getRandomValue(bonusNumber);

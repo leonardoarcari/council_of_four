@@ -2,10 +2,12 @@ package core.gamemodel;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 19/05/16.
  */
-public enum CouncilColor {
+public enum CouncilColor implements Serializable{
     PURPLE(Color.PURPLE),
     BLACK(Color.BLACK),
     WHITE(Color.WHITE),

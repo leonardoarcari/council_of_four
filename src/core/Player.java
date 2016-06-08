@@ -15,7 +15,7 @@ public class Player implements Subject, Serializable, PlayerInterface {
     private String uniqueID;
     private String username;
     private String nickname;
-    private Color color;
+    private transient Color color;
     private transient Connection connection;
 
     // The hand
@@ -33,8 +33,8 @@ public class Player implements Subject, Serializable, PlayerInterface {
 
         uniqueID = generateID();
         color = generateColor();
-        username = null;
-        nickname = null;
+        username = "";
+        nickname = "";
         permitCards = new ArrayList<>();
         regionCards = new ArrayList<>();
         politicsCards = new ArrayList<>();

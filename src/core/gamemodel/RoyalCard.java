@@ -2,10 +2,12 @@ package core.gamemodel;
 
 import core.gamemodel.bonus.VictoryPoint;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 19/05/16.
  */
-public enum RoyalCard {
+public enum RoyalCard implements Serializable {
     FIRST(new VictoryPoint(25)),
     SECOND(new VictoryPoint(18)),
     THIRD(new VictoryPoint(12)),

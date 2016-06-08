@@ -45,8 +45,9 @@ public class Game implements Runnable{
         WaitingHall.getInstance().createNewGame();
         gameBoard = GameBoard.createGameBoard(players);
 
+        players.forEach(player -> player.getConnection().sendInfo(SyncAction.GAME_START));
         gameBoard.notifyChildren();
-        for(Player player : players) {
+        for (Player player : players) {
             player.notifyObservers();
         }
 

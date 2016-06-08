@@ -6,6 +6,7 @@ import core.Subject;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.TownInterface;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -13,7 +14,7 @@ import java.util.Vector;
 /**
  * Created by Matteo on 20/05/16.
  */
-public class Town implements Subject, TownInterface{
+public class Town implements Subject, TownInterface, Serializable{
     private TownName townName;
     private TownType townType;
     private List<TownName> nearbyTowns;

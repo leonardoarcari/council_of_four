@@ -4,6 +4,7 @@ import client.View.GUI;
 import core.Player;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
+import core.gamelogic.actions.SyncAction;
 import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
 
@@ -37,6 +38,11 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updateGameBoardData((GameBoardInterface) info);
         } else if (info instanceof PlayerInterface) {
             gui.updatePlayer((PlayerInterface) info);
+        } else if (info instanceof SyncAction) {
+            SyncAction action = (SyncAction) info;
+            if (info.equals(SyncAction.GAME_START)) {
+                gui.startGame();
+            }
         }
     }
 }

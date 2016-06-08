@@ -2,10 +2,14 @@ package core.connection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
@@ -16,12 +20,10 @@ public class SocketConnection implements Connection, Runnable {
     private Socket socket;
     private InfoProcessor processor;
     private Communicator socketCommunicator;
-    private BufferedReader in;
-    private Gson gson;
+    private ObjectInputStream in;
 
     public SocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         this.processor = processor;
-        gson = new GsonBuilder().create();
         this.socket = socket;
         socketCommunicator = new SocketCommunicator(socket);
     }
@@ -41,18 +43,9 @@ public class SocketConnection implements Connection, Runnable {
     @Override
     public void run() {
         try {
-            // Open stream reader
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            // Wait for messages in the socket
+            in = new ObjectInputStream(socket.getInputStream());
             while (true) {
-                String info = in.readLine();
-                if(info == null)
-                    System.out.println("MERDA NULL");
-                StringTokenizer tokenizer = new StringTokenizer(info, SocketCommunicator.SEPARATOR);
-                String className = tokenizer.nextToken();
-                String json = tokenizer.nextToken();
-                Object data = gson.fromJson(json, Class.forName(className));
+                Object data = in.readObject();
                 processor.processInfo(data);
             }
         } catch (IOException | ClassNotFoundException e) {

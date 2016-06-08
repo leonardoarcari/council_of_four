@@ -9,12 +9,13 @@ import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.RegionInterface;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by Matteo on 20/05/16. Need to add LinkTown method and attributes
  */
-public class Region implements RegionInterface, Subject{
+public class Region implements RegionInterface, Subject, Serializable{
     private boolean regionCardTaken;
     private RegionType regionType;
     private transient CouncilorsBalcony regionBalcony;

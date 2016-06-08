@@ -6,6 +6,7 @@ import client.clientconnection.RMIConnection;
 import core.connection.Connection;
 import core.connection.InfoProcessor;
 import core.connection.SocketConnection;
+import core.gamelogic.actions.Action;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,7 +19,6 @@ import java.rmi.RemoteException;
 public class ControllerUI {
     private Connection connection;
     private InfoProcessor processor;
-    private SocketConnection socketConnection;
     private GUI gui;
 
     public ControllerUI(GUI gui) {
@@ -33,17 +33,18 @@ public class ControllerUI {
             e.printStackTrace();
         }
     }
+
     public void socketConnection() {
         try {
             Socket socket = new Socket("127.0.0.1", 2828);
-            socketConnection = new SocketConnection(processor, socket);
-            new Thread(socketConnection).start();
+            connection = new SocketConnection(processor, socket);
+            new Thread((SocketConnection) connection).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public SocketConnection getSocketConnection() {
-        return socketConnection;
+    public void sendInfo(Object info) {
+        new Thread(() -> connection.sendInfo(info)).start();
     }
 }

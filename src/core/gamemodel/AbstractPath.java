@@ -5,6 +5,7 @@ import core.Player;
 import core.Subject;
 import core.gamemodel.modelinterface.AbstractPathInterface;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
@@ -12,7 +13,7 @@ import java.util.Vector;
 /**
  * Created by Matteo on 23/05/16.
  */
-public abstract class AbstractPath implements AbstractPathInterface, Subject{
+public abstract class AbstractPath implements AbstractPathInterface, Subject, Serializable{
     protected List<List<Player>> players;
     private transient List<Observer> observers;
 

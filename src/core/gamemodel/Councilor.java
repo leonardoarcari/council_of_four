@@ -1,9 +1,11 @@
 package core.gamemodel;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 20/05/16.
  */
-public class Councilor {
+public class Councilor implements Serializable {
     private final CouncilColor councilorColor;
     private final int id;
 

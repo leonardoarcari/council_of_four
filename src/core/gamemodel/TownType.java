@@ -2,10 +2,12 @@ package core.gamemodel;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 20/05/16.
  */
-public enum TownType {
+public enum TownType implements Serializable {
     GOLD(Color.GOLD),
     SILVER(Color.SILVER),
     BRONZE(Color.PERU),

@@ -10,12 +10,13 @@ import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
 import server.serverconnection.ServerConnection;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by Matteo on 21/05/16.
  */
-public class GameBoard implements Subject, GameBoardInterface{
+public class GameBoard implements Subject, GameBoardInterface, Serializable{
     private transient RegionType boardType;
     private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
