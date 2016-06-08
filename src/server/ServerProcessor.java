@@ -64,8 +64,10 @@ public class ServerProcessor implements InfoProcessor {
                 pickTownBonus((PickTownBonusAction) info);
             } else if(info.getClass().equals(TakePermitBonusAction.class)) {
                 takePermitBonus((TakePermitBonusAction) info);
-            } else {
+            } else if(info.getClass().equals(PermitNoPayAction.class)) {
                 permitNoPay((PermitNoPayAction) info);
+            } else if (info.getClass().equals(PlayerInfoAction.class)) {
+                //TODO: Add PlayerInfoAction
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action

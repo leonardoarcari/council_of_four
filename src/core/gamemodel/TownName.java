@@ -1,9 +1,11 @@
 package core.gamemodel;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 18/05/16.
  */
-public enum TownName {
+public enum TownName implements Serializable {
     A("Arkon"),
     B("Burgen"),
     C("Castrum"),
