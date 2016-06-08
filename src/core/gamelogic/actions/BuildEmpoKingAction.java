@@ -1,9 +1,8 @@
 package core.gamelogic.actions;
 
+import core.Player;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
-import core.gamemodel.Town;
-import core.Player;
 import core.gamemodel.TownName;
 
 import java.util.Iterator;

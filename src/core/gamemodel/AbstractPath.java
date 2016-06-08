@@ -1,7 +1,7 @@
 package core.gamemodel;
 
-import core.Player;
 import core.Observer;
+import core.Player;
 import core.Subject;
 import core.gamemodel.modelinterface.AbstractPathInterface;
 

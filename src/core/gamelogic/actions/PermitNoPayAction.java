@@ -1,7 +1,6 @@
 package core.gamelogic.actions;
 
 import core.Player;
-import core.gamemodel.PermitCard;
 import core.gamemodel.Region;
 import core.gamemodel.RegionType;
 

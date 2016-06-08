@@ -1,7 +1,6 @@
 package client.View;
 
 import core.Player;
-import core.gamemodel.NobilityPath;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.NobilityPathInterface;
 import javafx.collections.FXCollections;
@@ -14,7 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,7 +21,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
 
-import javax.xml.ws.Holder;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;

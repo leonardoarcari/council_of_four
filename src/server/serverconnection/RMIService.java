@@ -1,8 +1,8 @@
 package server.serverconnection;
 
+import core.Player;
 import core.connection.RMIProcessor;
 import core.connection.RMIServiceInterface;
-import core.Player;
 import server.WaitingHall;
 
 import java.rmi.RemoteException;

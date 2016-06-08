@@ -1,8 +1,6 @@
 package client.View;
 
-import client.View.ObjectImageView;
 import core.gamemodel.Councilor;
-import core.gamemodel.CouncilorsBalcony;
 import core.gamemodel.modelinterface.BalconyInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -12,14 +10,9 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import org.controlsfx.control.PopOver;
 
 import java.awt.image.BufferedImage;

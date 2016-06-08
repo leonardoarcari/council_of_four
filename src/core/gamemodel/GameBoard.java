@@ -1,13 +1,13 @@
 package core.gamemodel;
 
+import core.Observer;
+import core.Player;
+import core.Subject;
 import core.connection.GameBoardInterface;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
-import core.Player;
-import core.Observer;
-import core.Subject;
 import server.serverconnection.ServerConnection;
 
 import java.util.*;

@@ -1,7 +1,7 @@
 package core.gamelogic.actions;
 
-import core.gamemodel.OnSaleItem;
 import core.Player;
+import core.gamemodel.OnSaleItem;
 
 import java.util.Iterator;
 import java.util.List;

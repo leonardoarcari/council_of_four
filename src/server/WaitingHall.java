@@ -1,8 +1,8 @@
 package server;
 
 
-import core.connection.InfoProcessor;
 import core.Player;
+import core.connection.InfoProcessor;
 
 import java.util.ArrayList;
 import java.util.List;

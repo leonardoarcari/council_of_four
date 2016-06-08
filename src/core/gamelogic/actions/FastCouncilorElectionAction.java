@@ -1,8 +1,8 @@
 package core.gamelogic.actions;
 
+import core.Player;
 import core.gamemodel.Councilor;
 import core.gamemodel.RegionType;
-import core.Player;
 
 /**
  * Created by Leonardo Arcari on 23/05/2016.

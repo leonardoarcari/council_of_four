@@ -1,6 +1,5 @@
 package client.View;
 
-import client.View.ObjectImageView;
 import core.gamemodel.PermitCard;
 import core.gamemodel.bonus.Bonus;
 import javafx.embed.swing.SwingFXUtils;
@@ -19,23 +18,30 @@ import java.util.Iterator;
  * Created by Matteo on 06/06/16.
  */
 public class PermitCardView extends ObjectImageView {
+    ImageView myView;
     PermitCard permitCard;
     PopOver myPopover;
 
     public PermitCardView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
+        myView = new ImageView();
+
+        setFirstPopOver();
+    }
+
+    private void setFirstPopOver() {
+        myView.setFitHeight(150);
+        myView.setPreserveRatio(true);
         myPopover = new PopOver();
         myPopover.setArrowSize(0.0);
-        myPopover.setContentNode(new ImageView(this.getImage()));
+        myView.setImage(this.getImage());
+        myPopover.setContentNode(myView);
     }
 
     public void setPermitCard(PermitCard permitCard) {
         this.permitCard = permitCard;
         this.setImage(permitImage(this.permitCard));
-        ImageView view = new ImageView(this.getImage());
-        view.setPreserveRatio(true);
-        view.setFitHeight(150);
-        myPopover.setContentNode(view);
+        myView.setImage(this.getImage());
     }
 
     private Image permitImage(PermitCard permitCard) {
@@ -90,7 +96,7 @@ public class PermitCardView extends ObjectImageView {
     }
 
     private int calculateHorizontalSpacing(int count) {
-        return 12 + (232 - 2 * 12 -
+        return 16 + (232 - 2 * 12 -
                 count * 60 - (count - 1) * 5) / 2;
     }
 

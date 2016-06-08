@@ -1,6 +1,5 @@
 package client.View;
 
-import core.gamemodel.CouncilColor;
 import core.gamemodel.Councilor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

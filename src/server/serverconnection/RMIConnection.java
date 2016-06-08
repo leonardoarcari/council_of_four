@@ -1,10 +1,9 @@
 package server.serverconnection;
 
+import core.Player;
+import core.Subject;
 import core.connection.InfoProcessor;
 import core.connection.RMIProcessor;
-import core.Player;
-import core.Observer;
-import core.Subject;
 import server.WaitingHall;
 
 import java.rmi.RemoteException;

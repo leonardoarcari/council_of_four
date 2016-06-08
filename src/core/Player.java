@@ -2,16 +2,16 @@ package core;
 
 import core.connection.Connection;
 import core.gamemodel.*;
+import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.scene.paint.Color;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
  * Created by Matteo on 19/05/16.
  */
-public class Player implements Subject, Serializable {
+public class Player implements Subject, Serializable, PlayerInterface {
     private String uniqueID;
     private String username;
     private String nickname;

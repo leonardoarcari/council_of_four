@@ -1,9 +1,8 @@
 package core.gamelogic.actions;
 
+import core.Player;
 import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
-import core.gamemodel.Town;
-import core.Player;
 import core.gamemodel.TownName;
 
 /**

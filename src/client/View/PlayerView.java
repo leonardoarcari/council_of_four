@@ -1,6 +1,7 @@
 package client.View;
 
-import core.Player;
+import core.gamemodel.*;
+import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
@@ -8,11 +9,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -22,21 +27,50 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
 
+import java.util.Iterator;
+
 /**
  * Created by Leonardo Arcari on 05/06/2016.
  */
 public class PlayerView {
 
-    private ObjectProperty<Player> playerProperty;
+    private ObjectProperty<PlayerInterface> playerProperty;
     private VBox playerNode;
     private PopOver popOver;
+    private ScrollPane permitScroll;
+    private HBox permitBox;
+    private ScrollPane royalScroll;
+    private HBox royalBox;
+    private ScrollPane politicsScroll;
+    private HBox politicsBox;
+    private ScrollPane otherPane;
 
     public PlayerView() {
         playerProperty = new SimpleObjectProperty<>(null);
+
+        permitScroll = new ScrollPane();
+        permitScroll.setPrefViewportWidth(200);
+        permitBox = new HBox(5);
+        permitBox.setPadding(new Insets(10.0));
+        permitScroll.prefViewportHeightProperty().bind(permitBox.heightProperty());
+
+        royalScroll = new ScrollPane();
+        royalScroll.setPrefViewportWidth(200);
+        royalBox = new HBox(5);
+        royalBox.setPadding(new Insets(10.0));
+        royalScroll.prefViewportHeightProperty().bind(royalBox.heightProperty());
+
+        politicsScroll = new ScrollPane();
+        politicsScroll.setPrefViewportWidth(200);
+        politicsBox = new HBox(5);
+        politicsBox.setPadding(new Insets(10.0));
+        politicsScroll.prefViewportHeightProperty().bind(politicsBox.heightProperty());
+
         setUpPlayerNode();
     }
 
     private void setUpPlayerNode() {
+        ClassLoader loader = this.getClass().getClassLoader();
         playerNode = new VBox(10);
         playerNode.setAlignment(Pos.TOP_CENTER);
         playerNode.setPadding(new Insets(30, 0, 0, 0));
@@ -61,44 +95,28 @@ public class PlayerView {
         // Player's hand
         GridPane handPane = buildPlayerHand();
 
-        Effect dropShadow = setShadowEffect();
-
         HBox servantsBox = new HBox(10);
         servantsBox.setAlignment(Pos.CENTER);
-        Circle servantsCircle = new Circle(25, Color.BLACK);
-        Text servantsNo = new Text("N/A");
-        setNumberText(servantsNo);
-        servantsBox.getChildren().addAll(servantsCircle, servantsNo);
+        BoxInfo servants = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/hireservant_1.png")),new Text("N/A"));
+        servantsBox.getChildren().addAll(servants.getBoxImageView(), servants.getBoxText());
 
         HBox politicsBox = new HBox(10);
         politicsBox.setAlignment(Pos.CENTER);
-        Circle politicsCircle = new Circle(25, Color.BLUE);
-        politicsCircle.setOnMouseEntered(event -> politicsCircle.setEffect(dropShadow));
-        politicsCircle.setOnMouseExited(event -> politicsCircle.setEffect(null));
-        politicsCircle.setOnMouseClicked(event -> popOver.show(politicsCircle, 10));
-        Text politicsNo = new Text("N/A");
-        setNumberText(politicsNo);
-        politicsBox.getChildren().addAll(politicsCircle, politicsNo);
+        BoxInfo politics = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/drawpoliticscard_1.png")),new Text("N/A"));
+        politics.setPopOverContent(politicsScroll);
+        politicsBox.getChildren().addAll(politics.getBoxImageView(), politics.getBoxText());
 
         HBox permitBox = new HBox(10);
         permitBox.setAlignment(Pos.CENTER);
-        Circle permitCircle = new Circle(25, Color.DARKGREEN);
-        permitCircle.setOnMouseEntered(event -> permitCircle.setEffect(dropShadow));
-        permitCircle.setOnMouseExited(event -> permitCircle.setEffect(null));
-        permitCircle.setOnMouseClicked(event -> popOver.show(permitCircle, 10));
-        Text permitsNo = new Text("N/A");
-        setNumberText(permitsNo);
-        permitBox.getChildren().addAll(permitCircle, permitsNo);
+        BoxInfo permits = new BoxInfo(new Image(loader.getResourceAsStream("permitCardIcon.png")), new Text("N/A"));
+        permits.setPopOverContent(permitScroll);
+        permitBox.getChildren().addAll(permits.getBoxImageView(), permits.getBoxText());
 
         HBox royalBox = new HBox(10);
         royalBox.setAlignment(Pos.CENTER);
-        Circle royalCircle = new Circle(25, Color.RED);
-        royalCircle.setOnMouseEntered(event -> royalCircle.setEffect(dropShadow));
-        royalCircle.setOnMouseExited(event -> royalCircle.setEffect(null));
-        royalCircle.setOnMouseClicked(event -> popOver.show(royalCircle, 10));
-        Text royalNo = new Text("N/A");
-        setNumberText(royalNo);
-        royalBox.getChildren().addAll(royalCircle, royalNo);
+        BoxInfo royals = new BoxInfo(new Image(loader.getResourceAsStream("royalModel.png")), new Text("N/A"));
+        royals.setPopOverContent(royalScroll);
+        royalBox.getChildren().addAll(royals.getBoxImageView(), royals.getBoxText());
 
         handPane.add(servantsBox, 0, 0);
         handPane.add(politicsBox, 1, 0);
@@ -112,7 +130,7 @@ public class PlayerView {
         second.setPadding(new Insets(5, 10, 5, 10));
 
         // Other cards
-        ScrollPane otherPane = new ScrollPane();
+        otherPane = new ScrollPane();
         HBox otherCards = new HBox(10);
         otherCards.setAlignment(Pos.CENTER);
         otherCards.setPadding(new Insets(5));
@@ -129,29 +147,105 @@ public class PlayerView {
                 playerColor.setFill(newValue.getColor());
                 username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
                 nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
-                servantsNo.setText(String.valueOf(newValue.getServantsNumber()));
-                politicsNo.setText(String.valueOf(newValue.getPoliticsCardsNumber()));
-                permitsNo.setText(String.valueOf(newValue.getPermitCardsNumber()));
-                royalNo.setText(String.valueOf(newValue.getRoyalCardsNumber()));
+                servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
+                politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
+                permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
+                royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
 
-                //TODO: Add PopOvers and ScrollPane Cards views
+                setPermitScrollPane(newValue.permitCardIterator());
+                setRoyalScrollPane(newValue.royalCardIterator());
+                setPoliticScrollPane(newValue.politicsCardIterator());
+                setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);
             }
         });
+    }
+
+    private void setPermitScrollPane(Iterator<PermitCard> permitCardIterator) {
+        permitBox.getChildren().clear();
+        if(!permitCardIterator.hasNext()) {
+            permitBox.getChildren().add(new Button("No Permit Card"));
+        } else
+            while(permitCardIterator.hasNext()) {
+                PermitCard currentPermit = permitCardIterator.next();
+                PermitCardView currentView = new PermitCardView(null,0,0,0);
+                currentView.setPermitCard(currentPermit);
+                currentView.setFitHeight(80);
+                permitBox.getChildren().add(currentView);
+            }
+        permitScroll.setContent(permitBox);
+    }
+
+    private void setRoyalScrollPane(Iterator<RoyalCard> royalCardIterator) {
+        royalBox.getChildren().clear();
+        if(!royalCardIterator.hasNext()) {
+            royalBox.getChildren().add(new Label("No Royal Card"));
+        } else
+            while(royalCardIterator.hasNext()) {
+                RoyalCard currentRoyal = royalCardIterator.next();
+                Image myRoyal = loadRoyal(currentRoyal);
+                ObjectImageView currentView = new ObjectImageView(myRoyal,0,0,0);
+                currentView.setFitHeight(80);
+                royalBox.getChildren().add(currentView);
+            }
+        royalScroll.setContent(royalBox);
+    }
+
+    private void setPoliticScrollPane(Iterator<PoliticsCard> politicsCardIterator) {
+        politicsBox.getChildren().clear();
+        if(!politicsCardIterator.hasNext()) {
+            politicsBox.getChildren().add(new Label("No Politics Card"));
+        } else
+            while(politicsCardIterator.hasNext()) {
+                PoliticsCard currentPolitic = politicsCardIterator.next();
+                Image myPolitic = loadPolitics(currentPolitic);
+                ObjectImageView currentView = new ObjectImageView(myPolitic,0,0,0);
+                currentView.setFitHeight(80);
+                politicsBox.getChildren().add(currentView);
+            }
+        politicsScroll.setContent(politicsBox);
+    }
+
+    private void setOtherCards(Iterator<RegionCard> regionCardIterator, Iterator<TownTypeCard> townTypeCardIterator, HBox otherCards) {
+        otherCards.getChildren().clear();
+        while(regionCardIterator.hasNext()) {
+            ImageView myView = new ImageView(GUI.selectRegionCardImage(regionCardIterator.next().getType()));
+            myView.setPreserveRatio(true);
+            myView.setFitHeight(80);
+            otherCards.getChildren().add(myView);
+        }
+        otherPane.setContent(otherCards);
+        while(townTypeCardIterator.hasNext()) {
+            //load shit 2
+        }
+    }
+
+    private Image loadRoyal(RoyalCard royal) {
+        ClassLoader loader = this.getClass().getClassLoader();
+        if(royal.getRoyalBonus().getValue() == 3) return new Image(loader.getResourceAsStream("fifthRoyal.png"));
+        if(royal.getRoyalBonus().getValue() == 7) return new Image(loader.getResourceAsStream("fourthRoyal.png"));
+        if(royal.getRoyalBonus().getValue() == 12) return new Image(loader.getResourceAsStream("thirdRoyal.png"));
+        if(royal.getRoyalBonus().getValue() == 18) return new Image(loader.getResourceAsStream("secondRoyal.png"));
+        else return new Image(loader.getResourceAsStream("firstRoyal.png"));
+    }
+
+    private Image loadPolitics(PoliticsCard politicsCard) {
+        //TODO add images...
+        return null;
     }
 
     public Node getPlayerNode() {
         return playerNode;
     }
 
-    public Player getPlayerProperty() {
+    public PlayerInterface getPlayerProperty() {
         return playerProperty.get();
     }
 
-    public ObjectProperty<Player> playerPropertyProperty() {
+    public ObjectProperty<PlayerInterface> playerPropertyProperty() {
         return playerProperty;
     }
 
-    public void setPlayerProperty(Player playerProperty) {
+    public void setPlayerProperty(PlayerInterface playerProperty) {
         this.playerProperty.set(playerProperty);
     }
 
@@ -207,5 +301,43 @@ public class PlayerView {
         handPane.getColumnConstraints().addAll(c2, c3);
         handPane.setVgap(20);
         return handPane;
+    }
+
+    private class BoxInfo {
+        private ImageView boxImageView;
+        private Text boxText;
+        private ScrollPane popOverContent;
+
+        BoxInfo(Image image, Text text) {
+            boxImageView = new ImageView(image);
+            boxText = text;
+            popOverContent = new ScrollPane();
+            setUp();
+        }
+
+        private void setUp(){
+            boxImageView.setPreserveRatio(true);
+            boxImageView.setFitHeight(50);
+            boxImageView.setOnMouseEntered(event -> boxImageView.setEffect(setShadowEffect()));
+            boxImageView.setOnMouseExited(event -> boxImageView.setEffect(null));
+            setNumberText(boxText);
+        }
+
+        public void setPopOverContent(ScrollPane popOverContent) {
+            this.popOverContent = popOverContent;
+
+            boxImageView.setOnMouseClicked(event -> {
+                popOver.setContentNode(this.popOverContent);
+                popOver.show(boxImageView, 10);
+            });
+        }
+
+        public ImageView getBoxImageView() {
+            return boxImageView;
+        }
+
+        public Text getBoxText() {
+            return boxText;
+        }
     }
 }

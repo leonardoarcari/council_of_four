@@ -1,5 +1,6 @@
 package server;
 
+import core.Player;
 import core.connection.InfoProcessor;
 import core.gamelogic.GraphsAlgorithms;
 import core.gamelogic.actions.*;
@@ -8,12 +9,6 @@ import core.gamemodel.bonus.*;
 
 import java.util.Iterator;
 import java.util.List;
-
-import core.gamemodel.PermitCard;
-import core.gamemodel.RegionType;
-import core.gamemodel.Town;
-
-import core.Player;
 
 /**
  * Created by Matteo on 20/05/2016.

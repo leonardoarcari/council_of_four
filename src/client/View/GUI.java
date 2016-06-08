@@ -8,15 +8,12 @@ import core.gamelogic.BonusOwner;
 import core.gamemodel.*;
 import core.gamemodel.Region;
 import core.gamemodel.bonus.Bonus;
-import core.gamemodel.modelinterface.BalconyInterface;
-import core.gamemodel.modelinterface.NobilityPathInterface;
-import core.gamemodel.modelinterface.RegionInterface;
-import core.gamemodel.modelinterface.WealthPathInterface;
+import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
-import javafx.geometry.*;
+import javafx.geometry.HPos;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -30,9 +27,6 @@ import javafx.util.Duration;
 import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -112,8 +106,8 @@ public class GUI extends Application {
         boardAnchor = new AnchorPane();
 
         //Choice tree (and children) setup
-        buildMasterDetailPane();
         buildActionTree();
+        buildMasterDetailPane();
 
         //Load GameBoard imageview
         buildGameboard();
@@ -194,19 +188,21 @@ public class GUI extends Application {
             setObjectConstraints(townView);
         });
 
-        GameBoard fakegame = GameBoard.createGameBoard(Arrays.asList(new Player(null), new Player(null)));
+        Player player = new Player(null);
+        player.setUsername("Matteo");
+        player.setNickname("Rager");
+        player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
+        player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
+        player.addRegionCard(RegionCard.HILLS);
+
+        GameBoard fakegame = GameBoard.createGameBoard(Arrays.asList(player, new Player(null)));
         updateGameBoardData(fakegame);
+
+        updatePlayer(player);
 
         // Leo's testZone
         dummyChat.setOnMouseClicked(event -> {
             ShowPane showpane = new ShowPane(scene, gridPane);
-            Player player = new Player(null);
-            AbstractBonusFactory factory = BonusFactory.getFactory(BonusOwner.PERMIT);
-            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 1));
-            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 2));
-            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 3));
-            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 4));
-            player.addPermitCard(new PermitCard(RegionType.HILLS, factory.generateBonuses(), 5));
             RedeemPermitView view = new RedeemPermitView(player);
             view.addClickListener(event1 -> showpane.hide());
             showpane.setContent(view);
@@ -240,6 +236,27 @@ public class GUI extends Application {
         gridPane.getRowConstraints().addAll(chatRow, handRow);
     }
 
+    private void buildActionTree() {
+        choiceItem = new TreeItem<>("Make a choice");
+        fastSelector = new TreeItem<>("Select Fast action");
+        servantsPoolSelector = new TreeItem<>("See servants pool");
+        councilorPoolSelector = new TreeItem<>("See councilor pool");
+        choiceItem.getChildren().addAll(fastSelector, servantsPoolSelector, councilorPoolSelector);
+        actionChoice = new TreeView<>(choiceItem);
+
+        fastActionsView = new FastActionsView();
+        councilorPool = new CouncilorPoolView();
+
+        actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.equals(councilorPoolSelector)) {
+                choicePane.setMasterNode(councilorPool.getFlowNode());
+            } else if(newValue.equals(fastSelector)) {
+                choicePane.setMasterNode(fastActionsView.getBoxNode());
+            } else choicePane.setMasterNode(new Label("ciao"));
+            choicePane.setDividerPosition(0.3);
+        });
+    }
+
     private void buildMasterDetailPane() {
         choicePane = new MasterDetailPane();
         choicePane.setDetailNode(actionChoice);
@@ -251,26 +268,6 @@ public class GUI extends Application {
             if(newValue.doubleValue()>0.5) choicePane.setDividerPosition(0.4);  //Fix divider position
         }));
 
-        fastActionsView = new FastActionsView();
-        councilorPool = new CouncilorPoolView();
-    }
-
-    private void buildActionTree() {
-        choiceItem = new TreeItem<>("Make a choice");
-        fastSelector = new TreeItem<>("Select Fast action");
-        servantsPoolSelector = new TreeItem<>("See servants pool");
-        councilorPoolSelector = new TreeItem<>("See councilor pool");
-        choiceItem.getChildren().addAll(fastSelector, servantsPoolSelector, councilorPoolSelector);
-        actionChoice = new TreeView<>(choiceItem);
-
-        actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals(councilorPoolSelector)) {
-                choicePane.setMasterNode(councilorPool.getFlowNode());
-            } else if(newValue.equals(fastSelector)) {
-                choicePane.setMasterNode(fastActionsView.getBoxNode());
-            } else choicePane.setMasterNode(new Label("ciao"));
-            choicePane.setDividerPosition(0.3);
-        });
     }
 
     private void buildGameboard() {
@@ -415,11 +412,11 @@ public class GUI extends Application {
 
     private void buildBonusCards() {
         ClassLoader loader = this.getClass().getClassLoader();
-        seaBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("seaBonus.png")),
+        seaBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.SEA),
                 0.2522803334480774,0.5274207650273224,0.0634);
-        hillsBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("hillsBonus.png")),
+        hillsBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.HILLS),
                 0.5490688645010539,0.5274207650273224,0.0634);
-        mountainsBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("mountainsBonus.png")),
+        mountainsBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.MOUNTAINS),
                 0.8742918224146726,0.5274207650273224,0.0634);
         ironBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("ironBonus.png")),
                 0.7444741305370091,0.8555858310626703,0.0634);
@@ -434,6 +431,13 @@ public class GUI extends Application {
 
         boardObjects.addAll(Arrays.asList(seaBonusCard,hillsBonusCard,mountainsBonusCard,
                 ironBonusCard,bronzeBonusCard,silverBonusCard,goldBonusCard,royalTopCard));
+    }
+
+    public static Image selectRegionCardImage(RegionType type) {
+        ClassLoader loader = GUI.class.getClassLoader();
+        if(type.equals(RegionType.SEA)) return new Image(loader.getResourceAsStream("seaBonus.png"));
+        else if(type.equals(RegionType.HILLS)) return new Image(loader.getResourceAsStream("hillsBonus.png"));
+        else return new Image(loader.getResourceAsStream("mountainsBonus.png"));
     }
 
     private void buildTabPane() {
@@ -586,5 +590,9 @@ public class GUI extends Application {
                 if(silverBonusCard.getImage() != null) silverBonusCard.setImage(null);
             } else if(goldBonusCard.getImage() != null) goldBonusCard.setImage(null);
         }
+    }
+
+    public void updatePlayer(PlayerInterface player) {
+        playerView.setPlayerProperty(player);
     }
 }

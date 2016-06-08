@@ -1,8 +1,8 @@
 package core.gamemodel;
 
-import core.gamemodel.modelinterface.BalconyInterface;
 import core.Observer;
 import core.Subject;
+import core.gamemodel.modelinterface.BalconyInterface;
 
 import java.util.Iterator;
 import java.util.List;

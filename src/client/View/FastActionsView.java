@@ -3,10 +3,12 @@ package client.View;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import javax.swing.text.Style;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

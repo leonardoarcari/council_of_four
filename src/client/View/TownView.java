@@ -1,7 +1,6 @@
 package client.View;
 
 import core.Player;
-import core.gamemodel.Town;
 import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.TownInterface;
 import javafx.collections.FXCollections;

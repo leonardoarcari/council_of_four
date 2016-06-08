@@ -1,6 +1,5 @@
 package client.View;
 
-import client.PermitCardView;
 import core.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
