@@ -52,19 +52,19 @@ public class PlayerView {
         permitScroll.setPrefViewportWidth(200);
         permitBox = new HBox(5);
         permitBox.setPadding(new Insets(10.0));
-        permitScroll.prefViewportHeightProperty().bind(permitBox.heightProperty());
+        permitScroll.setFitToHeight(true);
 
         royalScroll = new ScrollPane();
         royalScroll.setPrefViewportWidth(200);
         royalBox = new HBox(5);
         royalBox.setPadding(new Insets(10.0));
-        royalScroll.prefViewportHeightProperty().bind(royalBox.heightProperty());
+        royalScroll.setFitToHeight(true);
 
         politicsScroll = new ScrollPane();
         politicsScroll.setPrefViewportWidth(200);
         politicsBox = new HBox(5);
         politicsBox.setPadding(new Insets(10.0));
-        politicsScroll.prefViewportHeightProperty().bind(politicsBox.heightProperty());
+        politicsScroll.setFitToHeight(true);
 
         setUpPlayerNode();
     }
@@ -164,7 +164,7 @@ public class PlayerView {
         permitBox.getChildren().clear();
         if(!permitCardIterator.hasNext()) {
             permitBox.getChildren().add(new Button("No Permit Card"));
-        } else
+        } else {
             while(permitCardIterator.hasNext()) {
                 PermitCard currentPermit = permitCardIterator.next();
                 PermitCardView currentView = new PermitCardView(null,0,0,0);
@@ -172,6 +172,7 @@ public class PlayerView {
                 currentView.setFitHeight(80);
                 permitBox.getChildren().add(currentView);
             }
+        }
         permitScroll.setContent(permitBox);
     }
 

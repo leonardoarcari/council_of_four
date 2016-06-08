@@ -1,8 +1,6 @@
 package client.View;
 
 import core.Player;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,11 +12,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
-import org.controlsfx.control.GridCell;
-import org.controlsfx.control.GridView;
 
 import java.util.ArrayList;
 import java.util.List;

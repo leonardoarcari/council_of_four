@@ -1,8 +1,8 @@
 package client.View;
 
 import core.Player;
-import core.gamelogic.AbstractBonusFactory;
 import core.connection.GameBoardInterface;
+import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.*;
