@@ -4,6 +4,7 @@ import core.gamelogic.TownNameFactory;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Random;
 /**
  * Created by Matteo on 16/05/16.
  */
-public class PermitCard implements SellableItem {
+public class PermitCard implements SellableItem, Serializable {
     private RegionType region;
     private boolean isBurned;
     private List<Bonus> bonuses;

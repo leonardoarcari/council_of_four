@@ -4,6 +4,7 @@ import core.Observer;
 import core.Subject;
 import core.gamemodel.modelinterface.BalconyInterface;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -12,7 +13,7 @@ import java.util.Vector;
 /**
  * Created by Matteo on 20/05/16.
  */
-public class CouncilorsBalcony implements BalconyInterface, Subject{
+public class CouncilorsBalcony implements BalconyInterface, Subject, Serializable{
     private Councilor[] councilorsBalcony;
     private final RegionType region;
     private transient List<Observer> observers;

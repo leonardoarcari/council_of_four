@@ -2,10 +2,12 @@ package core.gamemodel;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * Created by Leonardo Arcari on 05/06/2016.
  */
-public enum PlayerColor {
+public enum PlayerColor implements Serializable{
     AQUA(Color.AQUA),
     AQUAMARINE(Color.AQUAMARINE),
     BLUE(Color.BLUE),

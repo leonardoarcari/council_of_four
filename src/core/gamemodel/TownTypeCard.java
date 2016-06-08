@@ -2,10 +2,12 @@ package core.gamemodel;
 
 import core.gamemodel.bonus.VictoryPoint;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 20/05/16.
  */
-public enum TownTypeCard {
+public enum TownTypeCard implements Serializable {
     GOLD(new VictoryPoint(20), TownType.GOLD),
     SILVER(new VictoryPoint(12), TownType.SILVER),
     BRONZE(new VictoryPoint(8), TownType.BRONZE),

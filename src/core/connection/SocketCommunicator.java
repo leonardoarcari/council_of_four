@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -12,23 +14,24 @@ import java.net.Socket;
  */
 public class SocketCommunicator implements Communicator {
     public static final String SEPARATOR = "\0007";
-    private PrintWriter out;
+    public static final String JSON_SEPARATOR = "*****";
+    private ObjectOutputStream out;
     private Gson gson;
 
 
     public SocketCommunicator(Socket socket) throws IOException {
-        out = new PrintWriter(socket.getOutputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
+        out.flush();
         gson = new GsonBuilder().create();
     }
 
     @Override
     public void sendInfo(Object info) {
-        String jsonString = gson.toJson(info);
-        String className = info.getClass().getName();
-        jsonString = className + SEPARATOR + jsonString;
-        System.out.println("Sending:\nClass: " + className + "\n" +
-                jsonString);
-        out.println(jsonString);
-        out.flush();
+        try {
+            out.writeObject(info);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

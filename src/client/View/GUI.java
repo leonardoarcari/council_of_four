@@ -1,5 +1,6 @@
 package client.View;
 
+import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
 import core.gamelogic.AbstractBonusFactory;
@@ -10,7 +11,11 @@ import core.gamemodel.Region;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -28,13 +33,16 @@ import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Leonardo Arcari on 31/05/2016.
  */
 public class GUI extends Application {
     private ClassLoader classLoader;
+    private ControllerUI controller;
     private Stage primaryStage;
+    private Scene scene;
     private GridPane gridPane;
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
@@ -87,12 +95,15 @@ public class GUI extends Application {
     private Image secondRoyal;
     private Image firstRoyal;
 
+    private Button dummyChat;
+
     @Override
     public void init() throws Exception {
         super.init();
         boardObjects = new ArrayList<>();
         townsView = new HashMap<>();
         classLoader = this.getClass().getClassLoader();
+        controller = new ControllerUI(this);
     }
 
     @Override
@@ -101,6 +112,36 @@ public class GUI extends Application {
         borderGlow = setShadowEffect();
         townPopOver = new PopOver();
 
+        // Simple login window
+        VBox loginPane = new VBox(10);
+        loginPane.setAlignment(Pos.CENTER);
+        VBox textFieldBox = new VBox(10);
+        textFieldBox.setAlignment(Pos.CENTER);
+        textFieldBox.setPadding(new Insets(0, 20, 0, 20));
+        TextField username = new TextField();
+        username.setPromptText("Insert username");
+        TextField nickname = new TextField();
+        nickname.setPromptText("Insert nickname");
+        textFieldBox.getChildren().addAll(username, nickname);
+        Button loginBtn = new Button("Login");
+        loginPane.getChildren().addAll(textFieldBox, loginBtn);
+
+        buildGameGUI();
+
+        scene = new Scene(loginPane, 500, 200);
+
+        loginBtn.setOnAction(event -> {
+            loginPane.setDisable(true);
+            controller.rmiConnection();
+        });
+
+        // Scene & Stage setup
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    //Build methods
+    private void buildGameGUI() {
         //Creates the gridPane
         buildMainPane();
         boardAnchor = new AnchorPane();
@@ -135,7 +176,7 @@ public class GUI extends Application {
         boardAnchor.getChildren().addAll(townsView.values());
 
         // Side bar nodes
-        Button dummyChat = new Button("I'm a dummy chat button");
+        dummyChat = new Button("I'm a dummy chat button");
         playerView = new PlayerView();
         buildTabPane();
 
@@ -145,11 +186,6 @@ public class GUI extends Application {
         GridPane.setConstraints(dummyChat, 1, 1, 1, 1);
         gridPane.getChildren().addAll(boardAnchor, tabPane, dummyChat);
 
-        // Scene & Stage setup
-        Scene scene = new Scene(gridPane, 1280, 720);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
         // Set listeners
         boardObjects.forEach(objectImageView -> {
             setImageViewListener(objectImageView);
@@ -157,7 +193,7 @@ public class GUI extends Application {
         });
 
         //Test zone, has to be deleted
-        PermitCard permit = new PermitCard(RegionType.SEA, BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),1);
+        /*PermitCard permit = new PermitCard(RegionType.SEA, BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),1);
         seaLeftCard.setPermitCard(permit);
 
         WealthPath wealth = new WealthPath();
@@ -183,11 +219,6 @@ public class GUI extends Application {
         Region region = new Region(null,RegionType.SEA, councHelper);
         updateRegionBonus(region);
 
-        townsView.values().forEach(townView -> {
-            setImageViewListener(townView);
-            setObjectConstraints(townView);
-        });
-
         Player player = new Player(null);
         player.setUsername("Matteo");
         player.setNickname("Rager");
@@ -203,14 +234,19 @@ public class GUI extends Application {
         // Leo's testZone
         dummyChat.setOnMouseClicked(event -> {
             ShowPane showpane = new ShowPane(scene, gridPane);
-            /* RedeemPermitView view = new RedeemPermitView(player);
+            RedeemPermitView view = new RedeemPermitView(player);
             view.addClickListener(event1 -> showpane.hide());
-            showpane.setContent(view); */
+            showpane.setContent(view);
             List<PoliticsCard> politicsCards = new ArrayList<>();
             Arrays.asList(CouncilColor.values()).forEach(councilColor -> politicsCards.add(new PoliticsCard(councilColor)));
             SelectPoliticsView politicsView = new SelectPoliticsView(politicsCards);
             showpane.setContent(politicsView);
             showpane.show();
+        }); */
+
+        townsView.values().forEach(townView -> {
+            setImageViewListener(townView);
+            setObjectConstraints(townView);
         });
 
         // Debug
@@ -221,7 +257,7 @@ public class GUI extends Application {
         );
     }
 
-    //Build methods
+
     private void buildMainPane() {
         gridPane = new GridPane();
         ColumnConstraints boardColumn = new ColumnConstraints();
@@ -486,25 +522,25 @@ public class GUI extends Application {
 
     //Update methods
     public void updateBalcony(BalconyInterface balcony) {
-        RegionType type = balcony.getRegion();
-        BalconyView balconyIV;
-        if(type.equals(RegionType.SEA)) {
-            balconyIV = seaBalcony;
-        } else if(type.equals(RegionType.HILLS)) {
-            balconyIV = hillsBalcony;
-        } else if(type.equals(RegionType.MOUNTAINS)) {
-            balconyIV = mountainsBalcony;
-        } else balconyIV = boardBalcony;
+        Platform.runLater(() -> {RegionType type = balcony.getRegion();
+            BalconyView balconyIV;
+            if(type.equals(RegionType.SEA)) {
+                balconyIV = seaBalcony;
+            } else if(type.equals(RegionType.HILLS)) {
+                balconyIV = hillsBalcony;
+            } else if(type.equals(RegionType.MOUNTAINS)) {
+                balconyIV = mountainsBalcony;
+            } else balconyIV = boardBalcony;
 
-        balconyIV.setBalcony(balcony);
+            balconyIV.setBalcony(balcony);});
     }
 
     public void updateNobilityPath(NobilityPathInterface nobility) {
-        nobilityPath.updateNobilityPath(nobility);
+        Platform.runLater(() -> nobilityPath.updateNobilityPath(nobility));
     }
 
     public void updateWealthPath(WealthPathInterface wealthPath) {
-        this.wealthPath.updateWealthPath(wealthPath);
+        Platform.runLater(() -> this.wealthPath.updateWealthPath(wealthPath));
     }
 
     public TownView getTownView(TownName name) {
@@ -512,91 +548,112 @@ public class GUI extends Application {
     }
 
     public void updatePermitCard(RegionInterface region) {
-        RegionType type = region.getRegionType();
-        PermitCardView left;
-        PermitCardView right;
-        if(type.equals(RegionType.SEA)) {
-            left = seaLeftCard;
-            right = seaRightCard;
-        } else if(type.equals(RegionType.HILLS)) {
-            left = hillsLeftCard;
-            right = hillsRightCard;
-        } else {
-            left = mountainsLeftCard;
-            right = mountainsRightCard;
-        }
+        Platform.runLater(() -> {
+            RegionType type = region.getRegionType();
+            PermitCardView left;
+            PermitCardView right;
+            if(type.equals(RegionType.SEA)) {
+                left = seaLeftCard;
+                right = seaRightCard;
+            } else if(type.equals(RegionType.HILLS)) {
+                left = hillsLeftCard;
+                right = hillsRightCard;
+            } else {
+                left = mountainsLeftCard;
+                right = mountainsRightCard;
+            }
 
-        left.setPermitCard(region.getLeftPermitCard());
-        right.setPermitCard(region.getRightPermitCard());
+            left.setPermitCard(region.getLeftPermitCard());
+            right.setPermitCard(region.getRightPermitCard());
+        });
     }
 
     public void updateRegionBonus(RegionInterface regionInterface) {
-        RegionType type = regionInterface.getRegionType();
-        if(type.equals(RegionType.SEA)) {if(seaBonusCard.getImage() != null) seaBonusCard.setImage(null);}
-        else if(type.equals(RegionType.HILLS)) {if(hillsBonusCard.getImage() != null) hillsBonusCard.setImage(null);}
-        else {if(mountainsBonusCard.getImage() != null) mountainsBonusCard.setImage(null);}
+        Platform.runLater(() -> {
+            RegionType type = regionInterface.getRegionType();
+            if(type.equals(RegionType.SEA)) {if(seaBonusCard.getImage() != null) seaBonusCard.setImage(null);}
+            else if(type.equals(RegionType.HILLS)) {if(hillsBonusCard.getImage() != null) hillsBonusCard.setImage(null);}
+            else {if(mountainsBonusCard.getImage() != null) mountainsBonusCard.setImage(null);}
+        });
+
     }
 
     public void updateGameBoardData(GameBoardInterface gameBoardInterface) {
-        updateRoyalCards(gameBoardInterface);
-        updateCouncilorsPool(gameBoardInterface);
-        updateTownTypeCard(gameBoardInterface);
+        Platform.runLater(() -> {
+            updateRoyalCards(gameBoardInterface);
+            updateCouncilorsPool(gameBoardInterface);
+            updateTownTypeCard(gameBoardInterface);
+        });
     }
 
     private void updateRoyalCards(GameBoardInterface gameboard) {
-        Iterator<RoyalCard> royalCardIterator = gameboard.royalCardIterator();
-        if(!royalCardIterator.hasNext()) {
-            royalTopCard.setImage(null);
-            return;
-        }
+        Platform.runLater(() -> {
+            Iterator<RoyalCard> royalCardIterator = gameboard.royalCardIterator();
+            if(!royalCardIterator.hasNext()) {
+                royalTopCard.setImage(null);
+                return;
+            }
 
-        RoyalCard royalTop = null;
-        while(royalCardIterator.hasNext()) {
-            royalTop = royalCardIterator.next();
-        }
-        int identifier = royalTop.getRoyalBonus().getValue();
-        Image currentImage;
-        if(identifier == 3) currentImage = fifthRoyal;
-        else if(identifier == 7) currentImage = fourthRoyal;
-        else if(identifier == 12) currentImage = thirdRoyal;
-        else if(identifier == 18) currentImage = secondRoyal;
-        else currentImage = firstRoyal;
-        royalTopCard.setImage(currentImage);
+            RoyalCard royalTop = null;
+            while(royalCardIterator.hasNext()) {
+                royalTop = royalCardIterator.next();
+            }
+            int identifier = royalTop.getRoyalBonus().getValue();
+            Image currentImage;
+            if(identifier == 3) currentImage = fifthRoyal;
+            else if(identifier == 7) currentImage = fourthRoyal;
+            else if(identifier == 12) currentImage = thirdRoyal;
+            else if(identifier == 18) currentImage = secondRoyal;
+            else currentImage = firstRoyal;
+            royalTopCard.setImage(currentImage);
+        });
+
     }
 
     private void updateCouncilorsPool(GameBoardInterface gameboard) {
-        Iterator<Councilor> councilorIterator = gameboard.councilorIterator();
-        List<Councilor> councilorList = new Vector<>();
-        while(councilorIterator.hasNext()) {
-            councilorList.add(councilorIterator.next());
-        }
-        councilorPool.setPool(councilorList);
+        Platform.runLater(() -> {
+            Iterator<Councilor> councilorIterator = gameboard.councilorIterator();
+            List<Councilor> councilorList = new Vector<>();
+            while(councilorIterator.hasNext()) {
+                councilorList.add(councilorIterator.next());
+            }
+            councilorPool.setPool(councilorList);
+        });
     }
 
     private void updateTownTypeCard(GameBoardInterface gameboard) {
-        List<TownType> allTypes = new ArrayList<>(Arrays.asList(TownType.values()));
-        allTypes.remove(TownType.KING); //I need all the town types except for Javier's one!
-        List<TownType> boardTypes = new ArrayList<>();
+        Platform.runLater(() -> {
+            List<TownType> allTypes = new ArrayList<>(Arrays.asList(TownType.values()));
+            allTypes.remove(TownType.KING); //I need all the town types except for Javier's one!
+            List<TownType> boardTypes = new ArrayList<>();
 
-        Iterator<TownTypeCard> townTypeCardIterator = gameboard.townTypeCardIterator();
-        while(townTypeCardIterator.hasNext()) {
-            TownType cardType = townTypeCardIterator.next().getTownType();
-            boardTypes.add(cardType);
-        }
-        allTypes.removeAll(boardTypes);
+            Iterator<TownTypeCard> townTypeCardIterator = gameboard.townTypeCardIterator();
+            while(townTypeCardIterator.hasNext()) {
+                TownType cardType = townTypeCardIterator.next().getTownType();
+                boardTypes.add(cardType);
+            }
+            allTypes.removeAll(boardTypes);
 
-        for(TownType type : allTypes) {
-            if(type.equals(TownType.IRON)) {
-                if(ironBonusCard.getImage() != null) ironBonusCard.setImage(null);
-            } else if(type.equals(TownType.BRONZE)) {
-                if(bronzeBonusCard.getImage() != null) bronzeBonusCard.setImage(null);
-            } else if(type.equals(TownType.SILVER)) {
-                if(silverBonusCard.getImage() != null) silverBonusCard.setImage(null);
-            } else if(goldBonusCard.getImage() != null) goldBonusCard.setImage(null);
-        }
+            for(TownType type : allTypes) {
+                if(type.equals(TownType.IRON)) {
+                    if(ironBonusCard.getImage() != null) ironBonusCard.setImage(null);
+                } else if(type.equals(TownType.BRONZE)) {
+                    if(bronzeBonusCard.getImage() != null) bronzeBonusCard.setImage(null);
+                } else if(type.equals(TownType.SILVER)) {
+                    if(silverBonusCard.getImage() != null) silverBonusCard.setImage(null);
+                } else if(goldBonusCard.getImage() != null) goldBonusCard.setImage(null);
+            }
+        });
     }
 
     public void updatePlayer(PlayerInterface player) {
-        playerView.setPlayerProperty(player);
+        Platform.runLater(() -> playerView.setPlayerProperty(player));
+    }
+
+    public void startGame() {
+        Platform.runLater(() -> {
+            scene = new Scene(gridPane, 1280, 800);
+            primaryStage.setScene(scene);
+        });
     }
 }

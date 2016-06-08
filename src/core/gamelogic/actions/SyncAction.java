@@ -4,6 +4,7 @@ package core.gamelogic.actions;
  * Created by Matteo on 25/05/16.
  */
 public enum SyncAction {
+    GAME_START,
     YOUR_TURN,
     DRAW_PERMIT_BONUS,
     PICK_PERMIT_AGAIN,
