@@ -1,5 +1,6 @@
 package client.View;
 
+import client.CachedData;
 import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
@@ -105,6 +106,7 @@ public class GUI extends Application {
         townBonusView = new HashMap<>();
         classLoader = this.getClass().getClassLoader();
         controller = new ControllerUI(this);
+        CachedData.getInstance().setController(controller);
     }
 
     @Override

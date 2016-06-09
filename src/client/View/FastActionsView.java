@@ -1,7 +1,10 @@
 package client.View;
 
 import core.Player;
-import core.gamelogic.actions.*;
+import core.gamelogic.actions.Action;
+import core.gamelogic.actions.AnotherMainActionAction;
+import core.gamelogic.actions.ChangePermitsAction;
+import core.gamelogic.actions.HireServantAction;
 import core.gamemodel.RegionType;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

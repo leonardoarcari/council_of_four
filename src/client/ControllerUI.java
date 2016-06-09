@@ -6,7 +6,6 @@ import client.clientconnection.RMIConnection;
 import core.connection.Connection;
 import core.connection.InfoProcessor;
 import core.connection.SocketConnection;
-import core.gamelogic.actions.Action;
 
 import java.io.IOException;
 import java.net.Socket;
