@@ -1,33 +1,39 @@
 package core.connection;
 
-import core.Player;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import core.gamemodel.bonus.Bonus;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.
  */
 public class SocketCommunicator implements Communicator {
-    private ObjectOutputStream out;
+    public static final String SEPARATOR = "######";
+    public static final String END_JSON = "******";
+    private BufferedWriter out;
     private Socket socket;
+    private Gson gson;
 
 
     public SocketCommunicator(Socket socket) throws IOException {
         this.socket = socket;
-        out = new ObjectOutputStream(socket.getOutputStream());
+        gson = new GsonBuilder().registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>()).create();
+        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
     @Override
     public void sendInfo(Object info) {
+        String jsonString = gson.toJson(info);
+        String className = info.getClass().getName();
+        jsonString = className + SEPARATOR + jsonString + END_JSON;
+        System.out.println("Sending:\nClass: " + className + "\n" + jsonString);
         try {
-            if (info instanceof Player) {
-                Player p = (Player) info;
-                System.out.println(p.getUniqueID() + " " + p.getColor() + " " + p.getUsername() + " " + p.getNickname
-                        ());
-            }
-            out.writeUnshared(info);
+            out.write(jsonString+"\n");
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();

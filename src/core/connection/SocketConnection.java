@@ -1,10 +1,14 @@
 package core.connection;
 
-import core.Player;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import core.gamemodel.bonus.Bonus;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.
@@ -13,11 +17,14 @@ public class SocketConnection implements Connection, Runnable {
     private Socket socket;
     private InfoProcessor processor;
     private Communicator socketCommunicator;
-    private ObjectInputStream in;
+    private BufferedReader in;
+    private Gson gson;
 
     public SocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         this.processor = processor;
         this.socket = socket;
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        gson = new GsonBuilder().registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>()).create();
         socketCommunicator = new SocketCommunicator(socket);
     }
 
@@ -36,15 +43,24 @@ public class SocketConnection implements Connection, Runnable {
     @Override
     public void run() {
         try {
-            in = new ObjectInputStream(socket.getInputStream());
-
             while (true) {
-                Object data = in.readUnshared();
-                if (data instanceof Player) {
-                    Player p = (Player) data;
-                    System.out.println(p.getUniqueID() + " " + p.getColor());
+                String info = in.readLine();
+                if (!info.endsWith(SocketCommunicator.END_JSON)) {
+                    in.reset();
+                    System.out.println("Reset");
+                } else {
+                    StringTokenizer jsonTokenizer = new StringTokenizer(info, SocketCommunicator.END_JSON);
+                    while (jsonTokenizer.hasMoreTokens()) {
+                        String socketData = jsonTokenizer.nextToken();
+                        System.out.println(socketData);
+                        StringTokenizer tokenizer = new StringTokenizer(socketData, SocketCommunicator.SEPARATOR);
+                        String className = tokenizer.nextToken();
+                        String json = tokenizer.nextToken();
+                        System.out.println(className + "\n" + json);
+                        Object data = gson.fromJson(json, Class.forName(className));
+                        processor.processInfo(data);
+                    }
                 }
-                processor.processInfo(data);
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("connection closed from the other side");
