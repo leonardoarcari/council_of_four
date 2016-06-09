@@ -275,11 +275,6 @@ public class GUI extends Application {
             }
         });
 
-        townsView.values().forEach(townView -> {
-            setImageViewListener(townView);
-            setObjectConstraints(townView);
-        });
-
         // Debug
         gridPane.setGridLinesVisible(true);
         gameboardIV.setOnMouseClicked(event -> System.out.println("X scaled: " +
@@ -638,9 +633,15 @@ public class GUI extends Application {
     public void updateRegionBonus(RegionInterface regionInterface) {
         Platform.runLater(() -> {
             RegionType type = regionInterface.getRegionType();
-            if(type.equals(RegionType.SEA)) {if(seaBonusCard.getImage() != null) seaBonusCard.setImage(null);}
-            else if(type.equals(RegionType.HILLS)) {if(hillsBonusCard.getImage() != null) hillsBonusCard.setImage(null);}
-            else {if(mountainsBonusCard.getImage() != null) mountainsBonusCard.setImage(null);}
+            if(type.equals(RegionType.SEA)) {
+                if(seaBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                    seaBonusCard.setImage(null);}
+            else if(type.equals(RegionType.HILLS)) {
+                if(hillsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                    hillsBonusCard.setImage(null);}
+            else {
+                if(mountainsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                    mountainsBonusCard.setImage(null);}
         });
 
     }

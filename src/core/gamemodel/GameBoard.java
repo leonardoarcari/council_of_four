@@ -342,9 +342,16 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
     public void notifyChildren() {
         notifyObservers();
         boardBalcony.notifyObservers();
+
         seaRegion.notifyObservers();
+        seaRegion.getRegionBalcony().notifyObservers();
         hillsRegion.notifyObservers();
+        hillsRegion.getRegionBalcony().notifyObservers();
         mountainsRegion.notifyObservers();
+        mountainsRegion.getRegionBalcony().notifyObservers();
+
+        getTownsMap().values().forEach(town -> town.notifyObservers());
+
         nobilityPath.notifyObservers();
         victoryPath.notifyObservers();
         wealthPath.notifyObservers();

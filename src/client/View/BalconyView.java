@@ -42,7 +42,6 @@ public class BalconyView extends ObjectImageView {
     private PopOver popOver;
     private Councilor selectedCouncilor;
     private List<PoliticsCard> politicsCards;
-    private Boolean satisfied;
     private Button electCouncilor;
     private Button satisfyCouncil;
     private Button fastElection;
@@ -114,6 +113,7 @@ public class BalconyView extends ObjectImageView {
 
     private void buildPopOver() {
         popOver = new PopOver();
+        popOver.setId("popover");
         popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
         VBox balconyBox = new VBox(5);
         balconyBox.setPadding(new Insets(5));
@@ -125,6 +125,7 @@ public class BalconyView extends ObjectImageView {
         electCouncilor = new Button("Elect Councilor - choose one!");
         electCouncilor.setDisable(true);
         electCouncilor.setMaxWidth(Double.MAX_VALUE);
+        setStyle(electCouncilor);
         electCouncilor.setOnAction(event -> {
             currentAction = new CouncilorElectionAction(new Player(null), selectedCouncilor, balconyRegion);
             System.out.println(((CouncilorElectionAction)currentAction).getNewCouncilor().getCouncilorColor().name() + "   " + ((CouncilorElectionAction)currentAction).getRegionType());
@@ -133,6 +134,7 @@ public class BalconyView extends ObjectImageView {
         satisfyCouncil = new Button("Satisfy Council - choose valid cards!");
         satisfyCouncil.setDisable(true);
         satisfyCouncil.setMaxWidth(Double.MAX_VALUE);
+        setStyle(satisfyCouncil);
         satisfyCouncil.setOnAction(event -> {
                 currentAction = new BuyPermitCardAction(new Player(null), politicsCards, RegionType.SEA, null);
                 System.out.println(((BuyPermitCardAction)currentAction).getRegionType() + String.valueOf(politicsCards.size()));
@@ -145,6 +147,7 @@ public class BalconyView extends ObjectImageView {
         fastElection = new Button("Elect Councilor - choose one!");
         fastElection.setDisable(true);
         fastElection.setMaxWidth(Double.MAX_VALUE);
+        setStyle(fastElection);
         electCouncilor.setOnAction(event -> {
             currentAction = new FastCouncilorElectionAction(new Player(null), balconyRegion, selectedCouncilor);
         });
@@ -212,5 +215,12 @@ public class BalconyView extends ObjectImageView {
                 }
             }
         );
+    }
+
+    private void setStyle(Button button) {
+        button.setStyle("-fx-background-radius: 30;\n" +
+                        "-fx-background-insets: 0,1,1;\n" +
+                        "-fx-text-fill: black;\n" +
+                        "-fx-effect: dropshadow( three-pass-box , rgba(0,200,255,0.3) , 3, 0.0 , 0 , 1 );");
     }
 }
