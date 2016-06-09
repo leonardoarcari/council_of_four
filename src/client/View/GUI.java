@@ -399,10 +399,10 @@ public class GUI extends Application {
 
     private void buildBalconies() {
         Image fullBalcony = new Image(classLoader.getResourceAsStream("fullbalcony.png"));
-        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
-        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
-        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
-        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
+        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067, controller);
+        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067, controller);
+        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067, controller);
+        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067, controller);
         boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
     }
 
@@ -623,6 +623,7 @@ public class GUI extends Application {
             String toLoad;
             toLoad = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
             toLoad = "BonusImages/" + toLoad + "_" + town.getTownBonus().getValue() + ".png";
+            System.out.println(toLoad + " " + town.getTownName().name());
             townBonusView.get(town.getTownName()).setImage(new Image(classLoader.getResourceAsStream(toLoad)));
         }
     }

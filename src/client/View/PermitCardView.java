@@ -92,7 +92,6 @@ public class PermitCardView extends ObjectImageView {
         String toLoad;
         toLoad = className.substring(className.lastIndexOf(".")+1).toLowerCase();
         toLoad = "BonusImages/" + toLoad + "_" + bonus.getValue() + ".png";
-        System.out.println(toLoad);
         return new Image(loader.getResourceAsStream(toLoad));
     }
 

@@ -226,6 +226,7 @@ public class Game implements Runnable{
 
     public class NotYourTurnException extends Exception {
         public NotYourTurnException() {
+            super("not your turn");
         }
 
         public NotYourTurnException(String message) {

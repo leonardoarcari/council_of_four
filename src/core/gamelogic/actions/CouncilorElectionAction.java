@@ -4,6 +4,8 @@ import core.Player;
 import core.gamemodel.Councilor;
 import core.gamemodel.RegionType;
 
+import java.io.Serializable;
+
 /**
  * Created by Matteo on 23/05/16.
  */

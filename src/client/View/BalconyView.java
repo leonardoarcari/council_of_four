@@ -1,5 +1,6 @@
 package client.View;
 
+import client.ControllerUI;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.BuyPermitCardAction;
@@ -46,10 +47,12 @@ public class BalconyView extends ObjectImageView {
     private Button satisfyCouncil;
     private Button fastElection;
     private Action currentAction;
+    private ControllerUI controllerUI;
 
-    public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
+    public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width, ControllerUI controllerUI) {
         super(image, leftX, topY, width);
         this.balconyRegion = balconyRegion;
+        this.controllerUI = controllerUI;
         councilorImages = new ArrayList<>();
         councilors = FXCollections.observableArrayList();
         buildPopOver();
@@ -125,9 +128,10 @@ public class BalconyView extends ObjectImageView {
         electCouncilor = new Button("Elect Councilor - choose one!");
         electCouncilor.setDisable(true);
         electCouncilor.setMaxWidth(Double.MAX_VALUE);
-        setStyle(electCouncilor);
-        electCouncilor.setOnAction(event -> {
-            currentAction = new CouncilorElectionAction(new Player(null), selectedCouncilor, balconyRegion);
+        //setStyle(electCouncilor);
+        electCouncilor.setOnMouseClicked(event -> {
+            currentAction = new CouncilorElectionAction((Player)PlayerView.playerInterface, selectedCouncilor, balconyRegion);
+            controllerUI.sendInfo(currentAction);
             System.out.println(((CouncilorElectionAction)currentAction).getNewCouncilor().getCouncilorColor().name() + "   " + ((CouncilorElectionAction)currentAction).getRegionType());
         });
 

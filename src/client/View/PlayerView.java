@@ -46,10 +46,14 @@ public class PlayerView {
     private HBox politicsBox;
     private ScrollPane otherPane;
 
+    public static PlayerInterface playerInterface;
+
+    Text username;
+    Text nickname;
+
     private Map<String,Image> cardImages;
 
     public PlayerView() {
-        playerProperty = new SimpleObjectProperty<>(null);
 
         permitScroll = new ScrollPane();
         permitScroll.setPrefViewportWidth(200);
@@ -118,9 +122,9 @@ public class PlayerView {
         GridPane userInfoPane = buildUserInfoPane();
 
         Circle playerColor = new Circle(20);
-        Text username = new Text("N/A");
+        username = new Text("N/A");
         setUserNameText(username);
-        Text nickname = new Text("N/A");
+        nickname = new Text("N/A");
         setNickNameText(nickname);
 
         userInfoPane.add(playerColor, 0, 0, 1, 2);
@@ -177,25 +181,7 @@ public class PlayerView {
         playerNode.getChildren().addAll(userInfoPane, first, handPane, second, otherPane);
 
         // Set Listener
-        playerProperty.addListener((observable, oldValue, newValue) -> {
-            System.out.println("Mi chiamano?");
-            if (newValue != null) {
-                System.out.println("Mi chiamano2?");
-                playerColor.setFill(newValue.getColor());
-                System.out.println(newValue.getUsername() + " " + newValue.getNickname());
-                username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
-                nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
-                servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
-                politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
-                permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
-                royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
 
-                setPermitScrollPane(newValue.permitCardIterator());
-                setRoyalScrollPane(newValue.royalCardIterator());
-                setPoliticScrollPane(newValue.politicsCardIterator());
-                setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);
-            }
-        });
     }
 
     private void setPermitScrollPane(Iterator<PermitCard> permitCardIterator) {
@@ -262,15 +248,34 @@ public class PlayerView {
     }
 
     public PlayerInterface getPlayerProperty() {
-        return playerProperty.get();
+        return playerInterface;
     }
 
     public ObjectProperty<PlayerInterface> playerPropertyProperty() {
         return playerProperty;
     }
 
-    public void setPlayerProperty(PlayerInterface playerProperty) {
-        this.playerProperty.set(playerProperty);
+    public void setPlayerProperty(PlayerInterface newValue) {
+        if (newValue != null) {
+            playerInterface = newValue;
+            System.out.println("Mi chiamano2?");
+            //playerColor.setFill(newValue.getColor());
+            if(!newValue.getNickname().equals(""))
+                System.out.println("CIAO DIO AAA");
+            System.out.println(newValue.getUsername() + " " + newValue.getNickname());
+            username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
+            nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
+        }
+
+        /*servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
+        politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
+        permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
+        royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
+
+        setPermitScrollPane(newValue.permitCardIterator());
+        setRoyalScrollPane(newValue.royalCardIterator());
+        setPoliticScrollPane(newValue.politicsCardIterator());
+        setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);*/
     }
 
     private void setNumberText (Text text) {
