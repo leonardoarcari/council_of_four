@@ -8,12 +8,10 @@ import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Side;
-import javafx.geometry.VPos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
@@ -39,6 +37,8 @@ public class GUI extends Application {
     private ControllerUI controller;
     private Stage primaryStage;
     private Scene scene;
+
+    private BorderPane loginPane;
     private TextField username;
     private TextField nickname;
     private GridPane gridPane;
@@ -113,30 +113,45 @@ public class GUI extends Application {
         borderGlow = setShadowEffect();
         townPopOver = new PopOver();
 
-        // Simple login window
-        GridPane loginPane = new GridPane();
-        loginPane.setPadding(new Insets(0, 20, 0, 20));
+        buildLoginPane();
+        buildGameGUI();
+
+        scene = new Scene(loginPane, 500, 200);
+
+        // Scene & Stage setup
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("The Council of Four");
+        primaryStage.show();
+    }
+
+    //Build methods
+    private void buildLoginPane() {
+        loginPane = new BorderPane();
+        loginPane.setPadding(new Insets(30, 30, 30, 30));
 
         username = new TextField();
         username.setPromptText("Insert username");
         nickname = new TextField();
         nickname.setPromptText("Insert nickname");
+
+        VBox textFieldBox = new VBox(20);
+        textFieldBox.setAlignment(Pos.TOP_CENTER);
+        textFieldBox.getChildren().addAll(username, nickname);
+
         Button loginBtn = new Button("Login");
-
+        loginBtn.disableProperty().bind(Bindings.or(username.textProperty().isEmpty(), nickname.textProperty().isEmpty()));
         ChoiceBox<String> cb = new ChoiceBox<>(FXCollections.observableArrayList("Socket", "RMI"));
+        cb.getSelectionModel().clearAndSelect(0);
 
-        GridPane.setConstraints(username, 0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
-        GridPane.setFillWidth(username, Boolean.TRUE);
-        GridPane.setConstraints(nickname, 0, 1, 2, 1, HPos.CENTER, VPos.CENTER);
-        GridPane.setFillWidth(nickname, Boolean.TRUE);
-        GridPane.setConstraints(cb, 0, 2, 1, 1, HPos.LEFT, VPos.CENTER);
-        GridPane.setConstraints(loginBtn, 1, 2, 1, 1, HPos.RIGHT, VPos.CENTER);
+        GridPane bottomPane = new GridPane();
+        GridPane.setConstraints(cb, 0, 0, 1, 1, HPos.LEFT, VPos.CENTER);
+        GridPane.setConstraints(loginBtn, 1, 0, 1, 1, HPos.RIGHT, VPos.CENTER);
+        GridPane.setHgrow(cb, Priority.ALWAYS);
+        GridPane.setHgrow(loginBtn, Priority.ALWAYS);
+        bottomPane.getChildren().addAll(cb, loginBtn);
 
-        loginPane.getChildren().addAll(username, nickname, cb, loginBtn);
-
-        buildGameGUI();
-
-        scene = new Scene(loginPane, 500, 200);
+        loginPane.setCenter(textFieldBox);
+        loginPane.setBottom(bottomPane);
 
         loginBtn.setOnAction(event -> {
             loginPane.setDisable(true);
@@ -146,13 +161,8 @@ public class GUI extends Application {
                 controller.rmiConnection();
             }
         });
-
-        // Scene & Stage setup
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    //Build methods
     private void buildGameGUI() {
         //Creates the gridPane
         buildMainPane();
@@ -208,79 +218,6 @@ public class GUI extends Application {
             setImageViewListener(objectImageView);
             setObjectConstraints(objectImageView);
         });
-
-        //Test zone, has to be deleted
-        /*PermitCard permit = new PermitCard(RegionType.SEA, BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),1);
-        seaLeftCard.setPermitCard(permit);
-
-        WealthPath wealth = new WealthPath();
-        wealth.setPlayer(new Player(null),3);
-        wealth.setPlayer(new Player(null),3);
-        wealth.setPlayer(new Player(null),5);
-        wealthPath.updateWealthPath(wealth);
-        List<List<Bonus>> bonusTry = new ArrayList<>(21);
-        for(int i = 0; i < 21; i++) {
-            bonusTry.add(new ArrayList<>(BonusFactory.getFactory(BonusOwner.NOBILITY).generateBonuses()));
-        }
-
-        NobilityPath path = new NobilityPath(bonusTry);
-        path.setPlayer(new Player(null));
-        path.setPlayer(new Player(null));
-        path.setPlayer(new Player(null));
-        nobilityPath.updateNobilityPath(path);
-
-        Councilor[] councHelper = new Councilor[4];
-        for( int i = 0; i < 4; i++) {
-            councHelper[i] = new Councilor(CouncilColor.BLACK,1);
-        }
-        Region region = new Region(null,RegionType.SEA, councHelper);
-        updateRegionBonus(region);
-        Iterator<Town> townIterator = region.townIterator();
-        while(townIterator.hasNext())
-            populateTownBonus(townIterator.next());
-
-
-        Player player = new Player(null);
-        player.setUsername("Matteo");
-        player.setNickname("Rager");
-        player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
-        player.addPermitCard(new PermitCard(RegionType.HILLS,BonusFactory.getFactory(BonusOwner.PERMIT).generateBonuses(),2));
-        player.addRegionCard(RegionCard.HILLS);
-        player.addRoyalCard(RoyalCard.FIFTH);
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.RAINBOW));
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.CYAN));
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.ORANGE));
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.CYAN));
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.BLACK));
-        player.addPoliticsCard(new PoliticsCard(CouncilColor.WHITE));
-
-        GameBoard fakegame = GameBoard.createGameBoard(Arrays.asList(player, new Player(null)));
-        updateGameBoardData(fakegame);
-
-        CouncilorsBalcony balcony = new CouncilorsBalcony(RegionType.SEA);
-        balcony.addCouncilor(new Councilor(CouncilColor.BLACK,2));
-        balcony.addCouncilor(new Councilor(CouncilColor.CYAN,2));
-        balcony.addCouncilor(new Councilor(CouncilColor.ORANGE,2));
-        balcony.addCouncilor(new Councilor(CouncilColor.CYAN,2));
-        updateBalcony(balcony);
-
-        // Leo's testZone
-        updatePlayer(player);
-        dummyChat.setOnMouseClicked(event -> {
-            ShowPane showpane = new ShowPane(scene, gridPane);
-            RedeemPermitView view = new RedeemPermitView(player);
-            view.addClickListener(event1 -> showpane.hide());
-            showpane.setContent(view);
-            List<PoliticsCard> politicsCards = new ArrayList<>();
-            RedeemPermitView view = new RedeemPermitView(player);
-            selectPoliticsView.addClickListener(event1 -> showpane.hide());
-            showpane.setContent(selectPoliticsView);
-            List<PoliticsCard> politicsCards = new ArrayList<>();
-            Arrays.asList(CouncilColor.values()).forEach(councilColor -> politicsCards.add(new PoliticsCard(councilColor)));
-            SelectPoliticsView politicsView = new SelectPoliticsView(politicsCards);
-            showpane.setContent(politicsView);
-            showpane.show();
-        }); */
 
         selectPoliticsView = new SelectPoliticsView();
         selectPoliticsView.getSelectedCards().addListener((ListChangeListener<PoliticsCard>) c -> {

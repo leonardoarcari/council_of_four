@@ -3,7 +3,6 @@ package client.View;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -48,8 +47,9 @@ public class PlayerView {
 
     public static PlayerInterface playerInterface;
 
-    Text username;
-    Text nickname;
+    private Text username;
+    private Text nickname;
+    private Circle playerColor;
 
     private Map<String,Image> cardImages;
 
@@ -121,7 +121,7 @@ public class PlayerView {
         // User info
         GridPane userInfoPane = buildUserInfoPane();
 
-        Circle playerColor = new Circle(20);
+        playerColor = new Circle(20);
         username = new Text("N/A");
         setUserNameText(username);
         nickname = new Text("N/A");
@@ -259,7 +259,7 @@ public class PlayerView {
         if (newValue != null) {
             playerInterface = newValue;
             System.out.println("Mi chiamano2?");
-            //playerColor.setFill(newValue.getColor());
+            playerColor.setFill(newValue.getColor());
             if(!newValue.getNickname().equals(""))
                 System.out.println("CIAO DIO AAA");
             System.out.println(newValue.getUsername() + " " + newValue.getNickname());
