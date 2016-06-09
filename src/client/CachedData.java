@@ -2,6 +2,7 @@ package client;
 
 
 import core.gamemodel.Councilor;
+import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.BalconyInterface;
@@ -21,6 +22,7 @@ public class CachedData {
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
     private List<Councilor> councilorPool;
+    private List<PoliticsCard> selectedPolitics;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -78,5 +80,15 @@ public class CachedData {
 
     public void setCouncilorPool(List<Councilor> councilorPool) {
         this.councilorPool = councilorPool;
+    }
+
+    public void addSelectedPoliticsCard(PoliticsCard card) {
+        selectedPolitics.add(card);
+    }
+
+    public List<PoliticsCard> pullSelectedPoliticsCard() {
+        List<PoliticsCard> toReturn = new ArrayList<>(selectedPolitics);
+        selectedPolitics.clear();
+        return toReturn;
     }
 }
