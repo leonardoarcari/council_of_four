@@ -5,6 +5,7 @@ import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.PlayerInfoAction;
+import core.gamelogic.actions.SelectAgainPermitAction;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
@@ -48,6 +49,7 @@ public class GUI extends Application {
     private TabPane tabPane;
 
     private MasterDetailPane choicePane;
+    private ShowPane showPane;
 
     private PlayerView playerView;
     private BalconyView seaBalcony;
@@ -683,11 +685,29 @@ public class GUI extends Application {
     public void startGame() {
         Platform.runLater(() -> {
             scene = new Scene(gridPane, 1280, 800);
+            showPane = new ShowPane(scene, gridPane);
             primaryStage.setScene(scene);
             controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayerProperty(), username.getText(),
                     nickname.getText()));
             System.out.println("Sending: " + playerView.getPlayerProperty() + " with: " + username.getText() + " " +
                     nickname.getText());
+        });
+    }
+
+    public void showRedeemPermitView() {
+        Platform.runLater(() -> {
+            RedeemPermitView permitView = new RedeemPermitView(CachedData.getInstance().getMe());
+            permitView.addClickListener(event -> {
+                controller.sendInfo(
+                        new SelectAgainPermitAction(
+                                (Player) CachedData.getInstance().getMe(),
+                                ((PermitCardView) event.getSource()).getPermitCard()
+                        )
+                );
+                showPane.hide();
+            });
+            showPane.setContent(permitView);
+            showPane.show();
         });
     }
 }

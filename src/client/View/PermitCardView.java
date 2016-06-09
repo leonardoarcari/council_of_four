@@ -18,9 +18,9 @@ import java.util.Iterator;
  * Created by Matteo on 06/06/16.
  */
 public class PermitCardView extends ObjectImageView {
-    ImageView myView;
-    PermitCard permitCard;
-    PopOver myPopover;
+    private ImageView myView;
+    private PermitCard permitCard;
+    private PopOver myPopover;
 
     public PermitCardView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
@@ -102,5 +102,9 @@ public class PermitCardView extends ObjectImageView {
 
     public PopOver getMyPopover() {
         return myPopover;
+    }
+
+    public PermitCard getPermitCard() {
+        return permitCard;
     }
 }
