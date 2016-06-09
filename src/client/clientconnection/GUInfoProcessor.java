@@ -52,8 +52,10 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updatePlayer((PlayerInterface) info);
         } else if (info instanceof SyncAction) {
             SyncAction action = (SyncAction) info;
-            if (info.equals(SyncAction.GAME_START)) {
+            if (action.equals(SyncAction.GAME_START)) {
                 gui.startGame();
+            } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
+                gui.showRedeemPermitView();
             }
         }
     }

@@ -1,6 +1,6 @@
 package client.View;
 
-import core.Player;
+import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,7 +25,7 @@ public class RedeemPermitView extends ScrollPane {
     private Effect dropShadow;
     private HBox box;
 
-    public RedeemPermitView(Player player) {
+    public RedeemPermitView(PlayerInterface player) {
         box = new HBox(20);
         permitCardViews = new ArrayList<>();
         dropShadow = setShadowEffect();
