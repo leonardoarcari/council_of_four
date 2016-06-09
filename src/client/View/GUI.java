@@ -267,11 +267,6 @@ public class GUI extends Application {
 
         fastActionsView = new FastActionsView();
         councilorPool = new CouncilorPoolView();
-        councilorPool.councilorPickedPropertyProperty().addListener(((observable, oldValue, newValue) -> {
-                seaBalcony.enableButton(newValue);
-            if(newValue) seaBalcony.setSelectedCouncilor(councilorPool.getSelectedCouncilor());
-            else seaBalcony.setSelectedCouncilor(null);
-        }));
 
         actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.equals(councilorPoolSelector)) {
@@ -338,10 +333,10 @@ public class GUI extends Application {
 
     private void buildBalconies() {
         Image fullBalcony = new Image(classLoader.getResourceAsStream("fullbalcony.png"));
-        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067, controller);
-        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067, controller);
-        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067, controller);
-        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067, controller);
+        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
+        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
+        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
+        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
         boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
     }
 
@@ -690,4 +685,5 @@ public class GUI extends Application {
                     nickname.getText());
         });
     }
+
 }

@@ -7,6 +7,8 @@ import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.PlayerInterface;
 import core.gamemodel.modelinterface.TownInterface;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.*;
 
@@ -21,6 +23,8 @@ public class CachedData {
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
     private List<Councilor> councilorPool;
+    private Councilor selectedCouncilor;
+    private BooleanProperty isCouncilorSelected;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -38,6 +42,8 @@ public class CachedData {
         towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
+        selectedCouncilor = null;
+        isCouncilorSelected = new SimpleBooleanProperty(false);
     }
 
     public ControllerUI getController() {
@@ -78,5 +84,21 @@ public class CachedData {
 
     public void setCouncilorPool(List<Councilor> councilorPool) {
         this.councilorPool = councilorPool;
+    }
+
+    public Councilor getSelectedCouncilor() {
+        return selectedCouncilor;
+    }
+
+    public BooleanProperty isCouncilorSelectedProperty() {
+        return isCouncilorSelected;
+    }
+
+    public void setIsCouncilorSelected(boolean isCouncilorSelected) {
+        this.isCouncilorSelected.set(isCouncilorSelected);
+    }
+
+    public void setSelectedCouncilor(Councilor selectedCouncilor) {
+        this.selectedCouncilor = selectedCouncilor;
     }
 }

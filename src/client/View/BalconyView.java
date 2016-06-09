@@ -1,5 +1,6 @@
 package client.View;
 
+import client.CachedData;
 import client.ControllerUI;
 import core.Player;
 import core.gamelogic.actions.Action;
@@ -11,6 +12,7 @@ import core.gamemodel.Councilor;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.BalconyInterface;
+import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -41,18 +43,13 @@ public class BalconyView extends ObjectImageView {
     private RegionType balconyRegion;
     private List<Image> councilorImages;
     private PopOver popOver;
-    private Councilor selectedCouncilor;
     private List<PoliticsCard> politicsCards;
-    private Button electCouncilor;
     private Button satisfyCouncil;
-    private Button fastElection;
     private Action currentAction;
-    private ControllerUI controllerUI;
 
-    public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width, ControllerUI controllerUI) {
+    public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         this.balconyRegion = balconyRegion;
-        this.controllerUI = controllerUI;
         councilorImages = new ArrayList<>();
         councilors = FXCollections.observableArrayList();
         buildPopOver();
@@ -125,63 +122,53 @@ public class BalconyView extends ObjectImageView {
         normalAction.setAlignment(Pos.CENTER);
         normalAction.setMaxWidth(Double.MAX_VALUE);
 
-        electCouncilor = new Button("Elect Councilor - choose one!");
+        Button electCouncilor = new Button("Elect Councilor");
         electCouncilor.setDisable(true);
         electCouncilor.setMaxWidth(Double.MAX_VALUE);
-        //setStyle(electCouncilor);
+        setStyle(electCouncilor);
+        electCouncilor.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
         electCouncilor.setOnMouseClicked(event -> {
-            currentAction = new CouncilorElectionAction((Player)PlayerView.playerInterface, selectedCouncilor, balconyRegion);
-            controllerUI.sendInfo(currentAction);
-            System.out.println(((CouncilorElectionAction)currentAction).getNewCouncilor().getCouncilorColor().name() + "   " + ((CouncilorElectionAction)currentAction).getRegionType());
+            CachedData cachedData = CachedData.getInstance();
+            currentAction = new CouncilorElectionAction((Player)cachedData.getMe(), cachedData.getSelectedCouncilor(), balconyRegion);
+            cachedData.getController().sendInfo(currentAction);
+            CachedData.getInstance().setIsCouncilorSelected(false);
+            CachedData.getInstance().setSelectedCouncilor(null);
         });
 
-        satisfyCouncil = new Button("Satisfy Council - choose valid cards!");
+        satisfyCouncil = new Button("Satisfy Council");
         satisfyCouncil.setDisable(true);
         satisfyCouncil.setMaxWidth(Double.MAX_VALUE);
         setStyle(satisfyCouncil);
-        satisfyCouncil.setOnAction(event -> {
-                currentAction = new BuyPermitCardAction(new Player(null), politicsCards, RegionType.SEA, null);
-                System.out.println(((BuyPermitCardAction)currentAction).getRegionType() + String.valueOf(politicsCards.size()));
+        satisfyCouncil.setOnMouseClicked(event -> {
+            CachedData cachedData = CachedData.getInstance();
+            currentAction = new BuyPermitCardAction((Player)cachedData.getMe(), politicsCards, RegionType.SEA, null);
+            cachedData.getController().sendInfo(currentAction);
         });
 
         Label fastAction = new Label("-- Fast Action --");
         fastAction.setAlignment(Pos.CENTER);
         fastAction.setMaxWidth(Double.MAX_VALUE);
 
-        fastElection = new Button("Elect Councilor - choose one!");
+        Button fastElection = new Button("Elect Councilor");
         fastElection.setDisable(true);
         fastElection.setMaxWidth(Double.MAX_VALUE);
         setStyle(fastElection);
-        electCouncilor.setOnAction(event -> {
-            currentAction = new FastCouncilorElectionAction(new Player(null), balconyRegion, selectedCouncilor);
+        fastElection.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
+        fastElection.setOnMouseClicked(event -> {
+            CachedData cachedData = CachedData.getInstance();
+            currentAction = new FastCouncilorElectionAction((Player)cachedData.getMe(), balconyRegion, cachedData.getSelectedCouncilor());
+            cachedData.setIsCouncilorSelected(false);
+            cachedData.setSelectedCouncilor(null);
         });
+
         Separator separator = new Separator(Orientation.HORIZONTAL);
         separator.setPadding(new Insets(5,5,5,5));
-        balconyBox.getChildren().addAll(normalAction,electCouncilor,satisfyCouncil,separator,fastAction,fastElection);
+        balconyBox.getChildren().addAll(normalAction, electCouncilor,satisfyCouncil,separator,fastAction, fastElection);
         setOnMouseClicked(event-> {
             popOver.setContentNode(balconyBox);
             popOver.setHeight(balconyBox.getHeight());
-            popOver.show(this, 20);
+            popOver.show(this, 10);
         });
-    }
-
-    public void setSelectedCouncilor(Councilor councilor) {
-        this.selectedCouncilor = councilor;
-    }
-
-    public void enableButton(Boolean booleanProperty) {
-        enableButton(booleanProperty,electCouncilor);
-        enableButton(booleanProperty,fastElection);
-    }
-
-    private void enableButton(Boolean enabled, Button button) {
-        if(enabled) {
-            button.setDisable(false);
-            button.setText("Elect Councilor");
-        } else {
-            button.setDisable(true);
-            button.setText("Elect Councilor - choose one!");
-        }
     }
 
     public void setSelectedPolitics(List<PoliticsCard> politicsCards) {

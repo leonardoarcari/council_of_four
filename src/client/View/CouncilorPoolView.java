@@ -1,5 +1,6 @@
 package client.View;
 
+import client.CachedData;
 import core.gamemodel.CouncilColor;
 import core.gamemodel.Councilor;
 import javafx.beans.property.BooleanProperty;
@@ -11,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
@@ -24,19 +26,15 @@ public class CouncilorPoolView {
     private ScrollPane councilorPoolNode;
     private TilePane flowNode;
     private ObservableList<CouncilorView> pool;
-    private Councilor selectedCouncilor;
     private Image blackCouncilor;
     private Image whiteCouncilor;
     private Image cyanCouncilor;
     private Image orangeCouncilor;
     private Image pinkCouncilor;
     private Image purpleCouncilor;
-    private BooleanProperty councilorPickedProperty;
 
     public CouncilorPoolView() {
         pool = FXCollections.observableArrayList();
-        selectedCouncilor = null;
-        councilorPickedProperty = new SimpleBooleanProperty(false);
         loadCouncilorImages();
         setUpPool();
     }
@@ -65,24 +63,25 @@ public class CouncilorPoolView {
         });
         pool.addListener((ListChangeListener<CouncilorView>) c ->{
             while(c.next()) {
-                if(c.wasAdded()) {
-                    flowNode.getChildren().clear();
-                    c.getList().forEach(o ->{
-                        Image councImage = selectFromColor(o.getCouncilor().getCouncilorColor());
-                        o.setViewImage(councImage);
-                        o.setOnMouseClicked(event -> {
-                            if(selectedCouncilor == null) {
-                                o.setEffect(new DropShadow(20, Color.DARKRED));
-                                selectedCouncilor = o.getCouncilor();
-                                councilorPickedProperty.set(true);
-                            } else if(o.getCouncilor().equals(selectedCouncilor)) {
-                                o.setEffect(null);
-                                selectedCouncilor = null;
-                                councilorPickedProperty.set(false);
-                            }
-                        });
-                        flowNode.getChildren().add(o);
+                for(CouncilorView item : c.getAddedSubList()) {
+                    Image councImage = selectFromColor(item.getCouncilor().getCouncilorColor());
+                    item.setViewImage(councImage);
+                    item.setOnMouseClicked(event -> {
+                        CachedData cachedData = CachedData.getInstance();
+                        if(cachedData.getSelectedCouncilor() == null) {
+                            item.setEffect(new DropShadow(20, Color.DARKRED));
+                            cachedData.setSelectedCouncilor(item.getCouncilor());
+                            cachedData.setIsCouncilorSelected(true);
+                        } else if(item.getCouncilor().equals(cachedData.getSelectedCouncilor())) {
+                            item.setEffect(null);
+                            cachedData.setSelectedCouncilor(null);
+                            cachedData.setIsCouncilorSelected(false);
+                        }
                     });
+                    flowNode.getChildren().add(item);
+                }
+                for(CouncilorView item : c.getRemoved()) {
+                    flowNode.getChildren().remove(item);
                 }
             }
         });
@@ -105,11 +104,5 @@ public class CouncilorPoolView {
         orangeCouncilor = new Image(loader.getResourceAsStream("orange_councilor.png"));
         purpleCouncilor = new Image(loader.getResourceAsStream("purple_councilor.png"));
         pinkCouncilor = new Image(loader.getResourceAsStream("pink_councilor.png"));
-    }
-
-    public Councilor getSelectedCouncilor() { return selectedCouncilor; }
-
-    public BooleanProperty councilorPickedPropertyProperty() {
-        return councilorPickedProperty;
     }
 }

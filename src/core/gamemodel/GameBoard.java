@@ -158,7 +158,7 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
             toAddCounc = region.updateBalcony(councilor);
         }
 
-        councilorPool.remove(councilor);
+        System.out.println(councilorPool.remove(councilor));
         councilorPool.add(toAddCounc);
         notifyObservers();
     }
