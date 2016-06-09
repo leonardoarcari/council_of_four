@@ -1,16 +1,19 @@
 package client.View;
 
 import client.ControllerUI;
+import core.Player;
 import core.connection.GameBoardInterface;
+import core.gamelogic.actions.PlayerInfoAction;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
@@ -36,6 +39,8 @@ public class GUI extends Application {
     private ControllerUI controller;
     private Stage primaryStage;
     private Scene scene;
+    private TextField username;
+    private TextField nickname;
     private GridPane gridPane;
     private ImageView gameboardIV;
     private AnchorPane boardAnchor;
@@ -109,18 +114,25 @@ public class GUI extends Application {
         townPopOver = new PopOver();
 
         // Simple login window
-        VBox loginPane = new VBox(10);
-        loginPane.setAlignment(Pos.CENTER);
-        VBox textFieldBox = new VBox(10);
-        textFieldBox.setAlignment(Pos.CENTER);
-        textFieldBox.setPadding(new Insets(0, 20, 0, 20));
-        TextField username = new TextField();
+        GridPane loginPane = new GridPane();
+        loginPane.setPadding(new Insets(0, 20, 0, 20));
+
+        username = new TextField();
         username.setPromptText("Insert username");
-        TextField nickname = new TextField();
+        nickname = new TextField();
         nickname.setPromptText("Insert nickname");
-        textFieldBox.getChildren().addAll(username, nickname);
         Button loginBtn = new Button("Login");
-        loginPane.getChildren().addAll(textFieldBox, loginBtn);
+
+        ChoiceBox<String> cb = new ChoiceBox<>(FXCollections.observableArrayList("Socket", "RMI"));
+
+        GridPane.setConstraints(username, 0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
+        GridPane.setFillWidth(username, Boolean.TRUE);
+        GridPane.setConstraints(nickname, 0, 1, 2, 1, HPos.CENTER, VPos.CENTER);
+        GridPane.setFillWidth(nickname, Boolean.TRUE);
+        GridPane.setConstraints(cb, 0, 2, 1, 1, HPos.LEFT, VPos.CENTER);
+        GridPane.setConstraints(loginBtn, 1, 2, 1, 1, HPos.RIGHT, VPos.CENTER);
+
+        loginPane.getChildren().addAll(username, nickname, cb, loginBtn);
 
         buildGameGUI();
 
@@ -128,7 +140,11 @@ public class GUI extends Application {
 
         loginBtn.setOnAction(event -> {
             loginPane.setDisable(true);
-            controller.rmiConnection();
+            if (cb.getSelectionModel().getSelectedItem().equals("Socket")) {
+                controller.socketConnection();
+            } else {
+                controller.rmiConnection();
+            }
         });
 
         // Scene & Stage setup
@@ -259,7 +275,7 @@ public class GUI extends Application {
             RedeemPermitView view = new RedeemPermitView(player);
             selectPoliticsView.addClickListener(event1 -> showpane.hide());
             showpane.setContent(selectPoliticsView);
-            /*List<PoliticsCard> politicsCards = new ArrayList<>();
+            List<PoliticsCard> politicsCards = new ArrayList<>();
             Arrays.asList(CouncilColor.values()).forEach(councilColor -> politicsCards.add(new PoliticsCard(councilColor)));
             SelectPoliticsView politicsView = new SelectPoliticsView(politicsCards);
             showpane.setContent(politicsView);
@@ -573,7 +589,8 @@ public class GUI extends Application {
 
     //Update methods
     public void updateBalcony(BalconyInterface balcony) {
-        Platform.runLater(() -> {RegionType type = balcony.getRegion();
+        Platform.runLater(() -> {
+            RegionType type = balcony.getRegion();
             BalconyView balconyIV;
             if(type.equals(RegionType.SEA)) {
                 balconyIV = seaBalcony;
@@ -583,7 +600,8 @@ public class GUI extends Application {
                 balconyIV = mountainsBalcony;
             } else balconyIV = boardBalcony;
 
-            balconyIV.setBalcony(balcony);});
+            balconyIV.setBalcony(balcony);
+        });
     }
 
     public void updateNobilityPath(NobilityPathInterface nobility) {
@@ -716,6 +734,7 @@ public class GUI extends Application {
 
     public void updatePlayer(PlayerInterface player) {
         Platform.runLater(() -> {
+            System.out.println(player.getUsername() + " " + player.getNickname());
             playerView.setPlayerProperty(player);
             selectPoliticsView.updatePoliticsCards(player.politicsCardIterator());
         });
@@ -725,6 +744,10 @@ public class GUI extends Application {
         Platform.runLater(() -> {
             scene = new Scene(gridPane, 1280, 800);
             primaryStage.setScene(scene);
+            controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayerProperty(), username.getText(),
+                    nickname.getText()));
+            System.out.println("Sending: " + playerView.getPlayerProperty() + " with: " + username.getText() + " " +
+                    nickname.getText());
         });
     }
 }

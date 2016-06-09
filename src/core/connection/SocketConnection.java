@@ -1,17 +1,10 @@
 package core.connection;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
+import core.Player;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.StringTokenizer;
 
 /**
  * Created by Leonardo Arcari on 20/05/2016.
@@ -44,8 +37,13 @@ public class SocketConnection implements Connection, Runnable {
     public void run() {
         try {
             in = new ObjectInputStream(socket.getInputStream());
+
             while (true) {
-                Object data = in.readObject();
+                Object data = in.readUnshared();
+                if (data instanceof Player) {
+                    Player p = (Player) data;
+                    System.out.println(p.getUniqueID() + " " + p.getColor());
+                }
                 processor.processInfo(data);
             }
         } catch (IOException | ClassNotFoundException e) {

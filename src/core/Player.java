@@ -15,7 +15,7 @@ public class Player implements Subject, Serializable, PlayerInterface {
     private String uniqueID;
     private String username;
     private String nickname;
-    private transient Color color;
+    private String color;
     private transient Connection connection;
 
     // The hand
@@ -32,9 +32,9 @@ public class Player implements Subject, Serializable, PlayerInterface {
         this.connection = connection;
 
         uniqueID = generateID();
-        color = generateColor();
         username = "";
         nickname = "";
+        color = generateColor().toString();
         permitCards = new ArrayList<>();
         regionCards = new ArrayList<>();
         politicsCards = new ArrayList<>();
@@ -60,10 +60,16 @@ public class Player implements Subject, Serializable, PlayerInterface {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+        notifyObservers();
     }
 
     public void setUsername(String username) {
         this.username = username;
+        notifyObservers();
+    }
+
+    public String getUniqueID() {
+        return uniqueID;
     }
 
     public String getUsername() {
@@ -149,7 +155,7 @@ public class Player implements Subject, Serializable, PlayerInterface {
     public int getRoyalCardsNumber() { return royalCards.size(); }
 
     public Color getColor() {
-        return color;
+        return Color.valueOf(color);
     }
 
     public void burnPermitCard(PermitCard permitCard) {
@@ -187,17 +193,12 @@ public class Player implements Subject, Serializable, PlayerInterface {
 
         Player player = (Player) o;
 
-        if (!uniqueID.equals(player.uniqueID)) return false;
-        if (username != null ? !username.equals(player.username) : player.username != null) return false;
-        return nickname != null ? nickname.equals(player.nickname) : player.nickname == null;
+        return uniqueID.equals(player.uniqueID);
 
     }
 
     @Override
     public int hashCode() {
-        int result = uniqueID.hashCode();
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
-        return result;
+        return uniqueID.hashCode();
     }
 }

@@ -45,11 +45,12 @@ public class Game implements Runnable{
         WaitingHall.getInstance().createNewGame();
         gameBoard = GameBoard.createGameBoard(players);
 
-        players.forEach(player -> player.getConnection().sendInfo(SyncAction.GAME_START));
         gameBoard.notifyChildren();
         for (Player player : players) {
             player.notifyObservers();
         }
+
+        players.forEach(player -> player.getConnection().sendInfo(SyncAction.GAME_START));
 
         // Choose randomly the beginning player
         int beginningIndex = Double.valueOf(Math.random() * players.size()).intValue();

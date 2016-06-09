@@ -178,8 +178,11 @@ public class PlayerView {
 
         // Set Listener
         playerProperty.addListener((observable, oldValue, newValue) -> {
+            System.out.println("Mi chiamano?");
             if (newValue != null) {
+                System.out.println("Mi chiamano2?");
                 playerColor.setFill(newValue.getColor());
+                System.out.println(newValue.getUsername() + " " + newValue.getNickname());
                 username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
                 nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
                 servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));

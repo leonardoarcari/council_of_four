@@ -60,14 +60,14 @@ public class ServerProcessor implements InfoProcessor {
                 e.printStackTrace();
             }
         } else if (info instanceof SpecialAction) {
-            if(info.getClass().equals(PickTownBonusAction.class)) {
+            if (info.getClass().equals(PickTownBonusAction.class)) {
                 pickTownBonus((PickTownBonusAction) info);
-            } else if(info.getClass().equals(TakePermitBonusAction.class)) {
+            } else if (info.getClass().equals(TakePermitBonusAction.class)) {
                 takePermitBonus((TakePermitBonusAction) info);
-            } else if(info.getClass().equals(PermitNoPayAction.class)) {
+            } else if (info.getClass().equals(PermitNoPayAction.class)) {
                 permitNoPay((PermitNoPayAction) info);
             } else if (info.getClass().equals(PlayerInfoAction.class)) {
-                //TODO: Add PlayerInfoAction
+                changePlayerInfo((PlayerInfoAction) info);
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
@@ -321,5 +321,11 @@ public class ServerProcessor implements InfoProcessor {
         } catch (Game.NotYourTurnException e) {
             e.printStackTrace();
         }
+    }
+
+    private void changePlayerInfo(PlayerInfoAction action) {
+        Player player = game.getPlayerInstance(action.getPlayer());
+        player.setUsername(action.getUsername());
+        player.setNickname(action.getNickname());
     }
 }

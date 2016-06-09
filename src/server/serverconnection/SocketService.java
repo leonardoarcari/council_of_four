@@ -31,8 +31,9 @@ public class SocketService implements Runnable {
                         WaitingHall.getInstance().getInfoProcessor(),
                         socket);
                 Player player = new Player(connection);
-                WaitingHall.getInstance().addPlayer(player);
+                connection.setPlayer(player);
                 executor.submit(connection);
+                WaitingHall.getInstance().addPlayer(player);
             } catch (IOException e) {
                 e.printStackTrace();
                 break;

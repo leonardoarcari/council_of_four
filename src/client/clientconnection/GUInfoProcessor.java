@@ -1,7 +1,6 @@
 package client.clientconnection;
 
 import client.View.GUI;
-import core.Player;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.SyncAction;
