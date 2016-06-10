@@ -1,5 +1,6 @@
 package client.View;
 
+import client.CachedData;
 import core.gamemodel.PoliticsCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,8 +84,13 @@ public class SelectPoliticsView extends BorderPane {
 
         CheckBox checkBox = new CheckBox();
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) selectedCards.add(card);
-            else selectedCards.remove(card);
+            if (newValue) {
+                selectedCards.add(card);
+                CachedData.getInstance().addSelectedPoliticsCard(card);
+            } else {
+                selectedCards.remove(card);
+                CachedData.getInstance().removeSelectedPoliticsCard(card);
+            }
             selectedNo.setText(String.valueOf(selectedCards.size()));
         });
 

@@ -437,8 +437,7 @@ public class GUI extends Application {
                 popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
             }
             if (imageView.getClass().equals(TownView.class)) {
-                popOver.setContentNode(((TownView)imageView).getEmporiumNode());
-                popOver.show(iv, 60);
+                ((TownView)imageView).getTownPopOver().show(iv, 60);
             }
             else popOver.show(iv, 60);
         });

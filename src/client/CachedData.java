@@ -92,6 +92,8 @@ public class CachedData {
         selectedPolitics.add(card);
     }
 
+    public void removeSelectedPoliticsCard(PoliticsCard card) { selectedPolitics.remove(card); }
+
     public List<PoliticsCard> pullSelectedPoliticsCard() {
         List<PoliticsCard> toReturn = new ArrayList<>(selectedPolitics);
         selectedPolitics.clear();

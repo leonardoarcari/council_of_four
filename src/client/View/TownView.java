@@ -36,6 +36,7 @@ public class TownView extends ObjectImageView {
     private TownInterface town;
     private TownName townName;
     private VBox verticalNode;
+    private PopOver townPopOver;
 
     public TownView(TownName townName, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
@@ -61,10 +62,6 @@ public class TownView extends ObjectImageView {
         this.emporiums.addAll(emporiums);
     }
 
-    public Node getEmporiumNode() {
-        return verticalNode;
-    }
-
     public TownName getTownName() {
         return townName;
     }
@@ -72,13 +69,13 @@ public class TownView extends ObjectImageView {
     private void setUpEmporiumNode() {
         emporiumNode = new VBox(5);
         emporiumNode.setPadding(new Insets(5));
-        Text title = new Text("No Emporiums built");
+        Text title = new Text(townName.toString() + " -- No Emporiums built");
         title.setFont(Font.font(title.getFont().getFamily(), FontWeight.BOLD, title.getFont().getSize()));
         HBox emporiumsList = new HBox(5);
         emporiums.addListener((ListChangeListener<Player>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
-                    title.setText("Emporiums built");
+                    title.setText(townName.toString() + " -- Emporiums built");
                     emporiumsList.getChildren().clear();
                     c.getList().forEach(o -> {
                         Circle circle = new Circle(20, o.getColor());
@@ -92,12 +89,14 @@ public class TownView extends ObjectImageView {
     }
 
     private void setUpPopOver() {
+        townPopOver = new PopOver();
         verticalNode = new VBox(5);
         verticalNode.setPadding(new Insets(5));
 
         Button permitActionButton = new Button("Build emporium \nwith permit card");
         permitActionButton.setTextAlignment(TextAlignment.CENTER);
         permitActionButton.setAlignment(Pos.CENTER);
+        permitActionButton.setMaxWidth(Double.MAX_VALUE);
 
         permitActionButton.setOnMouseClicked(event -> {
             ScrollPane scroll = new ScrollPane();
@@ -117,5 +116,10 @@ public class TownView extends ObjectImageView {
         });
 
         verticalNode.getChildren().addAll(emporiumNode,permitActionButton);
+        townPopOver.setContentNode(verticalNode);
+    }
+
+    public PopOver getTownPopOver() {
+        return townPopOver;
     }
 }

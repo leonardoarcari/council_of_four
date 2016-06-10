@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -44,11 +45,16 @@ public class PlayerView {
     private ScrollPane politicsScroll;
     private HBox politicsBox;
     private ScrollPane otherPane;
+    private HBox otherCards;
 
     public static PlayerInterface playerInterface;
 
     private Text username;
     private Text nickname;
+    private BoxInfo servants;
+    private BoxInfo politics;
+    private BoxInfo permits;
+    private BoxInfo royals;
     private Circle playerColor;
 
     private Map<String,Image> cardImages;
@@ -136,24 +142,24 @@ public class PlayerView {
 
         HBox servantsBox = new HBox(10);
         servantsBox.setAlignment(Pos.CENTER);
-        BoxInfo servants = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/hireservant_1.png")),new Text("N/A"));
+        servants = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/hireservant_1.png")),new Text("N/A"));
         servantsBox.getChildren().addAll(servants.getBoxImageView(), servants.getBoxText());
 
         HBox politicsBox = new HBox(10);
         politicsBox.setAlignment(Pos.CENTER);
-        BoxInfo politics = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/drawpoliticscard_1.png")),new Text("N/A"));
+        politics = new BoxInfo(new Image(loader.getResourceAsStream("BonusImages/drawpoliticscard_1.png")),new Text("N/A"));
         politics.setPopOverContent(politicsScroll);
         politicsBox.getChildren().addAll(politics.getBoxImageView(), politics.getBoxText());
 
         HBox permitBox = new HBox(10);
         permitBox.setAlignment(Pos.CENTER);
-        BoxInfo permits = new BoxInfo(new Image(loader.getResourceAsStream("permitCardIcon.png")), new Text("N/A"));
+        permits = new BoxInfo(new Image(loader.getResourceAsStream("permitCardIcon.png")), new Text("N/A"));
         permits.setPopOverContent(permitScroll);
         permitBox.getChildren().addAll(permits.getBoxImageView(), permits.getBoxText());
 
         HBox royalBox = new HBox(10);
         royalBox.setAlignment(Pos.CENTER);
-        BoxInfo royals = new BoxInfo(new Image(loader.getResourceAsStream("royalModel.png")), new Text("N/A"));
+        royals = new BoxInfo(new Image(loader.getResourceAsStream("royalModel.png")), new Text("N/A"));
         royals.setPopOverContent(royalScroll);
         royalBox.getChildren().addAll(royals.getBoxImageView(), royals.getBoxText());
 
@@ -171,7 +177,7 @@ public class PlayerView {
         // Other cards
         otherPane = new ScrollPane();
         otherPane.setFitToHeight(true);
-        HBox otherCards = new HBox(10);
+        otherCards = new HBox(10);
         otherCards.setAlignment(Pos.CENTER);
         otherCards.setPadding(new Insets(5));
 
@@ -258,24 +264,20 @@ public class PlayerView {
     public void setPlayerProperty(PlayerInterface newValue) {
         if (newValue != null) {
             playerInterface = newValue;
-            System.out.println("Mi chiamano2?");
             playerColor.setFill(newValue.getColor());
-            if(!newValue.getNickname().equals(""))
-                System.out.println("CIAO DIO AAA");
-            System.out.println(newValue.getUsername() + " " + newValue.getNickname());
             username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
             nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
+            servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
+            politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
+            permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
+            royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
         }
 
-        /*servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
-        politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
-        permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
-        royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
 
         setPermitScrollPane(newValue.permitCardIterator());
         setRoyalScrollPane(newValue.royalCardIterator());
         setPoliticScrollPane(newValue.politicsCardIterator());
-        setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);*/
+        setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);
     }
 
     private void setNumberText (Text text) {
