@@ -54,6 +54,8 @@ public class GUInfoProcessor implements InfoProcessor {
             SyncAction action = (SyncAction) info;
             if (action.equals(SyncAction.GAME_START)) {
                 gui.startGame();
+            } else if (action.equals(SyncAction.YOUR_TURN)) {
+                gui.yourTurn();
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 gui.showRedeemPermitView();
             }

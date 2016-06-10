@@ -11,6 +11,8 @@ import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.*;
@@ -100,6 +102,9 @@ public class GUI extends Application {
 
     private Button dummyChat;
 
+    private BooleanProperty mainActionAvailable;
+    private BooleanProperty fastActionAvailable;
+
     @Override
     public void init() throws Exception {
         super.init();
@@ -109,6 +114,8 @@ public class GUI extends Application {
         classLoader = this.getClass().getClassLoader();
         controller = new ControllerUI(this);
         CachedData.getInstance().setController(controller);
+        mainActionAvailable = new SimpleBooleanProperty(false);
+        fastActionAvailable = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -222,6 +229,8 @@ public class GUI extends Application {
             setImageViewListener(objectImageView);
             setObjectConstraints(objectImageView);
         });
+
+        bindDisableProperties();
 
         selectPoliticsView = new SelectPoliticsView();
         selectPoliticsView.getSelectedCards().addListener((ListChangeListener<PoliticsCard>) c -> {
@@ -475,6 +484,25 @@ public class GUI extends Application {
                 ironBonusCard,bronzeBonusCard,silverBonusCard,goldBonusCard,royalTopCard));
     }
 
+    private void bindDisableProperties() {
+        // Main Action
+        seaBalcony.setDisableBindingMainAction(mainActionAvailable);
+        hillsBalcony.setDisableBindingMainAction(mainActionAvailable);
+        mountainsBalcony.setDisableBindingMainAction(mainActionAvailable);
+        boardBalcony.setDisableBindingMainAction(mainActionAvailable);
+        councilorPool.setDisableBindingMainAction(mainActionAvailable);
+        townsView.values().forEach(townView -> townView.setDisableBindingMainAction(mainActionAvailable));
+
+        // Fast Action
+        seaBalcony.setDisableBindingFastAction(fastActionAvailable);
+        hillsBalcony.setDisableBindingFastAction(fastActionAvailable);
+        mountainsBalcony.setDisableBindingFastAction(fastActionAvailable);
+        boardBalcony.setDisableBindingFastAction(fastActionAvailable);
+        councilorPool.setDisableBindingFastAction(fastActionAvailable);
+        fastActionsView.setDisableBindingFastAction(fastActionAvailable);
+
+    }
+
     public static Image selectRegionCardImage(RegionType type) {
         ClassLoader loader = GUI.class.getClassLoader();
         if(type.equals(RegionType.SEA)) return new Image(loader.getResourceAsStream("seaBonus.png"));
@@ -671,7 +699,7 @@ public class GUI extends Application {
     public void updatePlayer(PlayerInterface player) {
         Platform.runLater(() -> {
             System.out.println(player.getUsername() + " " + player.getNickname());
-            playerView.setPlayerProperty(player);
+            playerView.setPlayer(player);
             selectPoliticsView.updatePoliticsCards(player.politicsCardIterator());
         });
     }
@@ -681,10 +709,17 @@ public class GUI extends Application {
             scene = new Scene(gridPane, 1280, 800);
             showPane = new ShowPane(scene, gridPane);
             primaryStage.setScene(scene);
-            controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayerProperty(), username.getText(),
+            controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayer(), username.getText(),
                     nickname.getText()));
-            System.out.println("Sending: " + playerView.getPlayerProperty() + " with: " + username.getText() + " " +
+            System.out.println("Sending: " + playerView.getPlayer() + " with: " + username.getText() + " " +
                     nickname.getText());
+        });
+    }
+
+    public void yourTurn() {
+        Platform.runLater(() -> {
+            mainActionAvailable.setValue(true);
+            fastActionAvailable.setValue(true);
         });
     }
 

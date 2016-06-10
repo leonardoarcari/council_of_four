@@ -3,16 +3,15 @@ package client.View;
 import client.CachedData;
 import client.ControllerUI;
 import core.Player;
-import core.gamelogic.actions.Action;
-import core.gamelogic.actions.BuyPermitCardAction;
-import core.gamelogic.actions.CouncilorElectionAction;
-import core.gamelogic.actions.FastCouncilorElectionAction;
+import core.gamelogic.actions.*;
 import core.gamemodel.CouncilColor;
 import core.gamemodel.Councilor;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.PlayerInterface;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -38,7 +37,7 @@ import java.util.List;
 /**
  * Created by Matteo on 05/06/16.
  */
-public class BalconyView extends ObjectImageView {
+public class BalconyView extends ObjectImageView implements HasMainAction, HasFastAction {
     private ObservableList<Councilor> councilors;
     private RegionType balconyRegion;
     private List<Image> councilorImages;
@@ -46,6 +45,8 @@ public class BalconyView extends ObjectImageView {
     private List<PoliticsCard> politicsCards;
     private Button satisfyCouncil;
     private Action currentAction;
+    private Button electCouncilor;
+    private Button fastElection;
 
     public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
@@ -122,17 +123,17 @@ public class BalconyView extends ObjectImageView {
         normalAction.setAlignment(Pos.CENTER);
         normalAction.setMaxWidth(Double.MAX_VALUE);
 
-        Button electCouncilor = new Button("Elect Councilor");
+        electCouncilor = new Button("Elect Councilor");
         electCouncilor.setDisable(true);
         electCouncilor.setMaxWidth(Double.MAX_VALUE);
         setStyle(electCouncilor);
-        electCouncilor.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
+
         electCouncilor.setOnMouseClicked(event -> {
             CachedData cachedData = CachedData.getInstance();
             currentAction = new CouncilorElectionAction((Player)cachedData.getMe(), cachedData.getSelectedCouncilor(), balconyRegion);
             cachedData.getController().sendInfo(currentAction);
-            CachedData.getInstance().setIsCouncilorSelected(false);
-            CachedData.getInstance().setSelectedCouncilor(null);
+            cachedData.setIsCouncilorSelected(false);
+            cachedData.setSelectedCouncilor(null);
         });
 
         satisfyCouncil = new Button("Satisfy Council");
@@ -149,11 +150,11 @@ public class BalconyView extends ObjectImageView {
         fastAction.setAlignment(Pos.CENTER);
         fastAction.setMaxWidth(Double.MAX_VALUE);
 
-        Button fastElection = new Button("Elect Councilor");
+        fastElection = new Button("Elect Councilor");
         fastElection.setDisable(true);
         fastElection.setMaxWidth(Double.MAX_VALUE);
         setStyle(fastElection);
-        fastElection.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
+        //fastElection.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
         fastElection.setOnMouseClicked(event -> {
             CachedData cachedData = CachedData.getInstance();
             currentAction = new FastCouncilorElectionAction((Player)cachedData.getMe(), balconyRegion, cachedData.getSelectedCouncilor());
@@ -181,6 +182,16 @@ public class BalconyView extends ObjectImageView {
             this.politicsCards = politicsCards;
             checkForSatisfaction();
         }
+    }
+
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        electCouncilor.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), mainActionAvailable.not()));
+    }
+
+    @Override
+    public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
+        fastElection.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), fastActionAvailable.not()));
     }
 
     private void checkForSatisfaction() {

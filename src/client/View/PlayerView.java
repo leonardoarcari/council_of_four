@@ -35,7 +35,6 @@ import java.util.Map;
  * Created by Leonardo Arcari on 05/06/2016.
  */
 public class PlayerView {
-    private ObjectProperty<PlayerInterface> playerProperty;
     private VBox playerNode;
     private PopOver popOver;
     private ScrollPane permitScroll;
@@ -47,7 +46,7 @@ public class PlayerView {
     private ScrollPane otherPane;
     private HBox otherCards;
 
-    public static PlayerInterface playerInterface;
+    private PlayerInterface playerInterface;
 
     private Text username;
     private Text nickname;
@@ -253,31 +252,26 @@ public class PlayerView {
         return playerNode;
     }
 
-    public PlayerInterface getPlayerProperty() {
+    public PlayerInterface getPlayer() {
         return playerInterface;
     }
 
-    public ObjectProperty<PlayerInterface> playerPropertyProperty() {
-        return playerProperty;
-    }
-
-    public void setPlayerProperty(PlayerInterface newValue) {
-        if (newValue != null) {
-            playerInterface = newValue;
-            playerColor.setFill(newValue.getColor());
-            username.setText(newValue.getUsername().isEmpty() ? "N/A" : newValue.getUsername());
-            nickname.setText(newValue.getNickname().isEmpty() ? "N/A" : newValue.getNickname());
-            servants.getBoxText().setText(String.valueOf(newValue.getServantsNumber()));
-            politics.getBoxText().setText(String.valueOf(newValue.getPoliticsCardsNumber()));
-            permits.getBoxText().setText(String.valueOf(newValue.getPermitCardsNumber()));
-            royals.getBoxText().setText(String.valueOf(newValue.getRoyalCardsNumber()));
+    public void setPlayer(PlayerInterface player) {
+        if (player != null) {
+            playerInterface = player;
+            playerColor.setFill(player.getColor());
+            username.setText(player.getUsername().isEmpty() ? "N/A" : player.getUsername());
+            nickname.setText(player.getNickname().isEmpty() ? "N/A" : player.getNickname());
+            servants.getBoxText().setText(String.valueOf(player.getServantsNumber()));
+            politics.getBoxText().setText(String.valueOf(player.getPoliticsCardsNumber()));
+            permits.getBoxText().setText(String.valueOf(player.getPermitCardsNumber()));
+            royals.getBoxText().setText(String.valueOf(player.getRoyalCardsNumber()));
         }
 
-
-        setPermitScrollPane(newValue.permitCardIterator());
-        setRoyalScrollPane(newValue.royalCardIterator());
-        setPoliticScrollPane(newValue.politicsCardIterator());
-        setOtherCards(newValue.regionCardIterator(),newValue.townCardIterator(), otherCards);
+        setPermitScrollPane(player.permitCardIterator());
+        setRoyalScrollPane(player.royalCardIterator());
+        setPoliticScrollPane(player.politicsCardIterator());
+        setOtherCards(player.regionCardIterator(),player.townCardIterator(), otherCards);
     }
 
     private void setNumberText (Text text) {

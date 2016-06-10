@@ -6,6 +6,7 @@ import core.gamelogic.actions.AnotherMainActionAction;
 import core.gamelogic.actions.ChangePermitsAction;
 import core.gamelogic.actions.HireServantAction;
 import core.gamemodel.RegionType;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Created by Matteo on 06/06/16.
  */
-public class FastActionsView {
+public class FastActionsView implements HasFastAction{
     private VBox actionPane;
     private VBox actionNode;
     private VBox regionNode;
@@ -130,6 +131,13 @@ public class FastActionsView {
         mountainsRegion.setOnAction(event -> {
             currentAction = new ChangePermitsAction(new Player(null),RegionType.MOUNTAINS);
         });
+    }
+
+    @Override
+    public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
+        hireServant.disableProperty().bind(fastActionAvailable.not());
+        changePermit.disableProperty().bind(fastActionAvailable.not());
+        anotherAction.disableProperty().bind(fastActionAvailable.not());
     }
 
     public Node getBoxNode() {

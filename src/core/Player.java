@@ -54,8 +54,12 @@ public class Player implements Subject, Serializable, PlayerInterface {
     }
 
     private Color generateColor() {
-        PlayerColor[] colors = PlayerColor.values();
-        return colors[Double.valueOf(Math.random() * colors.length).intValue()].getColor();
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+
+        return Color.rgb(red, green, blue);
     }
 
     public void setNickname(String nickname) {

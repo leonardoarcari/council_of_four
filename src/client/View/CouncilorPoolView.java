@@ -3,6 +3,7 @@ package client.View;
 import client.CachedData;
 import core.gamemodel.CouncilColor;
 import core.gamemodel.Councilor;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Created by Matteo on 05/06/16.
  */
-public class CouncilorPoolView {
+public class CouncilorPoolView implements HasMainAction, HasFastAction{
     private ScrollPane councilorPoolNode;
     private TilePane flowNode;
     private ObservableList<CouncilorView> pool;
@@ -33,8 +34,13 @@ public class CouncilorPoolView {
     private Image pinkCouncilor;
     private Image purpleCouncilor;
 
+    private BooleanProperty mainAction;
+    private BooleanProperty fastAction;
+
     public CouncilorPoolView() {
         pool = FXCollections.observableArrayList();
+        mainAction = null;
+        fastAction = null;
         loadCouncilorImages();
         setUpPool();
     }
@@ -85,6 +91,24 @@ public class CouncilorPoolView {
                 }
             }
         });
+    }
+
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        mainAction = mainActionAvailable;
+        councilorPoolNode.disableProperty().bind(Bindings.or(
+                mainAction.not(),
+                (fastAction == null) ? new SimpleBooleanProperty(false) : fastAction.not()
+        ));
+    }
+
+    @Override
+    public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
+        fastAction = fastActionAvailable;
+        councilorPoolNode.disableProperty().bind(Bindings.or(
+                (mainAction == null) ? new SimpleBooleanProperty(false) : mainAction.not(),
+                fastAction.not()
+        ));
     }
 
     private Image selectFromColor(CouncilColor color) {

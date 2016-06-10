@@ -5,6 +5,7 @@ import core.Player;
 import core.gamemodel.PermitCard;
 import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.TownInterface;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -30,13 +31,15 @@ import java.util.List;
 /**
  * Created by Leonardo Arcari on 03/06/2016.
  */
-public class TownView extends ObjectImageView {
+public class TownView extends ObjectImageView implements HasMainAction {
     private ObservableList<Player> emporiums;
     private VBox emporiumNode;
     private TownInterface town;
     private TownName townName;
     private VBox verticalNode;
+
     private PopOver townPopOver;
+    private Button permitActionButton;
 
     public TownView(TownName townName, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
@@ -93,7 +96,7 @@ public class TownView extends ObjectImageView {
         verticalNode = new VBox(5);
         verticalNode.setPadding(new Insets(5));
 
-        Button permitActionButton = new Button("Build emporium \nwith permit card");
+        permitActionButton = new Button("Build emporium \nwith permit card");
         permitActionButton.setTextAlignment(TextAlignment.CENTER);
         permitActionButton.setAlignment(Pos.CENTER);
         permitActionButton.setMaxWidth(Double.MAX_VALUE);
@@ -117,6 +120,11 @@ public class TownView extends ObjectImageView {
 
         verticalNode.getChildren().addAll(emporiumNode,permitActionButton);
         townPopOver.setContentNode(verticalNode);
+    }
+
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        permitActionButton.disableProperty().bind(mainActionAvailable.not());
     }
 
     public PopOver getTownPopOver() {

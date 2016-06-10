@@ -40,7 +40,7 @@ public class ServerProcessor implements InfoProcessor {
                 e.printStackTrace();
             }
         } else if(info instanceof MarketAction) {
-            if(info.getClass().equals(ExposeSellablesAction.class)) {
+            if (info.getClass().equals(ExposeSellablesAction.class)) {
                 exposeInShowcase((ExposeSellablesAction) info);
             } else
                 buyOnSaleItem((BuyObjectsAction) info);
