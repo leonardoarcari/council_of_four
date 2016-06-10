@@ -117,8 +117,7 @@ public class PlayerView {
         ClassLoader loader = this.getClass().getClassLoader();
         playerNode = new VBox(10);
         playerNode.setAlignment(Pos.TOP_CENTER);
-        playerNode.setPadding(new Insets(30, 0, 0, 0));
-
+        playerNode.setPadding(new Insets(20, 0, 0, 0));
         // Popover
         popOver = new PopOver();
         popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);

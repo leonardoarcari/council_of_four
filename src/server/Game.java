@@ -2,6 +2,7 @@ package server;
 
 import core.Player;
 import core.connection.InfoProcessor;
+import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.MarketSyncAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.GameBoard;
@@ -78,13 +79,16 @@ public class Game implements Runnable{
     public void addMainActionToken(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             currentTurn.mainActionTokens.push(true);
-            player.getConnection().sendInfo(SyncAction.MAIN_ACTION_AGAIN);
         } else throw new NotYourTurnException();
     }
 
     public void popMainActionToken(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
-            if (hasMoreMainActions(player)) currentTurn.mainActionTokens.pop();
+            if (hasMoreMainActions(player)) {
+                currentTurn.mainActionTokens.pop();
+                if (currentTurn.mainActionTokens.isEmpty()) player.getConnection().sendInfo(SyncAction.MAIN_ACTION_DONE);
+                else player.getConnection().sendInfo(SyncAction.MAIN_ACTION_AGAIN);
+            }
         } else throw new NotYourTurnException();
     }
 
@@ -96,13 +100,17 @@ public class Game implements Runnable{
 
     public void fastActionDone(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
-            if (!hasDoneFastAction(player)) currentTurn.doneFastAction = true;
+            if (!hasDoneFastAction(player)) {
+                currentTurn.doneFastAction = true;
+                player.getConnection().sendInfo(SyncAction.FAST_ACTION_DONE);
+            }
         } else throw new NotYourTurnException();
     }
 
     public void endTurn(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
-            playerIndex = (playerIndex + 1) % Server.MAX_PLAYERS;
+            player.getConnection().sendInfo(new EndTurnAction(player));
+            playerIndex = (playerIndex + 1) % players.size();
             if (playerIndex == 0) setUpMarket();
             else currentTurn = new Turn(players.get(playerIndex));
         } else throw new NotYourTurnException();

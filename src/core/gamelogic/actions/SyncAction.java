@@ -10,4 +10,6 @@ public enum SyncAction {
     PICK_PERMIT_AGAIN,
     PICK_TOWN_BONUS,
     MAIN_ACTION_AGAIN,
+    MAIN_ACTION_DONE,
+    FAST_ACTION_DONE
 }

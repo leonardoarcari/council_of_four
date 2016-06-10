@@ -96,7 +96,7 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
     @Override
     public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
         mainAction = mainActionAvailable;
-        councilorPoolNode.disableProperty().bind(Bindings.or(
+        councilorPoolNode.disableProperty().bind(Bindings.and(
                 mainAction.not(),
                 (fastAction == null) ? new SimpleBooleanProperty(false) : fastAction.not()
         ));
@@ -105,7 +105,7 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
     @Override
     public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
         fastAction = fastActionAvailable;
-        councilorPoolNode.disableProperty().bind(Bindings.or(
+        councilorPoolNode.disableProperty().bind(Bindings.and(
                 (mainAction == null) ? new SimpleBooleanProperty(false) : mainAction.not(),
                 fastAction.not()
         ));

@@ -4,8 +4,10 @@ import client.CachedData;
 import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
+import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.PlayerInfoAction;
 import core.gamelogic.actions.SelectAgainPermitAction;
+import core.gamelogic.actions.SyncAction;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
@@ -100,6 +102,7 @@ public class GUI extends Application {
     private Image secondRoyal;
     private Image firstRoyal;
 
+    private Button endTurn;
     private Button dummyChat;
 
     private BooleanProperty mainActionAvailable;
@@ -249,7 +252,6 @@ public class GUI extends Application {
         );
     }
 
-
     private void buildMainPane() {
         gridPane = new GridPane();
         ColumnConstraints boardColumn = new ColumnConstraints();
@@ -293,7 +295,7 @@ public class GUI extends Application {
         choicePane = new MasterDetailPane();
         choicePane.setDetailNode(actionChoice);
         choicePane.setDetailSide(Side.TOP);
-        choicePane.setDividerPosition(0.1); //Percentage...
+        choicePane.setDividerPosition(0.1);
         choicePane.setShowDetailNode(true);
 
         choicePane.dividerPositionProperty().addListener(((observable, oldValue, newValue) -> {
@@ -501,6 +503,8 @@ public class GUI extends Application {
         councilorPool.setDisableBindingFastAction(fastActionAvailable);
         fastActionsView.setDisableBindingFastAction(fastActionAvailable);
 
+        // Not my turn
+        endTurn.disableProperty().bind(Bindings.and(mainActionAvailable.not(), fastActionAvailable.not()));
     }
 
     public static Image selectRegionCardImage(RegionType type) {
@@ -515,11 +519,30 @@ public class GUI extends Application {
         tabPane.setSide(Side.TOP);
         Tab playerHandTab = new Tab("Your Hand");
         playerHandTab.setClosable(false);
-        playerHandTab.setContent(playerView.getPlayerNode());
+        playerHandTab.setContent(buildPlayerHand());
         Tab actionTreeTab = new Tab("Actions and Gameboard");
         actionTreeTab.setClosable(false);
         actionTreeTab.setContent(choicePane);
         tabPane.getTabs().addAll(playerHandTab, actionTreeTab);
+    }
+
+    private Pane buildPlayerHand() {
+        GridPane pane = new GridPane();
+        pane.setGridLinesVisible(true);
+        endTurn = new Button("End Turn");
+        endTurn.setOnMouseClicked(event -> {
+            controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
+        });
+
+        HBox buttonBox = new HBox(endTurn);
+        buttonBox.setPadding(new Insets(20, 0, 20, 0));
+        buttonBox.setAlignment(Pos.CENTER);
+        GridPane.setFillHeight(playerView.getPlayerNode(), true);
+        GridPane.setConstraints(playerView.getPlayerNode(), 0, 0, 1, 1, HPos.CENTER, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
+
+        GridPane.setConstraints(buttonBox, 0, 1, 1, 1, HPos.CENTER, VPos.CENTER);
+        pane.getChildren().addAll(playerView.getPlayerNode(), buttonBox);
+        return pane;
     }
 
     private void setImageViewListener(ObjectImageView iv) {
@@ -562,7 +585,6 @@ public class GUI extends Application {
             } else if(type.equals(RegionType.MOUNTAINS)) {
                 balconyIV = mountainsBalcony;
             } else balconyIV = boardBalcony;
-
             balconyIV.setBalcony(balcony);
         });
     }
@@ -586,7 +608,6 @@ public class GUI extends Application {
             String toLoad;
             toLoad = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
             toLoad = "BonusImages/" + toLoad + "_" + town.getTownBonus().getValue() + ".png";
-            System.out.println(toLoad + " " + town.getTownName().name());
             townBonusView.get(town.getTownName()).setImage(new Image(classLoader.getResourceAsStream(toLoad)));
         }
     }
@@ -711,8 +732,6 @@ public class GUI extends Application {
             primaryStage.setScene(scene);
             controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayer(), username.getText(),
                     nickname.getText()));
-            System.out.println("Sending: " + playerView.getPlayer() + " with: " + username.getText() + " " +
-                    nickname.getText());
         });
     }
 
@@ -721,6 +740,14 @@ public class GUI extends Application {
             mainActionAvailable.setValue(true);
             fastActionAvailable.setValue(true);
         });
+    }
+
+    public void setMainActionAvailable(boolean mainActionAvailable) {
+        Platform.runLater(() -> this.mainActionAvailable.setValue(mainActionAvailable));
+    }
+
+    public void setFastActionAvailable(boolean fastActionAvailable) {
+        Platform.runLater(() -> this.fastActionAvailable.setValue(fastActionAvailable));
     }
 
     public void showRedeemPermitView() {

@@ -4,6 +4,7 @@ import client.CachedData;
 import client.View.GUI;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
+import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.Councilor;
 import core.gamemodel.WealthPath;
@@ -58,7 +59,16 @@ public class GUInfoProcessor implements InfoProcessor {
                 gui.yourTurn();
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 gui.showRedeemPermitView();
+            } else if (action.equals(SyncAction.MAIN_ACTION_DONE)) {
+                gui.setMainActionAvailable(false);
+            } else if (action.equals(SyncAction.MAIN_ACTION_AGAIN)) {
+                gui.setMainActionAvailable(true);
+            } else if (action.equals(SyncAction.FAST_ACTION_DONE)) {
+                gui.setFastActionAvailable(false);
             }
+        } else if (info.getClass().equals(EndTurnAction.class)) {
+            gui.setMainActionAvailable(false);
+            gui.setFastActionAvailable(false);
         }
     }
 }
