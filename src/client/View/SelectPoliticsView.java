@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -20,9 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 08/06/2016.
@@ -31,23 +28,13 @@ public class SelectPoliticsView extends BorderPane {
     private HBox cardsBox;
     private ScrollPane scrollPane;
     private Text selectedNo;
-    private Map<String, Image> politicsImages;
     private ObservableList<PoliticsCard> selectedCards;
     private RegionType type;
 
     public SelectPoliticsView(RegionType type) {
         this.type = type;
 
-        politicsImages = new HashMap<>();
         selectedCards = FXCollections.observableArrayList();
-        ClassLoader loader = this.getClass().getClassLoader();
-        politicsImages.put("CYAN", new Image(loader.getResourceAsStream("bluePolitics.png")));
-        politicsImages.put("PINK", new Image(loader.getResourceAsStream("pinkPolitics.png")));
-        politicsImages.put("PURPLE", new Image(loader.getResourceAsStream("purplePolitics.png")));
-        politicsImages.put("ORANGE", new Image(loader.getResourceAsStream("orangePolitics.png")));
-        politicsImages.put("BLACK", new Image(loader.getResourceAsStream("blackPolitics.png")));
-        politicsImages.put("WHITE", new Image(loader.getResourceAsStream("whitePolitics.png")));
-        politicsImages.put("RAINBOW", new Image(loader.getResourceAsStream("rainbowPolitics.png")));
 
         selectedNo = new Text(String.valueOf(selectedCards.size()));
         selectedNo.setFont(Font.font(selectedNo.getFont().getFamily(), FontWeight.BOLD, 20));
@@ -87,7 +74,7 @@ public class SelectPoliticsView extends BorderPane {
         VBox node = new VBox(10);
         node.setAlignment(Pos.CENTER);
 
-        ImageView iv = new ImageView(politicsImages.get(card.getCardColor().name()));
+        ImageView iv = new ImageView(ImagesMaps.getInstance().getPolitics(card.getCardColor().name()));
         iv.setPreserveRatio(true);
         iv.setSmooth(true);
         iv.setCache(true);
