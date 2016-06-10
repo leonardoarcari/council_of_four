@@ -1,6 +1,8 @@
 package client.View;
 
+import client.CachedData;
 import core.Player;
+import core.gamemodel.PermitCard;
 import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.TownInterface;
 import javafx.collections.FXCollections;
@@ -9,6 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,6 +20,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import org.controlsfx.control.PopOver;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +35,7 @@ public class TownView extends ObjectImageView {
     private VBox emporiumNode;
     private TownInterface town;
     private TownName townName;
+    private VBox verticalNode;
 
     public TownView(TownName townName, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
@@ -36,7 +43,7 @@ public class TownView extends ObjectImageView {
         this.town = null;
         emporiums = FXCollections.observableArrayList();
         setUpEmporiumNode();
-
+        setUpPopOver();
     }
 
     public void update(TownInterface town) {
@@ -55,7 +62,7 @@ public class TownView extends ObjectImageView {
     }
 
     public Node getEmporiumNode() {
-        return emporiumNode;
+        return verticalNode;
     }
 
     public TownName getTownName() {
@@ -82,5 +89,33 @@ public class TownView extends ObjectImageView {
         });
         emporiumNode.setAlignment(Pos.CENTER);
         emporiumNode.getChildren().addAll(title, emporiumsList);
+    }
+
+    private void setUpPopOver() {
+        verticalNode = new VBox(5);
+        verticalNode.setPadding(new Insets(5));
+
+        Button permitActionButton = new Button("Build emporium \nwith permit card");
+        permitActionButton.setTextAlignment(TextAlignment.CENTER);
+        permitActionButton.setAlignment(Pos.CENTER);
+
+        permitActionButton.setOnMouseClicked(event -> {
+            ScrollPane scroll = new ScrollPane();
+            HBox box = new HBox(5);
+            box.setPadding(new Insets(5));
+            Iterator<PermitCard> permitCardIterator = CachedData.getInstance().getMe().permitCardIterator();
+            while(permitCardIterator.hasNext()) {
+                PermitCard permit = permitCardIterator.next();
+                if(permit.getCityPermits().contains(townName)) {
+                    PermitCardView permitCardView = new PermitCardView(null,0,0,0);
+                    permitCardView.setPermitCard(permit);
+                    permitCardView.setFitHeight(50);
+                    box.getChildren().add(permitCardView);
+                }
+            }
+            scroll.setContent(box);
+        });
+
+        verticalNode.getChildren().addAll(emporiumNode,permitActionButton);
     }
 }

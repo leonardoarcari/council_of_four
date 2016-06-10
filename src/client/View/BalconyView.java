@@ -157,6 +157,7 @@ public class BalconyView extends ObjectImageView {
         fastElection.setOnMouseClicked(event -> {
             CachedData cachedData = CachedData.getInstance();
             currentAction = new FastCouncilorElectionAction((Player)cachedData.getMe(), balconyRegion, cachedData.getSelectedCouncilor());
+            cachedData.getController().sendInfo(currentAction);
             cachedData.setIsCouncilorSelected(false);
             cachedData.setSelectedCouncilor(null);
         });
