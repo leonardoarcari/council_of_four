@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface AbstractPathInterface {
     List<List<Player>> getPlayers();
+    int getPlayerPosition(Player player);
 }

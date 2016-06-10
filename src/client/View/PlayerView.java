@@ -1,5 +1,6 @@
 package client.View;
 
+import client.CachedData;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.ObjectProperty;
@@ -27,9 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Leonardo Arcari on 05/06/2016.
@@ -223,14 +222,19 @@ public class PlayerView {
         politicsBox.getChildren().clear();
         if(!politicsCardIterator.hasNext()) {
             politicsBox.getChildren().add(new Label("No Politics Card"));
-        } else
-            while(politicsCardIterator.hasNext()) {
+        } else {
+            List<PoliticsCard> tempList = new Vector<>();
+            while (politicsCardIterator.hasNext()) {
                 PoliticsCard currentPolitic = politicsCardIterator.next();
+                tempList.add(currentPolitic);
                 Image myPolitic = cardImages.get(currentPolitic.getCardColor().name());
-                ObjectImageView currentView = new ObjectImageView(myPolitic,0,0,0);
+                ObjectImageView currentView = new ObjectImageView(myPolitic, 0, 0, 0);
                 currentView.setFitHeight(80);
                 politicsBox.getChildren().add(currentView);
             }
+            CachedData.getInstance().getPlayerPoliticsCards().clear();
+            CachedData.getInstance().getPlayerPoliticsCards().addAll(tempList);
+        }
     }
 
     private void setOtherCards(Iterator<RegionCard> regionCardIterator, Iterator<TownTypeCard> townTypeCardIterator, HBox otherCards) {

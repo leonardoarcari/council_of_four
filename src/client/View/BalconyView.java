@@ -12,6 +12,7 @@ import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -42,19 +43,32 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
     private RegionType balconyRegion;
     private List<Image> councilorImages;
     private PopOver popOver;
-    private List<PoliticsCard> politicsCards;
     private Button satisfyCouncil;
     private Action currentAction;
     private Button electCouncilor;
     private Button fastElection;
+    private BooleanProperty isCouncilSatisfiable;
+    private ObservableList<PoliticsCard> availablePoliticsCards;
 
     public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         this.balconyRegion = balconyRegion;
         councilorImages = new ArrayList<>();
         councilors = FXCollections.observableArrayList();
+        availablePoliticsCards = FXCollections.observableArrayList();
         buildPopOver();
         setUpCouncilors();
+        isCouncilSatisfiable = new SimpleBooleanProperty(false);
+
+        //Listen when either the balcony or the player politics card
+        councilors.addListener((ListChangeListener<? super Councilor>) c -> {
+            availablePoliticsCards.clear();
+            isCouncilSatisfiable.set(ViewAlgorithms.checkForSatisfaction(councilors,availablePoliticsCards));
+        });
+        CachedData.getInstance().listenToPolitics(c -> {
+            availablePoliticsCards.clear();
+            isCouncilSatisfiable.set(ViewAlgorithms.checkForSatisfaction(councilors,availablePoliticsCards));
+        });
     }
 
     private void setCouncilors(List<Councilor> councilors) {
@@ -141,9 +155,11 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         satisfyCouncil.setMaxWidth(Double.MAX_VALUE);
         setStyle(satisfyCouncil);
         satisfyCouncil.setOnMouseClicked(event -> {
-            CachedData cachedData = CachedData.getInstance();
-            currentAction = new BuyPermitCardAction((Player)cachedData.getMe(), politicsCards, RegionType.SEA, null);
-            cachedData.getController().sendInfo(currentAction);
+            SelectPoliticsView politicsView = new SelectPoliticsView();
+            politicsView.updatePoliticsCards(availablePoliticsCards.iterator());
+            ShowPane.getInstance().setContent(politicsView);
+            ShowPane.getInstance().show();
+            //cachedData.getController().sendInfo(currentAction);
         });
 
         Label fastAction = new Label("-- Fast Action --");
@@ -154,7 +170,7 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         fastElection.setDisable(true);
         fastElection.setMaxWidth(Double.MAX_VALUE);
         setStyle(fastElection);
-        //fastElection.disableProperty().bind(CachedData.getInstance().isCouncilorSelectedProperty().not());
+
         fastElection.setOnMouseClicked(event -> {
             CachedData cachedData = CachedData.getInstance();
             currentAction = new FastCouncilorElectionAction((Player)cachedData.getMe(), balconyRegion, cachedData.getSelectedCouncilor());
@@ -173,51 +189,15 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         });
     }
 
-    public void setSelectedPolitics(List<PoliticsCard> politicsCards) {
-        if(politicsCards.size() == 0) {
-            this.politicsCards.clear();
-            satisfyCouncil.setDisable(true);
-            satisfyCouncil.setText("Satisfy Council - choose valid cards!");
-        } else {
-            this.politicsCards = politicsCards;
-            checkForSatisfaction();
-        }
-    }
-
     @Override
     public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
         electCouncilor.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), mainActionAvailable.not()));
+        satisfyCouncil.disableProperty().bind(Bindings.or(isCouncilSatisfiable.not(), mainActionAvailable.not()));
     }
 
     @Override
     public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
         fastElection.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), fastActionAvailable.not()));
-    }
-
-    private void checkForSatisfaction() {
-        List<CouncilColor> myColors = new ArrayList<>();
-        for(Councilor councilor : councilors) {
-            CouncilColor color = councilor.getCouncilorColor();
-            myColors.add(color);
-        }
-        List<CouncilColor> politicsColors = new ArrayList<>();
-        for(PoliticsCard politicsCard : politicsCards) {
-            politicsColors.add(politicsCard.getCardColor());
-        }
-
-        politicsColors.forEach(councilColor -> {
-                if (!myColors.remove(councilColor)) {
-                    satisfyCouncil.setDisable(true);
-                    satisfyCouncil.setText("Satisfy Council - choose valid cards!");
-                    return;
-                } else {
-                    if(satisfyCouncil.isDisabled()) {
-                        satisfyCouncil.setDisable(false);
-                        satisfyCouncil.setText("Satisfy Council");
-                    }
-                }
-            }
-        );
     }
 
     private void setStyle(Button button) {

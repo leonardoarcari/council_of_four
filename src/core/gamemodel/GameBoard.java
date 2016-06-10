@@ -44,6 +44,8 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         while (iterator.hasNext()) {
             Player player = iterator.next();
             player.hireServants(gameBoard.hireServants(servantsNumber++));
+            for(int i = 0; i < 1; i++)
+                player.addPoliticsCard(gameBoard.drawPoliticsCard());
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
             gameBoard.victoryPath.setPlayer(player);

@@ -20,16 +20,31 @@ import javafx.util.Duration;
  * Created by Leonardo Arcari on 07/06/2016.
  */
 public class ShowPane {
+    private volatile static ShowPane instance = null;
+
     private GridPane pane;
     private Parent previous;
     private Scene scene;
     private Text title;
     private Node content;
 
-    public ShowPane(Scene scene, Parent previous) {
+    public static ShowPane getInstance() {
+        if (instance == null) {
+            synchronized (ShowPane.class) {
+                if (instance == null) {
+                    instance = new ShowPane();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public void setSceneAndParent(Scene scene, Parent previous) {
         this.scene = scene;
         this.previous = previous;
+    }
 
+    private ShowPane() {
 
         pane = new GridPane();
         RowConstraints rc0 = new RowConstraints();

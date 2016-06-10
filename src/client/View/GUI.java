@@ -16,7 +16,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -53,7 +52,6 @@ public class GUI extends Application {
     private TabPane tabPane;
 
     private MasterDetailPane choicePane;
-    private ShowPane showPane;
 
     private PlayerView playerView;
     private BalconyView seaBalcony;
@@ -78,7 +76,6 @@ public class GUI extends Application {
     private TreeItem<String> councilorPoolSelector;
 
     private CouncilorPoolView councilorPool;
-    private SelectPoliticsView selectPoliticsView;
 
     private PermitCardView seaLeftCard;
     private PermitCardView seaRightCard;
@@ -234,15 +231,6 @@ public class GUI extends Application {
         });
 
         bindDisableProperties();
-
-        selectPoliticsView = new SelectPoliticsView();
-        selectPoliticsView.getSelectedCards().addListener((ListChangeListener<PoliticsCard>) c -> {
-            while(c.next()) {
-                if (c.wasAdded() || c.wasRemoved()) {
-                    seaBalcony.setSelectedPolitics(selectPoliticsView.getSelectedCards());
-                }
-            }
-        });
 
         // Debug
         gridPane.setGridLinesVisible(true);
@@ -594,7 +582,10 @@ public class GUI extends Application {
     }
 
     public void updateWealthPath(WealthPathInterface wealthPath) {
-        Platform.runLater(() -> this.wealthPath.updateWealthPath(wealthPath));
+        Platform.runLater(() -> {
+            this.wealthPath.updateWealthPath(wealthPath);
+            CachedData.getInstance().setWealthPath(wealthPath);
+        });
     }
 
     public TownView getTownView(TownName name) {
@@ -721,14 +712,13 @@ public class GUI extends Application {
         Platform.runLater(() -> {
             System.out.println(player.getUsername() + " " + player.getNickname());
             playerView.setPlayer(player);
-            selectPoliticsView.updatePoliticsCards(player.politicsCardIterator());
         });
     }
 
     public void startGame() {
         Platform.runLater(() -> {
             scene = new Scene(gridPane, 1280, 800);
-            showPane = new ShowPane(scene, gridPane);
+            ShowPane.getInstance().setSceneAndParent(scene,gridPane);
             primaryStage.setScene(scene);
             controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayer(), username.getText(),
                     nickname.getText()));
@@ -760,10 +750,10 @@ public class GUI extends Application {
                                 ((PermitCardView) event.getSource()).getPermitCard()
                         )
                 );
-                showPane.hide();
+                ShowPane.getInstance().hide();
             });
-            showPane.setContent(permitView);
-            showPane.show();
+            ShowPane.getInstance().setContent(permitView);
+            ShowPane.getInstance().show();
         });
     }
 }

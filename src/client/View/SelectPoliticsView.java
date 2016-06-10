@@ -1,6 +1,5 @@
 package client.View;
 
-import client.CachedData;
 import core.gamemodel.PoliticsCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,7 +51,6 @@ public class SelectPoliticsView extends BorderPane {
         cardsBox = new HBox(20);
         cardsBox.setAlignment(Pos.CENTER);
         cardsBox.setPadding(new Insets(0, 30, 0, 30));
-        //politicsCards.forEach(card -> cardsBox.getChildren().add(buildCardNode(card)));
 
         scrollPane = new ScrollPane(cardsBox);
         scrollPane.setFitToHeight(true);
@@ -66,7 +64,9 @@ public class SelectPoliticsView extends BorderPane {
 
     public void updatePoliticsCards(Iterator<PoliticsCard> politicsCardIterator) {
         cardsBox.getChildren().clear();
-        cardsBox.getChildren().add(new Button("Back"));
+        Button back = new Button("Back");
+        back.setOnMouseClicked(event -> ShowPane.getInstance().hide());
+        cardsBox.getChildren().add(back);
         while(politicsCardIterator.hasNext()) {
             cardsBox.getChildren().add(buildCardNode(politicsCardIterator.next()));
         }
@@ -86,10 +86,8 @@ public class SelectPoliticsView extends BorderPane {
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 selectedCards.add(card);
-                CachedData.getInstance().addSelectedPoliticsCard(card);
             } else {
                 selectedCards.remove(card);
-                CachedData.getInstance().removeSelectedPoliticsCard(card);
             }
             selectedNo.setText(String.valueOf(selectedCards.size()));
         });

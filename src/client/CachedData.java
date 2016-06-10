@@ -1,6 +1,5 @@
 package client;
 
-
 import core.gamemodel.Councilor;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
@@ -8,8 +7,12 @@ import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.PlayerInterface;
 import core.gamemodel.modelinterface.TownInterface;
+import core.gamemodel.modelinterface.WealthPathInterface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 import java.util.*;
 
@@ -23,10 +26,11 @@ public class CachedData {
     private PlayerInterface me;
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
+    private WealthPathInterface wealthPath;
     private List<Councilor> councilorPool;
     private Councilor selectedCouncilor;
     private BooleanProperty isCouncilorSelected;
-    private List<PoliticsCard> selectedPolitics;
+    private ObservableList<PoliticsCard> playerPoliticsCards;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -44,8 +48,10 @@ public class CachedData {
         towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
+        wealthPath = null;
         selectedCouncilor = null;
         isCouncilorSelected = new SimpleBooleanProperty(false);
+        playerPoliticsCards = FXCollections.observableArrayList();
     }
 
     public ControllerUI getController() {
@@ -54,6 +60,14 @@ public class CachedData {
 
     public void setController(ControllerUI controller) {
         this.controller = controller;
+    }
+
+    public void setWealthPath(WealthPathInterface wealthPath) {
+        this.wealthPath = wealthPath;
+    }
+
+    public WealthPathInterface getWealthPath() {
+        return wealthPath;
     }
 
     public PlayerInterface getMe() {
@@ -88,16 +102,12 @@ public class CachedData {
         this.councilorPool = councilorPool;
     }
 
-    public void addSelectedPoliticsCard(PoliticsCard card) {
-        selectedPolitics.add(card);
+    public void listenToPolitics(ListChangeListener<? super PoliticsCard> listener) {
+        playerPoliticsCards.addListener(listener);
     }
 
-    public void removeSelectedPoliticsCard(PoliticsCard card) { selectedPolitics.remove(card); }
-
-    public List<PoliticsCard> pullSelectedPoliticsCard() {
-        List<PoliticsCard> toReturn = new ArrayList<>(selectedPolitics);
-        selectedPolitics.clear();
-        return toReturn;
+    public ObservableList<PoliticsCard> getPlayerPoliticsCards() {
+        return playerPoliticsCards;
     }
 
     public Councilor getSelectedCouncilor() {
