@@ -155,7 +155,7 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         satisfyCouncil.setMaxWidth(Double.MAX_VALUE);
         setStyle(satisfyCouncil);
         satisfyCouncil.setOnMouseClicked(event -> {
-            SelectPoliticsView politicsView = new SelectPoliticsView();
+            SelectPoliticsView politicsView = new SelectPoliticsView(balconyRegion);
             politicsView.updatePoliticsCards(availablePoliticsCards.iterator());
             ShowPane.getInstance().setContent(politicsView);
             ShowPane.getInstance().show();

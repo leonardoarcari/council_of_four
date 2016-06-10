@@ -9,6 +9,7 @@ import core.gamelogic.actions.PlayerInfoAction;
 import core.gamelogic.actions.SelectAgainPermitAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.*;
+import core.gamemodel.Region;
 import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -609,12 +610,15 @@ public class GUI extends Application {
             PermitCardView left;
             PermitCardView right;
             if(type.equals(RegionType.SEA)) {
+                CachedData.getInstance().setSeaRegion((Region)region);
                 left = seaLeftCard;
                 right = seaRightCard;
             } else if(type.equals(RegionType.HILLS)) {
+                CachedData.getInstance().setHillsRegion((Region)region);
                 left = hillsLeftCard;
                 right = hillsRightCard;
             } else {
+                CachedData.getInstance().setMountainsRegion((Region)region);
                 left = mountainsLeftCard;
                 right = mountainsRightCard;
             }

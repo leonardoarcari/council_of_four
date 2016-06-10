@@ -1,13 +1,7 @@
 package client;
 
-import core.gamemodel.Councilor;
-import core.gamemodel.PoliticsCard;
-import core.gamemodel.RegionType;
-import core.gamemodel.TownName;
-import core.gamemodel.modelinterface.BalconyInterface;
-import core.gamemodel.modelinterface.PlayerInterface;
-import core.gamemodel.modelinterface.TownInterface;
-import core.gamemodel.modelinterface.WealthPathInterface;
+import core.gamemodel.*;
+import core.gamemodel.modelinterface.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +25,9 @@ public class CachedData {
     private Councilor selectedCouncilor;
     private BooleanProperty isCouncilorSelected;
     private ObservableList<PoliticsCard> playerPoliticsCards;
+    private Region seaRegion;
+    private Region hillsRegion;
+    private Region mountainsRegion;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -52,6 +49,9 @@ public class CachedData {
         selectedCouncilor = null;
         isCouncilorSelected = new SimpleBooleanProperty(false);
         playerPoliticsCards = FXCollections.observableArrayList();
+        seaRegion = null;
+        hillsRegion = null;
+        mountainsRegion = null;
     }
 
     public ControllerUI getController() {
@@ -124,5 +124,29 @@ public class CachedData {
 
     public void setSelectedCouncilor(Councilor selectedCouncilor) {
         this.selectedCouncilor = selectedCouncilor;
+    }
+
+    public Region getSeaRegion() {
+        return seaRegion;
+    }
+
+    public Region getHillsRegion() {
+        return hillsRegion;
+    }
+
+    public Region getMountainsRegion() {
+        return mountainsRegion;
+    }
+
+    public void setSeaRegion(Region seaRegion) {
+        this.seaRegion = seaRegion;
+    }
+
+    public void setHillsRegion(Region hillsRegion) {
+        this.hillsRegion = hillsRegion;
+    }
+
+    public void setMountainsRegion(Region mountainsRegion) {
+        this.mountainsRegion = mountainsRegion;
     }
 }

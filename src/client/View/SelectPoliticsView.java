@@ -1,6 +1,7 @@
 package client.View;
 
 import core.gamemodel.PoliticsCard;
+import core.gamemodel.RegionType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -32,8 +33,11 @@ public class SelectPoliticsView extends BorderPane {
     private Text selectedNo;
     private Map<String, Image> politicsImages;
     private ObservableList<PoliticsCard> selectedCards;
+    private RegionType type;
 
-    public SelectPoliticsView() {
+    public SelectPoliticsView(RegionType type) {
+        this.type = type;
+
         politicsImages = new HashMap<>();
         selectedCards = FXCollections.observableArrayList();
         ClassLoader loader = this.getClass().getClassLoader();
@@ -70,6 +74,13 @@ public class SelectPoliticsView extends BorderPane {
         while(politicsCardIterator.hasNext()) {
             cardsBox.getChildren().add(buildCardNode(politicsCardIterator.next()));
         }
+        Button forward = new Button("Forward");
+        forward.setOnMouseClicked(event -> {
+            SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, selectedCards);
+            ShowPane.getInstance().setContent(regionPermitView);
+            ShowPane.getInstance().show();
+        });
+        cardsBox.getChildren().add(forward);
     }
 
     private VBox buildCardNode(PoliticsCard card) {
