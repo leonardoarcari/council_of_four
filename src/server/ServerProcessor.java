@@ -306,6 +306,7 @@ public class ServerProcessor implements InfoProcessor {
             OnSaleItem currentSaled = iterator.next();
             myShowcase.removeItem(currentSaled, player);
             game.getGameBoard().moveWealthPath(player, -currentSaled.getPrice());
+            //TODO: Add bought item to player
         }
 
         try {
