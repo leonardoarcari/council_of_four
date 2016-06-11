@@ -2,16 +2,22 @@ package client.View;
 
 import client.CachedData;
 import core.Player;
+import core.gamelogic.actions.BuyObjectsAction;
 import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.OnSaleItem;
 import core.gamemodel.PermitCard;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.modelinterface.SellableItem;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -19,28 +25,32 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by leonardoarcari on 10/06/16.
+ * Created by Leonardo Arcari on 11/06/2016.
  */
-public class ExposeSellableView extends GridPane {
+public class BuySellableView extends GridPane {
     private HBox cardsBox;
-    private Map<SellableItem, OnSaleItem> onSaleItems;
+    private List<OnSaleItem> itemToBuy;
+    private IntegerProperty coinsSpentProperty;
 
-    public ExposeSellableView() {
-        onSaleItems = new HashMap<>();
+    public BuySellableView() {
+        itemToBuy = new ArrayList<>();
+        coinsSpentProperty = new SimpleIntegerProperty(0);
 
         cardsBox = new HBox(20);
         cardsBox.setAlignment(Pos.CENTER);
         cardsBox.setPadding(new Insets(0, 30, 0, 30));
 
-
         ScrollPane scrollPane = new ScrollPane(cardsBox);
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
-        Button exposeButton = new Button("Expose Items");
+        Button exposeButton = new Button("Buy Selected Items");
         HBox buttonBox = new HBox(exposeButton);
         buttonBox.setAlignment(Pos.CENTER);
         GridPane.setConstraints(scrollPane, 0, 0, 1, 1, HPos.CENTER, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
@@ -49,23 +59,24 @@ public class ExposeSellableView extends GridPane {
         getChildren().addAll(scrollPane, buttonBox);
 
         exposeButton.setOnMouseClicked(event -> {
-            CachedData.getInstance().getController().sendInfo(new ExposeSellablesAction(
+            CachedData.getInstance().getController().sendInfo(new BuyObjectsAction(
                     (Player) CachedData.getInstance().getMe(),
-                    new ArrayList<>(onSaleItems.values())
-            ));
+                    itemToBuy
+                )
+            );
             setDisable(true);
         });
     }
 
-    public void addSellableItem(SellableItem item) {
-        cardsBox.getChildren().add(buildSellableNode(item));
+    public void addOnSaleItem(OnSaleItem item) {
+        cardsBox.getChildren().add(buildOnSaleNode(item));
     }
 
-    public void clearSellableItem() {
+    public void clearOnSaleItem() {
         cardsBox.getChildren().clear();
     }
 
-    private VBox buildSellableNode(SellableItem item) {
+    private VBox buildOnSaleNode(OnSaleItem item) {
         VBox node = new VBox(10);
         node.setAlignment(Pos.CENTER);
 
@@ -74,42 +85,31 @@ public class ExposeSellableView extends GridPane {
         iv.setSmooth(true);
         iv.setCache(true);
         iv.setFitHeight(250);
-        iv.setImage(retrieveImage(item));
-
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 1);
-        Spinner<Integer> spinner = new Spinner<>(valueFactory);
-        spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            onSaleItems.put(item, new OnSaleItem(
-                    item,
-                    newValue,
-                    (Player) CachedData.getInstance().getMe()
-            ));
-        });
+        iv.setImage(retrieveImage(item.getItem()));
 
         CheckBox checkBox = new CheckBox();
+        checkBox.setText(String.valueOf(item.getPrice()));
+        coinsSpentProperty.addListener((observable, oldValue, newValue) -> {
+            checkBox.setDisable(
+                    newValue.intValue() + item.getPrice() >
+                            CachedData.getInstance().getWealthPath().getPlayerPosition(
+                                    (Player) CachedData.getInstance().getMe()
+                            )
+                    && !checkBox.selectedProperty().getValue()
+            );
+        });
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                onSaleItems.put(item, new OnSaleItem(
-                        item,
-                        spinner.getValue(),
-                        (Player) CachedData.getInstance().getMe()
-                ));
+                itemToBuy.add(item);
+                coinsSpentProperty.setValue(coinsSpentProperty.get() + item.getPrice());
             } else {
-                onSaleItems.remove(item);
+                itemToBuy.remove(item);
+                coinsSpentProperty.setValue(coinsSpentProperty.get() - item.getPrice());
             }
         });
-        spinner.disableProperty().bind(checkBox.selectedProperty().not());
 
-        HBox setPriceBox = new HBox(5);
-        setPriceBox.setAlignment(Pos.CENTER);
-        setPriceBox.getChildren().addAll(checkBox, spinner);
-
-        node.getChildren().addAll(iv, setPriceBox);
+        node.getChildren().addAll(iv, checkBox);
         return node;
-    }
-
-    public Iterator<OnSaleItem> onSaleItemIterator() {
-        return onSaleItems.values().iterator();
     }
 
     private Image retrieveImage(SellableItem item) {

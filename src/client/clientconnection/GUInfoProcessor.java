@@ -5,6 +5,7 @@ import client.View.GUI;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.EndTurnAction;
+import core.gamelogic.actions.MarketSyncAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.Councilor;
 import core.gamemodel.WealthPath;
@@ -25,7 +26,7 @@ public class GUInfoProcessor implements InfoProcessor {
     }
 
     @Override
-    public void processInfo(Object info) {
+    public synchronized void processInfo(Object info) {
         if (info instanceof TownInterface) {
             TownInterface town = (TownInterface) info;
             CachedData.getInstance().putTown(town.getTownName(), town);
@@ -51,6 +52,8 @@ public class GUInfoProcessor implements InfoProcessor {
         } else if (info instanceof PlayerInterface) {
             CachedData.getInstance().setMe((PlayerInterface) info);
             gui.updatePlayer((PlayerInterface) info);
+        } else if (info instanceof ShowcaseInterface) {
+            gui.updateShowCase((ShowcaseInterface) info);
         } else if (info instanceof SyncAction) {
             SyncAction action = (SyncAction) info;
             if (action.equals(SyncAction.GAME_START)) {
@@ -69,6 +72,15 @@ public class GUInfoProcessor implements InfoProcessor {
         } else if (info.getClass().equals(EndTurnAction.class)) {
             gui.setMainActionAvailable(false);
             gui.setFastActionAvailable(false);
+        } else if (info.getClass().equals(MarketSyncAction.class)) {
+            MarketSyncAction action = (MarketSyncAction) info;
+            if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
+                gui.showExposeView();
+            } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
+                gui.showBuyItemView();
+            } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
+                gui.hideMarket();
+            }
         }
     }
 }

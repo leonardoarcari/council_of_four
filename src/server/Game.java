@@ -148,11 +148,12 @@ public class Game implements Runnable{
         } else throw new NotYourTurnException();
     }
 
-    public void endAuctionOf(Player player) throws NotYourTurnException {
+    public synchronized void endAuctionOf(Player player) throws NotYourTurnException {
         if (isAllowedToMarket(player)) {
             player.getConnection().sendInfo(MarketSyncAction.END_AUCTION_ACTION);
             try {
                 market.changePlayer();
+                market.currentPlayer.getConnection().sendInfo(MarketSyncAction.AUCTION_START_ACTION);
             } catch (MarketPhase.EndMarketException e) {
                 endMarket();
             }
@@ -172,6 +173,8 @@ public class Game implements Runnable{
         for (Player player : players) {
             player.getConnection().sendInfo(MarketSyncAction.END_MARKET_ACTION);
         }
+        gameBoard.getShowcase().returnItemsToOwner();
+        System.out.println("new round");
         currentTurn = new Turn(players.get(playerIndex));
     }
 
@@ -194,6 +197,7 @@ public class Game implements Runnable{
             mainActionTokens = new Stack<>();
             mainActionTokens.push(true);
             doneFastAction = false;
+            currentPlayer.addPoliticsCard(gameBoard.drawPoliticsCard());
             currentPlayer.getConnection().sendInfo(SyncAction.YOUR_TURN);
         }
     }
@@ -216,7 +220,7 @@ public class Game implements Runnable{
         }
 
         void changePlayer() throws EndMarketException {
-            if (playerMarketIndex < auctionPlayers.size()) {
+            if (playerMarketIndex < auctionPlayers.size() - 1) {
                 currentPlayer = auctionPlayers.get(++playerMarketIndex);
             } else throw new EndMarketException();
         }

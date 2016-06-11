@@ -40,7 +40,6 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
 
     @Override
     public void processInfo(Object info) throws RemoteException{
-        //TODO: Add reference to me in action
         serverProcessor.processInfo(info);
     }
 

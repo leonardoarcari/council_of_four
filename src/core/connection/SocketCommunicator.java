@@ -3,6 +3,7 @@ package core.connection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.SellableItem;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,7 +23,10 @@ public class SocketCommunicator implements Communicator {
 
     public SocketCommunicator(Socket socket) throws IOException {
         this.socket = socket;
-        gson = new GsonBuilder().registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>()).create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>())
+                .registerTypeAdapter(SellableItem.class, new InterfaceAdapter<SellableItem>())
+                .create();
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 

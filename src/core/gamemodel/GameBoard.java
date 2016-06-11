@@ -40,11 +40,11 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         GameBoard gameBoard = new GameBoard();
         Iterator<Player> iterator = players.iterator();
         int wealthPos = 10;
-        int servantsNumber = 1;
+        int servantsNumber = 5;
         while (iterator.hasNext()) {
             Player player = iterator.next();
             player.hireServants(gameBoard.hireServants(servantsNumber++));
-            for(int i = 0; i < 1; i++)
+            for(int i = 0; i < 6; i++)
                 player.addPoliticsCard(gameBoard.drawPoliticsCard());
             gameBoard.nobilityPath.setPlayer(player);
             gameBoard.wealthPath.setPlayer(player, wealthPos++);
@@ -359,5 +359,6 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         nobilityPath.notifyObservers();
         victoryPath.notifyObservers();
         wealthPath.notifyObservers();
+        showcase.notifyObservers();
     }
 }

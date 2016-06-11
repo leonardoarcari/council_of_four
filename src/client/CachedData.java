@@ -28,6 +28,7 @@ public class CachedData {
     private Region seaRegion;
     private Region hillsRegion;
     private Region mountainsRegion;
+    private ShowcaseInterface showcase;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -148,5 +149,13 @@ public class CachedData {
 
     public void setMountainsRegion(Region mountainsRegion) {
         this.mountainsRegion = mountainsRegion;
+    }
+
+    public ShowcaseInterface getShowcase() {
+        return showcase;
+    }
+
+    public void setShowcase(ShowcaseInterface showcase) {
+        this.showcase = showcase;
     }
 }

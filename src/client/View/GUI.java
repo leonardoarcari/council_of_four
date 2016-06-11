@@ -77,6 +77,7 @@ public class GUI extends Application {
     private TreeItem<String> councilorPoolSelector;
 
     private CouncilorPoolView councilorPool;
+    private BuySellableView buySellableView;
 
     private PermitCardView seaLeftCard;
     private PermitCardView seaRightCard;
@@ -220,6 +221,8 @@ public class GUI extends Application {
         GridPane.setConstraints(tabPane, 1, 0, 1, 1);
         GridPane.setConstraints(dummyChat, 1, 1, 1, 1);
         gridPane.getChildren().addAll(boardAnchor, tabPane, dummyChat);
+
+        buySellableView = new BuySellableView();
 
         // Set listeners
         townsView.values().forEach(townView -> {
@@ -712,11 +715,42 @@ public class GUI extends Application {
         });
     }
 
-    public void updatePlayer(PlayerInterface player) {
+    public void updateShowCase(ShowcaseInterface showcase) {
         Platform.runLater(() -> {
-            System.out.println(player.getUsername() + " " + player.getNickname());
-            playerView.setPlayer(player);
+            CachedData.getInstance().setShowcase(showcase);
+            buySellableView.clearOnSaleItem();
+            CachedData.getInstance().getShowcase().onSaleItemIterator().forEachRemaining(buySellableView::addOnSaleItem);
         });
+    }
+
+    public void showExposeView() {
+        Platform.runLater(() -> {
+            ExposeSellableView exposeSellableView = new ExposeSellableView();
+            CachedData.getInstance().getMe().permitCardIterator().forEachRemaining(exposeSellableView::addSellableItem);
+            CachedData.getInstance().getMe().politicsCardIterator().forEachRemaining(exposeSellableView::addSellableItem);
+            for (int i = 0; i < CachedData.getInstance().getMe().getServantsNumber(); i++) {
+                exposeSellableView.addSellableItem(new Servant());
+            }
+            exposeSellableView.setDisable(false);
+            ShowPane.getInstance().setContent(exposeSellableView);
+            ShowPane.getInstance().show();
+        });
+    }
+
+    public void showBuyItemView() {
+        Platform.runLater(() -> {
+            ShowPane.getInstance().setContent(buySellableView);
+            buySellableView.setDisable(false);
+            ShowPane.getInstance().show();
+        });
+    }
+
+    public void hideMarket() {
+        Platform.runLater(() -> ShowPane.getInstance().hide());
+    }
+
+    public void updatePlayer(PlayerInterface player) {
+        Platform.runLater(() -> playerView.setPlayer(player));
     }
 
     public void startGame() {

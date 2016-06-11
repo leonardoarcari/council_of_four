@@ -40,8 +40,11 @@ public class PermitCardView extends ObjectImageView {
 
     public void setPermitCard(PermitCard permitCard) {
         this.permitCard = permitCard;
-        this.setImage(permitImage(this.permitCard));
-        myView.setImage(this.getImage());
+        if (!ImagesMaps.getInstance().isPermitLoaded(permitCard)) {
+            ImagesMaps.getInstance().putPermitImage(permitCard, permitImage(permitCard));
+        }
+        this.setImage(ImagesMaps.getInstance().getPermit(permitCard));
+        myView.setImage(ImagesMaps.getInstance().getPermit(permitCard));
     }
 
     private Image permitImage(PermitCard permitCard) {

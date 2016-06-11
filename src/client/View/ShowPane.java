@@ -77,6 +77,8 @@ public class ShowPane {
 
     public void setContent(Node content) {
         this.content = content;
+        pane.getChildren().clear();
+        pane.add(title, 0, 0);
         pane.add(this.content, 0, 1);
     }
 

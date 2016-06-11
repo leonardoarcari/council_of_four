@@ -3,6 +3,7 @@ package core.connection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.SellableItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +25,10 @@ public class SocketConnection implements Connection, Runnable {
         this.processor = processor;
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        gson = new GsonBuilder().registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>()).create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Bonus.class, new InterfaceAdapter<Bonus>())
+                .registerTypeAdapter(SellableItem.class, new InterfaceAdapter<SellableItem>())
+                .create();
         socketCommunicator = new SocketCommunicator(socket);
     }
 

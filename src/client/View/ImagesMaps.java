@@ -1,5 +1,6 @@
 package client.View;
 
+import core.gamemodel.PermitCard;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ public class ImagesMaps {
     private ClassLoader loader;
 
     private Map<String, Image> politics;
+    private Map<PermitCard, Image> permits;
+    private Image servant;
 
     public static ImagesMaps getInstance() {
         if (instance == null) {
@@ -28,8 +31,10 @@ public class ImagesMaps {
     private ImagesMaps() {
         loader = this.getClass().getClassLoader();
         politics = new HashMap<>(7);
+        permits = new HashMap<>(10);
 
         loadPolitics();
+        servant = new Image(loader.getResourceAsStream("BonusImages/hireservant_1.png"));
     }
 
     private void loadPolitics() {
@@ -46,4 +51,19 @@ public class ImagesMaps {
         return politics.get(color);
     }
 
+    public boolean isPermitLoaded(PermitCard card) {
+        return permits.containsKey(card);
+    }
+
+    public void putPermitImage(PermitCard card, Image image) {
+        permits.put(card, image);
+    }
+
+    public Image getPermit(PermitCard card) {
+        return permits.get(card);
+    }
+
+    public Image getServant() {
+        return servant;
+    }
 }
