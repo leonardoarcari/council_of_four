@@ -1,15 +1,14 @@
 package client.View;
 
 import client.CachedData;
-import client.ControllerUI;
 import core.Player;
-import core.gamelogic.actions.*;
-import core.gamemodel.CouncilColor;
+import core.gamelogic.actions.Action;
+import core.gamelogic.actions.CouncilorElectionAction;
+import core.gamelogic.actions.FastCouncilorElectionAction;
 import core.gamemodel.Councilor;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.BalconyInterface;
-import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

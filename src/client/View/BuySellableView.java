@@ -3,12 +3,10 @@ package client.View;
 import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.BuyObjectsAction;
-import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.OnSaleItem;
 import core.gamemodel.PermitCard;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.modelinterface.SellableItem;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.HPos;
@@ -26,9 +24,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 11/06/2016.

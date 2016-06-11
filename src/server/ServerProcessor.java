@@ -69,6 +69,8 @@ public class ServerProcessor implements InfoProcessor {
                 permitNoPay((PermitNoPayAction) info);
             } else if (info.getClass().equals(PlayerInfoAction.class)) {
                 changePlayerInfo((PlayerInfoAction) info);
+            } else if (info.getClass().equals(ChatAction.class)) {
+                forwardChatMessage((ChatAction) info);
             }
         } else if (info instanceof SyncAction) {
             //TODO: Add Sync Action
@@ -328,5 +330,9 @@ public class ServerProcessor implements InfoProcessor {
         Player player = game.getPlayerInstance(action.getPlayer());
         player.setUsername(action.getUsername());
         player.setNickname(action.getNickname());
+    }
+
+    private void forwardChatMessage(ChatAction action) {
+        game.playerIterator().forEachRemaining(player -> player.getConnection().sendInfo(action));
     }
 }

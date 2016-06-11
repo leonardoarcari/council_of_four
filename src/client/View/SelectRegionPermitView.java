@@ -7,8 +7,6 @@ import core.gamelogic.actions.BuyPermitCardAction;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Region;
 import core.gamemodel.RegionType;
-import core.gamemodel.modelinterface.PlayerInterface;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;

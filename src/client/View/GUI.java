@@ -4,10 +4,10 @@ import client.CachedData;
 import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
+import core.gamelogic.actions.ChatAction;
 import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.PlayerInfoAction;
 import core.gamelogic.actions.SelectAgainPermitAction;
-import core.gamelogic.actions.SyncAction;
 import core.gamemodel.*;
 import core.gamemodel.Region;
 import core.gamemodel.modelinterface.*;
@@ -102,7 +102,7 @@ public class GUI extends Application {
     private Image firstRoyal;
 
     private Button endTurn;
-    private Button dummyChat;
+    private ChatView chatView;
 
     private BooleanProperty mainActionAvailable;
     private BooleanProperty fastActionAvailable;
@@ -212,15 +212,15 @@ public class GUI extends Application {
         boardAnchor.getChildren().addAll(boardObjects);
 
         // Side bar nodes
-        dummyChat = new Button("I'm a dummy chat button");
+        chatView = new ChatView();
         playerView = new PlayerView();
         buildTabPane();
 
         // Add Nodes to gridPane
         GridPane.setConstraints(boardAnchor, 0, 0, 1, 2);
         GridPane.setConstraints(tabPane, 1, 0, 1, 1);
-        GridPane.setConstraints(dummyChat, 1, 1, 1, 1);
-        gridPane.getChildren().addAll(boardAnchor, tabPane, dummyChat);
+        GridPane.setConstraints(chatView, 1, 1, 1, 1);
+        gridPane.getChildren().addAll(boardAnchor, tabPane, chatView);
 
         buySellableView = new BuySellableView();
 
@@ -760,6 +760,15 @@ public class GUI extends Application {
             primaryStage.setScene(scene);
             controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayer(), username.getText(),
                     nickname.getText()));
+        });
+    }
+
+    public void appendChatMessage(ChatAction action) {
+        Platform.runLater(() -> {
+            Player sender = action.getPlayer();
+            String senderString = sender.equals((Player)CachedData.getInstance().getMe()) ? "Me" : sender.getNickname();
+            String chatMessage = senderString + ": " + action.getMessage();
+            chatView.append(chatMessage);
         });
     }
 

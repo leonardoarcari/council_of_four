@@ -4,6 +4,7 @@ import client.CachedData;
 import client.View.GUI;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
+import core.gamelogic.actions.ChatAction;
 import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.MarketSyncAction;
 import core.gamelogic.actions.SyncAction;
@@ -54,6 +55,8 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updatePlayer((PlayerInterface) info);
         } else if (info instanceof ShowcaseInterface) {
             gui.updateShowCase((ShowcaseInterface) info);
+        } else if (info.getClass().equals(ChatAction.class)) {
+            gui.appendChatMessage((ChatAction) info);
         } else if (info instanceof SyncAction) {
             SyncAction action = (SyncAction) info;
             if (action.equals(SyncAction.GAME_START)) {
