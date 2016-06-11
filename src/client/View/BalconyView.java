@@ -159,7 +159,6 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
             politicsView.updatePoliticsCards(availablePoliticsCards.iterator());
             ShowPane.getInstance().setContent(politicsView);
             ShowPane.getInstance().show();
-            //cachedData.getController().sendInfo(currentAction);
         });
 
         Label fastAction = new Label("-- Fast Action --");

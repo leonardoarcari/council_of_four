@@ -17,6 +17,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,6 +27,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -68,7 +70,6 @@ public class GUI extends Application {
     private Map<TownName, ObjectImageView> townBonusView;
 
     private PopOver townPopOver;
-    private Effect borderGlow;
 
     private TreeView<String> actionChoice;
     private TreeItem<String> choiceItem;
@@ -123,7 +124,6 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        borderGlow = setShadowEffect();
         townPopOver = new PopOver();
 
         buildLoginPane();
@@ -373,76 +373,34 @@ public class GUI extends Application {
     }
 
     private void buildTownViews () {
-        Image aImage = new Image(classLoader.getResourceAsStream("a.png"));
-        Image bImage = new Image(classLoader.getResourceAsStream("b.png"));
-        Image cImage = new Image(classLoader.getResourceAsStream("c.png"));
-        Image dImage = new Image(classLoader.getResourceAsStream("d.png"));
-        Image eImage = new Image(classLoader.getResourceAsStream("e.png"));
-        Image fImage = new Image(classLoader.getResourceAsStream("f.png"));
-        Image gImage = new Image(classLoader.getResourceAsStream("g.png"));
-        Image hImage = new Image(classLoader.getResourceAsStream("h.png"));
-        Image iImage = new Image(classLoader.getResourceAsStream("i.png"));
-        Image jImage = new Image(classLoader.getResourceAsStream("j.png"));
-        Image kImage = new Image(classLoader.getResourceAsStream("k.png"));
-        Image lImage = new Image(classLoader.getResourceAsStream("l.png"));
-        Image mImage = new Image(classLoader.getResourceAsStream("m.png"));
-        Image nImage = new Image(classLoader.getResourceAsStream("n.png"));
-        Image oImage = new Image(classLoader.getResourceAsStream("o.png"));
-        townsView.put(TownName.A, new TownView(TownName.A, 0.07257407407407407, 0.059109289617486336, 0.10459153122197, aImage));
-        townsView.put(TownName.B, new TownView(TownName.B, 0.061042592592592594, 0.24180327868852458, 0.114425925925926, bImage));
-        townsView.put(TownName.C, new TownView(TownName.C, 0.2155925925925926, 0.11958469945355191, 0.114583333333333, cImage));
-        townsView.put(TownName.D, new TownView(TownName.D, 0.2084852504710498, 0.2786885245901639, 0.105321313772738, dImage));
-        townsView.put(TownName.E, new TownView(TownName.E, 0.11026557621929187, 0.40846994535519127, 0.102691805475035, eImage));
-        townsView.put(TownName.F, new TownView(TownName.F, 0.3811597344042335, 0.0868013698630137, 0.104449317367015, fImage));
-        townsView.put(TownName.G, new TownView(TownName.G, 0.3948916963480114, 0.2467627118644068, 0.10285385614803205, gImage));
-        townsView.put(TownName.H, new TownView(TownName.H, 0.40973005099866394, 0.3864406779661017, 0.09912460333496036, hImage));
-        townsView.put(TownName.I, new TownView(TownName.I, 0.5466258390659746, 0.08813559322033898, 0.0967313203267906, iImage));
-        townsView.put(TownName.J, new TownView(TownName.J, 0.5349027170062496, 0.2830508474576271, 0.0973074585507204, jImage));
-        townsView.put(TownName.K, new TownView(TownName.K, 0.7117437356463746, 0.07401129943502825, 0.0999579670574619, kImage));
-        townsView.put(TownName.L, new TownView(TownName.L, 0.684200387088455, 0.24884182660489743, 0.1078307727656072, lImage));
-        townsView.put(TownName.M, new TownView(TownName.M, 0.6729745030117486, 0.416462482946794, 0.120203003974608, mImage));
-        townsView.put(TownName.N, new TownView(TownName.N, 0.82539565232543, 0.16800354706684858, 0.113268215283765, nImage));
-        townsView.put(TownName.O, new TownView(TownName.O, 0.829096739437645, 0.3542896174863388, 0.106006559623886, oImage));
-
-        townsView.values().forEach(townView -> setObjectGlow(townView, borderGlow, townPopOver));
+        townsView = TownsWithBonusView.getInstance().getTownsView();
+        townsView.values().forEach(townView -> setObjectGlow(townView, TownsWithBonusView.setShadowEffect()));
     }
 
     private void buildTownBonusViews() {
-        townBonusView.put(TownName.A,new ObjectImageView(null,0.08028267559927046,0.07499708049113233,0.037));
-        townBonusView.put(TownName.B,new ObjectImageView(null,0.07129208879328723,0.24587339699863574,0.037));
-        townBonusView.put(TownName.C,new ObjectImageView(null,0.22129004564640675,0.12388308321964529,0.037));
-        townBonusView.put(TownName.D,new ObjectImageView(null,0.21219945884042354,0.28812960436562074,0.037));
-        townBonusView.put(TownName.E,new ObjectImageView(null,0.11973560962918661,0.41191268758526605,0.037));
-        townBonusView.put(TownName.F,new ObjectImageView(null,0.38903657045691414,0.08858390177353342,0.037));
-        townBonusView.put(TownName.G,new ObjectImageView(null,0.39681556103261644,0.24956616643929058,0.037));
-        townBonusView.put(TownName.H,new ObjectImageView(null,0.41330833087486385,0.3880845839017735,0.037));
-        townBonusView.put(TownName.I,new ObjectImageView(null,0.5485367103462978,0.08994815825375171,0.037));
-        townBonusView.put(TownName.K,new ObjectImageView(null,0.7146600426962434,0.07976261937244201,0.037));
-        townBonusView.put(TownName.L,new ObjectImageView(null,0.6872324841631532,0.2598444747612551,0.037));
-        townBonusView.put(TownName.M,new ObjectImageView(null,0.676830301126889,0.4351050477489768,0.037));
-        townBonusView.put(TownName.N,new ObjectImageView(null,0.8409536334768346,0.17562482946793997,0.037));
-        townBonusView.put(TownName.O,new ObjectImageView(null,0.8455768259373965,0.35770668485675305,0.037));
-
+        townBonusView = TownsWithBonusView.getInstance().getTownBonusView();
         boardObjects.addAll(townBonusView.values());
 
     }
 
-    private void setObjectGlow(ObjectImageView iv, Effect effect, PopOver popOver) {
-        iv.setOnMouseEntered(event -> iv.setEffect(effect));
-        iv.setOnMouseExited(event -> iv.setEffect(null));
+    private void setObjectGlow(TownView iv, Effect effect) {
+        iv.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> iv.setEffect(effect));
+        iv.addEventHandler(MouseEvent.MOUSE_EXITED, event -> iv.setEffect(null));
         iv.setOnMouseClicked(event -> {
             ObjectImageView imageView = (ObjectImageView) event.getSource();
             if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1/4) {
-                popOver.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
+                iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
             } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3/4) {
-                popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+                iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
             } else {
-                popOver.setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
+                iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
             }
             if (imageView.getClass().equals(TownView.class)) {
-                ((TownView)imageView).getTownPopOver().show(iv, 60);
+                VBox vbox = (VBox) ((TownView)imageView).getTownPopOver().getContentNode();
+                if(vbox.getChildren().size() == 3) vbox.getChildren().remove(2);
+                ((TownView)imageView).getTownPopOver().show(imageView,10);
             }
-            else popOver.show(iv, 60);
+            else iv.getTownPopOver().show(iv, 60);
         });
     }
 
@@ -552,17 +510,6 @@ public class GUI extends Application {
         iv.setFitWidth(iv.getWidth() * gameboardIV.getBoundsInParent().getWidth());
         AnchorPane.setTopAnchor(iv, iv.getTopY() * gameboardIV.getBoundsInParent().getHeight());
         AnchorPane.setLeftAnchor(iv, iv.getLeftX() * gameboardIV.getBoundsInParent().getWidth());
-    }
-
-    private DropShadow setShadowEffect() {
-        Glow glow = new Glow(0.8);
-        DropShadow borderglow = new DropShadow();
-        borderglow.setColor(Color.WHITE);
-        borderglow.setWidth(70);
-        borderglow.setHeight(70);
-        borderglow.setInput(glow);
-        borderglow.setBlurType(BlurType.GAUSSIAN);
-        return borderglow;
     }
 
     //Update methods

@@ -28,7 +28,7 @@ public class RedeemPermitView extends ScrollPane {
     public RedeemPermitView(PlayerInterface player) {
         box = new HBox(20);
         permitCardViews = new ArrayList<>();
-        dropShadow = setShadowEffect();
+        dropShadow = TownsWithBonusView.setShadowEffect();
 
         Image card = new Image(this.getClass().getClassLoader().getResourceAsStream("permitCard.png"));
         player.permitCardIterator().forEachRemaining(permitCard -> {
@@ -51,16 +51,5 @@ public class RedeemPermitView extends ScrollPane {
 
     public void addClickListener(EventHandler<? super MouseEvent> value) {
         permitCardViews.forEach(permitCardView -> permitCardView.setOnMouseClicked(value));
-    }
-
-    private DropShadow setShadowEffect() {
-        Glow glow = new Glow(0.8);
-        DropShadow borderglow = new DropShadow();
-        borderglow.setColor(Color.WHITE);
-        borderglow.setWidth(70);
-        borderglow.setHeight(70);
-        borderglow.setInput(glow);
-        borderglow.setBlurType(BlurType.GAUSSIAN);
-        return borderglow;
     }
 }

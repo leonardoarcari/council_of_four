@@ -28,17 +28,14 @@ import java.util.List;
  */
 public class SelectRegionPermitView extends ScrollPane {
     private List<PermitCardView> permitCardViews;
-    private List<PoliticsCard> politicsSelected;
     private Effect dropShadow;
     private HBox box;
     private Region region;
 
     public SelectRegionPermitView(RegionType regionType, List<PoliticsCard> politicsSelected) {
-        this.politicsSelected = politicsSelected;
-
         box = new HBox(20);
         permitCardViews = new ArrayList<>();
-        dropShadow = setShadowEffect();
+        dropShadow = TownsWithBonusView.setShadowEffect();
 
         region = getRegionFrom(regionType);
         if(region.getRightPermitCard() == null && region.getLeftPermitCard() == null)
@@ -88,16 +85,5 @@ public class SelectRegionPermitView extends ScrollPane {
         if(type.equals(RegionType.SEA)) return CachedData.getInstance().getSeaRegion();
         else if(type.equals(RegionType.HILLS)) return CachedData.getInstance().getHillsRegion();
         else return CachedData.getInstance().getMountainsRegion();
-    }
-
-    private DropShadow setShadowEffect() {
-        Glow glow = new Glow(0.8);
-        DropShadow borderglow = new DropShadow();
-        borderglow.setColor(Color.WHITE);
-        borderglow.setWidth(70);
-        borderglow.setHeight(70);
-        borderglow.setInput(glow);
-        borderglow.setBlurType(BlurType.GAUSSIAN);
-        return borderglow;
     }
 }

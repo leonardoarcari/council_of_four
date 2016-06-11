@@ -164,7 +164,7 @@ public class Player implements Subject, Serializable, PlayerInterface {
 
     public void burnPermitCard(PermitCard permitCard) {
         if (permitCards.contains(permitCard)) {
-            permitCard.burn();
+            permitCards.get(permitCards.indexOf(permitCard)).burn();
             notifyObservers();
         }
     }

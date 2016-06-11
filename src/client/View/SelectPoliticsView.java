@@ -20,6 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Leonardo Arcari on 08/06/2016.
@@ -63,9 +64,14 @@ public class SelectPoliticsView extends BorderPane {
         }
         Button forward = new Button("Forward");
         forward.setOnMouseClicked(event -> {
-            SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, selectedCards);
-            ShowPane.getInstance().setContent(regionPermitView);
-            ShowPane.getInstance().show();
+            if(!type.equals(RegionType.KINGBOARD)) {
+                SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, selectedCards);
+                ShowPane.getInstance().setContent(regionPermitView);
+                ShowPane.getInstance().show();
+            } else {
+                TownsWithBonusView.getInstance().changeTownListener(selectedCards);
+                ShowPane.getInstance().hide();
+            }
         });
         cardsBox.getChildren().add(forward);
     }

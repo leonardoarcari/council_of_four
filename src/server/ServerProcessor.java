@@ -182,10 +182,12 @@ public class ServerProcessor implements InfoProcessor {
 
     private void buildEmporium(Player player, RegionType regionType, TownName townName) {
         game.getGameBoard().buildEmporium(player, regionType, townName);
-        redeemTown(player, townName);
         redeemLinkedTowns(player, townName);
-        regionCompletion(player, regionType);
-        typeCompletion(player, townName);
+        if(!townName.equals(TownName.J)) {
+            redeemTown(player, townName);
+            regionCompletion(player, regionType);
+            typeCompletion(player, townName);
+        }
     }
 
     private void redeemLinkedTowns(Player player, TownName townName) {

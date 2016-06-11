@@ -18,6 +18,7 @@ public class CachedData {
 
     private ControllerUI controller;
     private PlayerInterface me;
+    private ObservableList<PermitCard> myPermitCards;
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
     private WealthPathInterface wealthPath;
@@ -50,6 +51,7 @@ public class CachedData {
         selectedCouncilor = null;
         isCouncilorSelected = new SimpleBooleanProperty(false);
         playerPoliticsCards = FXCollections.observableArrayList();
+        myPermitCards = FXCollections.observableArrayList();
         seaRegion = null;
         hillsRegion = null;
         mountainsRegion = null;
@@ -77,6 +79,14 @@ public class CachedData {
 
     public void setMe(PlayerInterface me) {
         this.me = me;
+        myPermitCards.clear();
+        List<PermitCard> permitCardsTemp = new ArrayList<>();
+        Iterator<PermitCard> permitIterator = this.me.permitCardIterator();
+        while(permitIterator.hasNext()) {
+            permitCardsTemp.add(permitIterator.next());
+        }
+        myPermitCards.addAll(permitCardsTemp);
+        myPermitCards.forEach(permitCard -> System.out.println("Is burned : "+ permitCard.isBurned()));
     }
 
     public void putTown(TownName townName, TownInterface town) {
@@ -85,6 +95,10 @@ public class CachedData {
 
     public TownInterface getTown(TownName townName) {
         return towns.get(townName);
+    }
+
+    public Map<TownName, TownInterface> getTowns() {
+        return towns;
     }
 
     public void putBalcony(RegionType region, BalconyInterface balcony) {
@@ -107,8 +121,16 @@ public class CachedData {
         playerPoliticsCards.addListener(listener);
     }
 
+    public void listenToPermits(ListChangeListener<? super PermitCard> listener) {
+        myPermitCards.addListener(listener);
+    }
+
     public ObservableList<PoliticsCard> getPlayerPoliticsCards() {
         return playerPoliticsCards;
+    }
+
+    public ObservableList<PermitCard> getMyPermitCards() {
+        return myPermitCards;
     }
 
     public Councilor getSelectedCouncilor() {

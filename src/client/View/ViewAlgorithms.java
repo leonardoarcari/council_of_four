@@ -2,9 +2,7 @@ package client.View;
 
 import client.CachedData;
 import core.Player;
-import core.gamemodel.CouncilColor;
-import core.gamemodel.Councilor;
-import core.gamemodel.PoliticsCard;
+import core.gamemodel.*;
 
 import java.util.List;
 import java.util.Vector;
@@ -51,5 +49,25 @@ public class ViewAlgorithms {
         });
         System.out.println();
         return sum <= index;
+    }
+
+    public static synchronized boolean checkAvailablePermits(TownName townName, List<PermitCard> availablePermits) {
+        List<PermitCard> playerPermits = CachedData.getInstance().getMyPermitCards();
+
+        for(PermitCard card : playerPermits) {
+            if(card.isBurned()) System.out.println(card.isBurned());
+            if(card.getCityPermits().contains(townName) && !card.isBurned()) {
+                availablePermits.add(card);
+            }
+        }
+
+        return availablePermits.size()>0;
+    }
+
+    public static synchronized int coinForSatisfaction(List<PoliticsCard> politicsCardsList) {
+        int rainbows = 0;
+        for(PoliticsCard politicsCard : politicsCardsList)
+            if(politicsCard.getCardColor().equals(CouncilColor.RAINBOW)) rainbows++;
+        return 10+rainbows-3*(politicsCardsList.size()-1);
     }
 }

@@ -3,6 +3,7 @@ package core.gamelogic;
 import core.Player;
 import core.gamemodel.Town;
 import core.gamemodel.TownName;
+import core.gamemodel.modelinterface.TownInterface;
 
 import java.util.*;
 
@@ -39,7 +40,7 @@ public class GraphsAlgorithms {
         return returnList;
     }
 
-    public static Map<TownName, Integer> reachableTowns(Map<TownName, Town> graph, TownName source, int coins) {
+    public static Map<TownName, Integer> reachableTowns(Map<TownName, TownInterface> graph, TownName source, int coins) {
         if(source == null || graph == null) throw new IllegalArgumentException();
         Map<TownName, Boolean> marked = new HashMap<>(graph.size());
         Map<TownName, Integer> returnMap = new HashMap<>();

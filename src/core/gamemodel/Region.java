@@ -77,7 +77,7 @@ public class Region implements RegionInterface, Subject, Serializable{
                 regionTowns.put(TownName.G, new Town(TownName.G, bonusFactory.createOneBonus()));
                 regionTowns.put(TownName.H, new Town(TownName.H, bonusFactory.createOneBonus()));
                 regionTowns.put(TownName.I, new Town(TownName.I, bonusFactory.createOneBonus()));
-                regionTowns.put(TownName.J, new Town(TownName.J, bonusFactory.createOneBonus()));
+                regionTowns.put(TownName.J, new Town(TownName.J, null));
                 break;
             case MOUNTAINS:
                 regionTowns.put(TownName.K, new Town(TownName.K, bonusFactory.createOneBonus()));
