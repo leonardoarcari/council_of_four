@@ -1,5 +1,6 @@
 package client;
 
+import core.Player;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.beans.property.BooleanProperty;

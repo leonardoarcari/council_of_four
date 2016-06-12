@@ -2,6 +2,7 @@ package client.clientconnection;
 
 import client.CachedData;
 import client.View.GUI;
+import client.View.TownsWithBonusView;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.ChatAction;
@@ -65,6 +66,8 @@ public class GUInfoProcessor implements InfoProcessor {
                 gui.yourTurn();
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 gui.showRedeemPermitView();
+            } else if (action.equals((SyncAction.PICK_TOWN_BONUS))) {
+                TownsWithBonusView.getInstance().changeBonusListener();
             } else if (action.equals(SyncAction.MAIN_ACTION_DONE)) {
                 gui.setMainActionAvailable(false);
             } else if (action.equals(SyncAction.MAIN_ACTION_AGAIN)) {

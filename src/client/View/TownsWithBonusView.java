@@ -4,10 +4,13 @@ import client.CachedData;
 import core.Player;
 import core.gamelogic.GraphsAlgorithms;
 import core.gamelogic.actions.BuildEmpoKingAction;
+import core.gamelogic.actions.PickTownBonusAction;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.TownInterface;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,15 +32,18 @@ import java.util.*;
 /**
  * Created by Matteo on 11/06/16.
  */
-public class TownsWithBonusView {
+public class TownsWithBonusView implements HasMainAction{
     private volatile static TownsWithBonusView instance = null;
 
     private Map<TownName, TownView> townsView;
     private Map<TownName, ObjectImageView> townBonusView;
     private Map<TownView, EventHandler<MouseEvent>> eventsMap;
+    private Map<ObjectImageView, EventHandler<MouseEvent>> bonusEventsMap;
     private ClassLoader classLoader;
     private Effect borderGlow;
     private ActionData action;
+    private PopOver extraPopOver;
+    private BooleanProperty resetProperty;
 
     public static TownsWithBonusView getInstance() {
         if (instance == null) {
@@ -55,7 +61,19 @@ public class TownsWithBonusView {
         townsView = new HashMap<>();
         townBonusView = new HashMap<>();
         eventsMap = new HashMap<>();
+        bonusEventsMap = new HashMap<>();
         borderGlow = setShadowEffect();
+        extraPopOver = new PopOver();
+        resetProperty = new SimpleBooleanProperty(false);
+
+        //When reached timeout all is resetted
+        resetProperty.addListener((observable, oldValue, newValue) -> {
+            if(newValue) {
+                removeAvailableHandlers();
+                removeBonusHandlers();
+                extraPopOver.hide();
+            }
+        });
         buildTownViews();
         buildTownBonusViews();
     }
@@ -129,6 +147,7 @@ public class TownsWithBonusView {
         return borderglow;
     }
 
+    //Build Emporium With King help handling
     public void changeTownListener(List<PoliticsCard> politicsSelected) {
         action = new ActionData();
         action.setSatisfyingCard(politicsSelected);
@@ -146,7 +165,7 @@ public class TownsWithBonusView {
             TownView myTown = townsView.get(name);
             myTown.getTownPopOver().getContentNode().setDisable(true);
 
-            if(availableTowns.containsKey(name)) {
+            if(availableTowns.containsKey(name) && myTown.areServantsAvailable()) {
                 EventHandler<MouseEvent> handler = setHandler(myTown, ViewAlgorithms.coinForSatisfaction(politicsSelected)+availableTowns.get(name));
                 eventsMap.put(myTown,handler);
 
@@ -160,6 +179,8 @@ public class TownsWithBonusView {
                 myTown.setOnMouseExited(event -> myTown.setEffect(null));
             }
         }
+
+        if(availableTowns.size()==0) removeAvailableHandlers();
     }
 
     private TownName getKingPosition() {
@@ -171,7 +192,6 @@ public class TownsWithBonusView {
 
     private EventHandler<MouseEvent> setHandler(TownView townView, int money) {
         return event -> {
-            PopOver popover = new PopOver();
             VBox vBox = new VBox(10);
             vBox.setPadding(new Insets(5));
             HBox container = new HBox(10);
@@ -185,7 +205,7 @@ public class TownsWithBonusView {
             yes.setAlignment(Pos.CENTER);
             yes.setOnMouseClicked(event1 -> {
                 townView.getTownPopOver().hide();
-                popover.hide();
+                extraPopOver.hide();
                 removeAvailableHandlers();
                 BuildEmpoKingAction currentAction = new BuildEmpoKingAction(
                         (Player)CachedData.getInstance().getMe(),action.satisfyingCard,
@@ -196,8 +216,8 @@ public class TownsWithBonusView {
 
             container.getChildren().addAll(yes,no);
             vBox.getChildren().add(container);
-            popover.setContentNode(vBox);
-            popover.show(townView, 20);
+            extraPopOver.setContentNode(vBox);
+            extraPopOver.show(townView, 20);
         };
     }
 
@@ -214,10 +234,41 @@ public class TownsWithBonusView {
         });
     }
 
+    //TownBonus Pick Action handling section
+    public void changeBonusListener() {
+        for(TownName name : townBonusView.keySet()) {
+            ObjectImageView bonusView = townBonusView.get(name);
+            EventHandler<MouseEvent> event = setbonusHandler(name);
+            bonusEventsMap.put(bonusView,event);
+
+            bonusView.setEffect(borderGlow);
+            bonusView.addEventHandler(MouseEvent.MOUSE_CLICKED,event);
+        }
+    }
+
+    private EventHandler<MouseEvent> setbonusHandler(TownName name) {
+        return event -> {
+            PickTownBonusAction action = new PickTownBonusAction((Player)CachedData.getInstance().getMe(),name);
+            removeBonusHandlers();
+            CachedData.getInstance().getController().sendInfo(action);
+        };
+    }
+
+    private void removeBonusHandlers() {
+        bonusEventsMap.keySet().forEach(element -> element.removeEventHandler(MouseEvent.MOUSE_CLICKED,bonusEventsMap.get(element)));
+        bonusEventsMap.clear();
+        townBonusView.values().forEach(view -> view.setEffect(null));
+    }
+
     private RegionType getRegionFrom(TownName target) {
         if(target.ordinal()<5) return RegionType.SEA;
         else if(target.ordinal()<10) return RegionType.HILLS;
         else return RegionType.MOUNTAINS;
+    }
+
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        resetProperty.bind(mainActionAvailable.not());
     }
 
     private class ActionData {

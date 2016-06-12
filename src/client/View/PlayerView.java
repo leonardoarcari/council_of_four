@@ -245,7 +245,7 @@ public class PlayerView {
         }
         otherPane.setContent(otherCards);
         while(townTypeCardIterator.hasNext()) {
-            //load shit 2
+            //ImageView myView = new ImageView(GUI.)
         }
     }
 

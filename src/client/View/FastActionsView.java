@@ -1,12 +1,16 @@
 package client.View;
 
+import client.CachedData;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.AnotherMainActionAction;
 import core.gamelogic.actions.ChangePermitsAction;
 import core.gamelogic.actions.HireServantAction;
 import core.gamemodel.RegionType;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -36,6 +40,11 @@ public class FastActionsView implements HasFastAction{
     private Button electCouncilor;
     private Button anotherAction;
 
+    private BooleanProperty enoughCoins;
+    private BooleanProperty enghServantsPermit;
+    private BooleanProperty enghServantsActionAgain;
+    private BooleanProperty resetProperty;
+
     private List<Button> regionButton;
     private Button seaRegion;
     private Button hillsRegion;
@@ -51,9 +60,19 @@ public class FastActionsView implements HasFastAction{
         anotherAction = new Button("MAKE ANOTHER ACTION");
         actionButton = new ArrayList<>(Arrays.asList(hireServant,changePermit,anotherAction));
 
+        enoughCoins = new SimpleBooleanProperty(false);
+        enghServantsPermit = new SimpleBooleanProperty(false);
+        enghServantsActionAgain = new SimpleBooleanProperty(false);
+
+        resetProperty = new SimpleBooleanProperty(false);
+        resetProperty.addListener((observable, oldValue, newValue) -> {
+            if(newValue != oldValue && newValue) goBack.fire();
+        });
+
         seaRegion = new Button("Sea Balcony");
         hillsRegion = new Button("Hills Balcony");
         mountainsRegion = new Button("Mountains Balcony");
+        regionButtonHandlers();
         regionButton = new ArrayList<>(Arrays.asList(seaRegion,hillsRegion,mountainsRegion));
 
         setUpLayer(actionNode, actionButton);
@@ -65,6 +84,25 @@ public class FastActionsView implements HasFastAction{
         VBox.setVgrow(actionNode, Priority.ALWAYS);
         VBox.setVgrow(regionNode, Priority.ALWAYS);
         createHandlers();
+    }
+
+    private void regionButtonHandlers() {
+        Player me = (Player) CachedData.getInstance().getMe();
+        seaRegion.setOnMouseClicked(event -> {
+            goBack.fire();
+            currentAction = new ChangePermitsAction(me,RegionType.SEA);
+            CachedData.getInstance().getController().sendInfo(currentAction);
+        });
+        hillsRegion.setOnMouseClicked(event -> {
+            goBack.fire();
+            currentAction = new ChangePermitsAction(me,RegionType.HILLS);
+            CachedData.getInstance().getController().sendInfo(currentAction);
+        });
+        mountainsRegion.setOnMouseClicked(event -> {
+            goBack.fire();
+            currentAction = new ChangePermitsAction(me,RegionType.MOUNTAINS);
+            CachedData.getInstance().getController().sendInfo(currentAction);
+        });
     }
 
     private void setUpLayer(VBox node, List<Button> buttons) {
@@ -107,37 +145,37 @@ public class FastActionsView implements HasFastAction{
             actionPane.getChildren().add(actionNode);
         });
 
-        hireServant.setOnAction(event ->
-                currentAction = new HireServantAction(new Player(null))
-        );
+        hireServant.setOnMouseClicked(event -> {
+            currentAction = new HireServantAction((Player) CachedData.getInstance().getMe());
+            CachedData.getInstance().getController().sendInfo(currentAction);
+        });
 
-        changePermit.setOnAction(event -> {
+        changePermit.setOnMouseClicked(event -> {
             actionPane.getChildren().clear();
             actionPane.getChildren().add(regionNode);
         });
 
-        anotherAction.setOnAction(event -> {
-            currentAction = new AnotherMainActionAction(new Player(null));
+        anotherAction.setOnMouseClicked(event -> {
+            currentAction = new AnotherMainActionAction((Player) CachedData.getInstance().getMe());
+            CachedData.getInstance().getController().sendInfo(currentAction);
         });
+    }
 
-        seaRegion.setOnAction(event -> {
-            currentAction = new ChangePermitsAction(new Player(null),RegionType.SEA);
-        });
+    public void updateEnoughCoinProperty(Boolean status) {
+        enoughCoins.set(status);
+    }
 
-        hillsRegion.setOnAction(event -> {
-            currentAction = new ChangePermitsAction(new Player(null),RegionType.HILLS);
-        });
-
-        mountainsRegion.setOnAction(event -> {
-            currentAction = new ChangePermitsAction(new Player(null),RegionType.MOUNTAINS);
-        });
+    public void updateEnoughServantsProperty(Boolean moreThan1, Boolean moreThan3) {
+        enghServantsPermit.set(moreThan1);
+        enghServantsActionAgain.setValue(moreThan3);
     }
 
     @Override
     public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
-        hireServant.disableProperty().bind(fastActionAvailable.not());
-        changePermit.disableProperty().bind(fastActionAvailable.not());
-        anotherAction.disableProperty().bind(fastActionAvailable.not());
+        hireServant.disableProperty().bind(Bindings.or(fastActionAvailable.not(),enoughCoins.not()));
+        changePermit.disableProperty().bind(Bindings.or(fastActionAvailable.not(),enghServantsPermit.not()));
+        anotherAction.disableProperty().bind(Bindings.or(fastActionAvailable.not(), enghServantsActionAgain.not()));
+        resetProperty.bind(fastActionAvailable.not());
     }
 
     public Node getBoxNode() {

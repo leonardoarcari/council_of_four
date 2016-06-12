@@ -1,8 +1,8 @@
 package client.View;
 
 import client.CachedData;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import core.Player;
-import core.gamelogic.actions.BuildEmpoKingAction;
 import core.gamelogic.actions.BuildEmpoPCAction;
 import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
@@ -18,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -29,7 +28,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.controlsfx.control.PopOver;
-import org.controlsfx.tools.Platform;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +50,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
 
     private ObservableList<PermitCard> availablePermits;
     private BooleanProperty isEmporiumBuildable;
+    private BooleanProperty servantsAvailable;
 
     public TownView(TownName townName, RegionType regionType, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
@@ -59,6 +58,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
         this.regionType = regionType;
         this.town = null;
         isEmporiumBuildable = new SimpleBooleanProperty(false);
+        servantsAvailable = new SimpleBooleanProperty(false);
         scroll = new ScrollPane();
         emporiums = FXCollections.observableArrayList();
         availablePermits = FXCollections.observableArrayList();
@@ -163,10 +163,19 @@ public class TownView extends ObjectImageView implements HasMainAction {
 
     @Override
     public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
-        permitActionButton.disableProperty().bind(Bindings.or(isEmporiumBuildable.not(), mainActionAvailable.not()));
+        permitActionButton.disableProperty().bind(Bindings.or(isEmporiumBuildable.not(), mainActionAvailable.not()).or(servantsAvailable.not()));
     }
 
     public PopOver getTownPopOver() {
         return townPopOver;
+    }
+
+    public void setServantsAvailable(int servantsNumber) {
+        if(emporiums.size() <= servantsNumber) servantsAvailable.setValue(true);
+        else servantsAvailable.setValue(false);
+    }
+
+    public boolean areServantsAvailable() {
+        return servantsAvailable.getValue();
     }
 }

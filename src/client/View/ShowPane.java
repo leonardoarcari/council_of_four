@@ -19,7 +19,7 @@ import javafx.util.Duration;
 /**
  * Created by Leonardo Arcari on 07/06/2016.
  */
-public class ShowPane {
+public class ShowPane{
     private volatile static ShowPane instance = null;
 
     private GridPane pane;

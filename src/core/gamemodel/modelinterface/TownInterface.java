@@ -1,7 +1,6 @@
 package core.gamemodel.modelinterface;
 
 import core.Player;
-import core.gamemodel.Town;
 import core.gamemodel.TownName;
 import core.gamemodel.TownType;
 import core.gamemodel.bonus.Bonus;

@@ -7,16 +7,14 @@ import core.gamelogic.actions.BuyPermitCardAction;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Region;
 import core.gamemodel.RegionType;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +22,24 @@ import java.util.List;
 /**
  * Created by Matteo on 10/06/16.
  */
-public class SelectRegionPermitView extends ScrollPane {
+public class SelectRegionPermitView extends ScrollPane implements HasMainAction{
     private List<PermitCardView> permitCardViews;
     private Effect dropShadow;
     private HBox box;
     private Region region;
+    private BooleanProperty turnEnded;
 
     public SelectRegionPermitView(RegionType regionType, List<PoliticsCard> politicsSelected) {
         box = new HBox(20);
         permitCardViews = new ArrayList<>();
         dropShadow = TownsWithBonusView.setShadowEffect();
+        turnEnded = new SimpleBooleanProperty(false);
+        turnEnded.addListener((observable, oldValue, newValue) -> {
+            if(newValue != oldValue && newValue) {
+                permitCardViews.clear();
+                ShowPane.getInstance().hide();
+            }
+        });
 
         region = getRegionFrom(regionType);
         if(region.getRightPermitCard() == null && region.getLeftPermitCard() == null)
@@ -83,5 +89,10 @@ public class SelectRegionPermitView extends ScrollPane {
         if(type.equals(RegionType.SEA)) return CachedData.getInstance().getSeaRegion();
         else if(type.equals(RegionType.HILLS)) return CachedData.getInstance().getHillsRegion();
         else return CachedData.getInstance().getMountainsRegion();
+    }
+
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        turnEnded.bind(mainActionAvailable.not());
     }
 }

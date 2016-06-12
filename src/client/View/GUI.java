@@ -17,19 +17,14 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.MasterDetailPane;
@@ -535,6 +530,7 @@ public class GUI extends Application {
     public void updateWealthPath(WealthPathInterface wealthPath) {
         Platform.runLater(() -> {
             this.wealthPath.updateWealthPath(wealthPath);
+            fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
             CachedData.getInstance().setWealthPath(wealthPath);
         });
     }
@@ -697,7 +693,11 @@ public class GUI extends Application {
     }
 
     public void updatePlayer(PlayerInterface player) {
-        Platform.runLater(() -> playerView.setPlayer(player));
+        Platform.runLater(() -> {
+            fastActionsView.updateEnoughServantsProperty(player.getServantsNumber()>=1,player.getServantsNumber()>=3);
+            playerView.setPlayer(player);
+            townsView.values().forEach(element -> element.setServantsAvailable(player.getServantsNumber()));
+        });
     }
 
     public void startGame() {

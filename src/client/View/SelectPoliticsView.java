@@ -2,7 +2,10 @@ package client.View;
 
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.RegionType;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,22 +23,31 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Leonardo Arcari on 08/06/2016.
  */
-public class SelectPoliticsView extends BorderPane {
+public class SelectPoliticsView extends BorderPane implements HasMainAction {
     private HBox cardsBox;
     private ScrollPane scrollPane;
     private Text selectedNo;
+    private Button forward;
     private ObservableList<PoliticsCard> selectedCards;
     private RegionType type;
+    private BooleanProperty turnEnded;
 
     public SelectPoliticsView(RegionType type) {
         this.type = type;
 
         selectedCards = FXCollections.observableArrayList();
+
+        turnEnded = new SimpleBooleanProperty(false);
+        turnEnded.addListener((observable, oldValue, newValue) -> {
+            if(newValue != oldValue && newValue) {
+                selectedCards.clear();
+                ShowPane.getInstance().hide();
+            }
+        });
 
         selectedNo = new Text(String.valueOf(selectedCards.size()));
         selectedNo.setFont(Font.font(selectedNo.getFont().getFamily(), FontWeight.BOLD, 20));
@@ -62,7 +74,8 @@ public class SelectPoliticsView extends BorderPane {
         while(politicsCardIterator.hasNext()) {
             cardsBox.getChildren().add(buildCardNode(politicsCardIterator.next()));
         }
-        Button forward = new Button("Forward");
+        forward = new Button("Forward");
+        forward.setDisable(true);
         forward.setOnMouseClicked(event -> {
             if(!type.equals(RegionType.KINGBOARD)) {
                 SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, selectedCards);
@@ -93,6 +106,8 @@ public class SelectPoliticsView extends BorderPane {
             } else {
                 selectedCards.remove(card);
             }
+            if(selectedCards.size()>0) forward.setDisable(false);
+            else forward.setDisable(true);
             selectedNo.setText(String.valueOf(selectedCards.size()));
         });
 
@@ -100,11 +115,8 @@ public class SelectPoliticsView extends BorderPane {
         return node;
     }
 
-    public ObservableList<PoliticsCard> getSelectedCards() {
-        return selectedCards;
-    }
-
-    public void addClickListener(EventHandler<? super MouseEvent> value) {
-        cardsBox.getChildren().get(0).setOnMouseClicked(value);
+    @Override
+    public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
+        turnEnded.bind(mainActionAvailable.not());
     }
 }
