@@ -729,6 +729,14 @@ public class GUI extends Application {
         });
     }
 
+    public void endTurn() {
+        Platform.runLater(() -> {
+            mainActionAvailable.setValue(false);
+            fastActionAvailable.setValue(false);
+            myTurn.setValue(false);
+        });
+    }
+
     public void setMainActionAvailable(boolean mainActionAvailable) {
         Platform.runLater(() -> this.mainActionAvailable.setValue(mainActionAvailable));
     }

@@ -76,8 +76,7 @@ public class GUInfoProcessor implements InfoProcessor {
                 gui.setFastActionAvailable(false);
             }
         } else if (info.getClass().equals(EndTurnAction.class)) {
-            gui.setMainActionAvailable(false);
-            gui.setFastActionAvailable(false);
+            gui.endTurn();
         } else if (info.getClass().equals(MarketSyncAction.class)) {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
