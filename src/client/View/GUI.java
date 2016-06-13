@@ -102,6 +102,7 @@ public class GUI extends Application {
 
     private BooleanProperty mainActionAvailable;
     private BooleanProperty fastActionAvailable;
+    private BooleanProperty myTurn;
 
     @Override
     public void init() throws Exception {
@@ -114,6 +115,7 @@ public class GUI extends Application {
         CachedData.getInstance().setController(controller);
         mainActionAvailable = new SimpleBooleanProperty(false);
         fastActionAvailable = new SimpleBooleanProperty(false);
+        myTurn = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -449,7 +451,7 @@ public class GUI extends Application {
         fastActionsView.setDisableBindingFastAction(fastActionAvailable);
 
         // Not my turn
-        endTurn.disableProperty().bind(Bindings.and(mainActionAvailable.not(), fastActionAvailable.not()));
+        endTurn.disableProperty().bind(myTurn.not());
     }
 
     public static Image selectRegionCardImage(RegionType type) {
@@ -723,6 +725,7 @@ public class GUI extends Application {
         Platform.runLater(() -> {
             mainActionAvailable.setValue(true);
             fastActionAvailable.setValue(true);
+            myTurn.setValue(true);
         });
     }
 

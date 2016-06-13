@@ -25,16 +25,18 @@ public class ServerProcessor implements InfoProcessor {
         if (info instanceof NormalAction) {
             Player player = game.getPlayerInstance(((Action) info).getPlayer());
             try {
-                game.popMainActionToken(player);
-                if (info.getClass().equals(CouncilorElectionAction.class)){
-                    System.out.println("Electing councilor");
-                    councilorElection((CouncilorElectionAction) info);
-                } else if(info.getClass().equals(BuyPermitCardAction.class)) {
-                    buyPermitCardAction((BuyPermitCardAction) info);
-                } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
-                    buildEmpoWithPermit((BuildEmpoPCAction) info);
-                } else {
-                    buildEmpoKingHelp((BuildEmpoKingAction) info);
+                if (game.hasMoreMainActions(player)) {
+                    if (info.getClass().equals(CouncilorElectionAction.class)){
+                        System.out.println("Electing councilor");
+                        councilorElection((CouncilorElectionAction) info);
+                    } else if(info.getClass().equals(BuyPermitCardAction.class)) {
+                        buyPermitCardAction((BuyPermitCardAction) info);
+                    } else if(info.getClass().equals(BuildEmpoPCAction.class)) {
+                        buildEmpoWithPermit((BuildEmpoPCAction) info);
+                    } else {
+                        buildEmpoKingHelp((BuildEmpoKingAction) info);
+                    }
+                    game.popMainActionToken(player);
                 }
             } catch (Game.NotYourTurnException e) {
                 e.printStackTrace();
