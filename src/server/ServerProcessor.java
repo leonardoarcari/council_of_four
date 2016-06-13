@@ -27,7 +27,6 @@ public class ServerProcessor implements InfoProcessor {
             try {
                 if (game.hasMoreMainActions(player)) {
                     if (info.getClass().equals(CouncilorElectionAction.class)){
-                        System.out.println("Electing councilor");
                         councilorElection((CouncilorElectionAction) info);
                     } else if(info.getClass().equals(BuyPermitCardAction.class)) {
                         buyPermitCardAction((BuyPermitCardAction) info);

@@ -4,10 +4,7 @@ import client.CachedData;
 import client.ControllerUI;
 import core.Player;
 import core.connection.GameBoardInterface;
-import core.gamelogic.actions.ChatAction;
-import core.gamelogic.actions.EndTurnAction;
-import core.gamelogic.actions.PlayerInfoAction;
-import core.gamelogic.actions.SelectAgainPermitAction;
+import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.Region;
 import core.gamemodel.modelinterface.*;
@@ -16,6 +13,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -25,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.MasterDetailPane;
@@ -60,6 +60,7 @@ public class GUI extends Application {
 
     private WealthPathView wealthPath;
     private NobilityPathView nobilityPath;
+    private VictoryPathView victoryPath;
     private List<ObjectImageView> boardObjects;
     private Map<TownName, TownView> townsView;
     private Map<TownName, ObjectImageView> townBonusView;
@@ -67,13 +68,11 @@ public class GUI extends Application {
     private PopOver townPopOver;
 
     private TreeView<String> actionChoice;
-    private TreeItem<String> choiceItem;
-    private TreeItem<String> fastSelector;
-    private TreeItem<String> servantsPoolSelector;
     private TreeItem<String> councilorPoolSelector;
 
     private CouncilorPoolView councilorPool;
     private BuySellableView buySellableView;
+    private ExposeSellableView exposureView;
 
     private PermitCardView seaLeftCard;
     private PermitCardView seaRightCard;
@@ -98,6 +97,8 @@ public class GUI extends Application {
     private Image firstRoyal;
 
     private Button endTurn;
+    private Label timer;
+    private StringProperty timerProperty;
     private ChatView chatView;
 
     private BooleanProperty mainActionAvailable;
@@ -188,6 +189,7 @@ public class GUI extends Application {
         //Paths setup
         buildNobility();
         buildWealthPath();
+        buildVictory();
 
         //Balconies setup
         buildBalconies();
@@ -260,11 +262,10 @@ public class GUI extends Application {
     }
 
     private void buildActionTree() {
-        choiceItem = new TreeItem<>("Make a choice");
-        fastSelector = new TreeItem<>("Select Fast action");
-        servantsPoolSelector = new TreeItem<>("See servants pool");
+        TreeItem<String> choiceItem = new TreeItem<>("Make a choice");
+        TreeItem<String> fastSelector = new TreeItem<>("Select Fast action");
         councilorPoolSelector = new TreeItem<>("See councilor pool");
-        choiceItem.getChildren().addAll(fastSelector, servantsPoolSelector, councilorPoolSelector);
+        choiceItem.getChildren().addAll(fastSelector, councilorPoolSelector);
         actionChoice = new TreeView<>(choiceItem);
 
         fastActionsView = new FastActionsView();
@@ -273,9 +274,9 @@ public class GUI extends Application {
         actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.equals(councilorPoolSelector)) {
                 choicePane.setMasterNode(councilorPool.getFlowNode());
-            } else if(newValue.equals(fastSelector)) {
+            } else {
                 choicePane.setMasterNode(fastActionsView.getBoxNode());
-            } else choicePane.setMasterNode(new Label("ciao"));
+            }
             choicePane.setDividerPosition(0.3);
         });
     }
@@ -315,15 +316,18 @@ public class GUI extends Application {
         pathPlayersListener(wealthPath);
     }
 
+    private void buildVictory() {
+        victoryPath = new VictoryPathView();
+        pathPlayersListener(victoryPath);
+    }
+
     private void pathPlayersListener(PathViewInterface path) {
         path.addListener(c -> {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     boardAnchor.getChildren().removeAll(c.getRemoved());
                 } if (c.wasAdded()) {
-                    Iterator<? extends ObjectImageView> iterator = c.getList().iterator();
-                    while (iterator.hasNext()) {
-                        ObjectImageView view = iterator.next();
+                    for (ObjectImageView view : c.getList()) {
                         setObjectConstraints(view);
                         setImageViewListener(view);
                         boardAnchor.getChildren().add(view);
@@ -402,32 +406,29 @@ public class GUI extends Application {
     }
 
     private void loadRoyalImages() {
-        ClassLoader loader = this.getClass().getClassLoader();
-        fifthRoyal = new Image(loader.getResourceAsStream("fifthRoyal.png"));
-        fourthRoyal = new Image(loader.getResourceAsStream("fourthRoyal.png"));
-        thirdRoyal = new Image(loader.getResourceAsStream("thirdRoyal.png"));
-        secondRoyal = new Image(loader.getResourceAsStream("secondRoyal.png"));
-        firstRoyal = new Image(loader.getResourceAsStream("firstRoyal.png"));
+        fifthRoyal = ImagesMaps.getInstance().getRoyal("fifth");
+        fourthRoyal = ImagesMaps.getInstance().getRoyal("fourth");
+        thirdRoyal = ImagesMaps.getInstance().getRoyal("third");
+        secondRoyal = ImagesMaps.getInstance().getRoyal("second");
+        firstRoyal = ImagesMaps.getInstance().getRoyal("first");
     }
 
     private void buildBonusCards() {
-        ClassLoader loader = this.getClass().getClassLoader();
-        seaBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.SEA),
+        seaBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.SEA),
                 0.2522803334480774,0.5274207650273224,0.0634);
-        hillsBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.HILLS),
+        hillsBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.HILLS),
                 0.5490688645010539,0.5274207650273224,0.0634);
-        mountainsBonusCard = new ObjectImageView(selectRegionCardImage(RegionType.MOUNTAINS),
+        mountainsBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.MOUNTAINS),
                 0.8742918224146726,0.5274207650273224,0.0634);
-        ironBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("ironBonus.png")),
+        ironBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.IRON),
                 0.7444741305370091,0.8555858310626703,0.0634);
-        bronzeBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("bronzeBonus.png")),
+        bronzeBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.BRONZE),
                 0.7906430688648857,0.8478260869565217,0.0634);
-        silverBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("silverBonus.png")),
+        silverBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.SILVER),
                 0.8414289010255498,0.8410326086956522,0.0634);
-        goldBonusCard = new ObjectImageView(new Image(loader.getResourceAsStream("goldBonus.png")),
+        goldBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.GOLD),
                 0.8875978393534263,0.8355978260869565,0.0634);
-        royalTopCard = new ObjectImageView(new Image(loader.getResourceAsStream("fifthRoyal.png")),
-                0.8772098282296541,0.7547683923705722,0.0634);
+        royalTopCard = new ObjectImageView(fifthRoyal, 0.8772098282296541,0.7547683923705722,0.0634);
 
         boardObjects.addAll(Arrays.asList(seaBonusCard,hillsBonusCard,mountainsBonusCard,
                 ironBonusCard,bronzeBonusCard,silverBonusCard,goldBonusCard,royalTopCard));
@@ -454,13 +455,6 @@ public class GUI extends Application {
         endTurn.disableProperty().bind(myTurn.not());
     }
 
-    public static Image selectRegionCardImage(RegionType type) {
-        ClassLoader loader = GUI.class.getClassLoader();
-        if(type.equals(RegionType.SEA)) return new Image(loader.getResourceAsStream("seaBonus.png"));
-        else if(type.equals(RegionType.HILLS)) return new Image(loader.getResourceAsStream("hillsBonus.png"));
-        else return new Image(loader.getResourceAsStream("mountainsBonus.png"));
-    }
-
     private void buildTabPane() {
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
@@ -477,11 +471,18 @@ public class GUI extends Application {
         GridPane pane = new GridPane();
         pane.setGridLinesVisible(true);
         endTurn = new Button("End Turn");
-        endTurn.setOnMouseClicked(event -> {
-            controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
-        });
+        endTurn.setOnMouseClicked(event -> controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe())));
+        timerProperty = new SimpleStringProperty("N / A");
+        timer = new Label("");
+        timer.setTextAlignment(TextAlignment.CENTER);
+        timer.setStyle("color: #B4886B;\n" +
+                "-fx-border-width: 3px;\n" +
+                "-fx-border-color: black;\n" +
+                "-fx-font-weight: normal;\n" +
+                "-fx-border-insets: 3px");
+        timer.textProperty().bind(timerProperty);
 
-        HBox buttonBox = new HBox(endTurn);
+        HBox buttonBox = new HBox(10, endTurn, timer);
         buttonBox.setPadding(new Insets(20, 0, 20, 0));
         buttonBox.setAlignment(Pos.CENTER);
         GridPane.setFillHeight(playerView.getPlayerNode(), true);
@@ -535,6 +536,10 @@ public class GUI extends Application {
             fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
             CachedData.getInstance().setWealthPath(wealthPath);
         });
+    }
+
+    public void updateVictoryPath(VictoryPathInterface victory) {
+        Platform.runLater(() -> victoryPath.updateVictoryPath(victory));
     }
 
     public TownView getTownView(TownName name) {
@@ -671,6 +676,7 @@ public class GUI extends Application {
     public void showExposeView() {
         Platform.runLater(() -> {
             ExposeSellableView exposeSellableView = new ExposeSellableView();
+            exposureView = exposeSellableView;
             CachedData.getInstance().getMe().permitCardIterator().forEachRemaining(exposeSellableView::addSellableItem);
             CachedData.getInstance().getMe().politicsCardIterator().forEachRemaining(exposeSellableView::addSellableItem);
             for (int i = 0; i < CachedData.getInstance().getMe().getServantsNumber(); i++) {
@@ -715,7 +721,7 @@ public class GUI extends Application {
     public void appendChatMessage(ChatAction action) {
         Platform.runLater(() -> {
             Player sender = action.getPlayer();
-            String senderString = sender.equals((Player)CachedData.getInstance().getMe()) ? "Me" : sender.getNickname();
+            String senderString = sender.equals(CachedData.getInstance().getMe()) ? "Me" : sender.getNickname();
             String chatMessage = senderString + ": " + action.getMessage();
             chatView.append(chatMessage);
         });
@@ -760,5 +766,27 @@ public class GUI extends Application {
             ShowPane.getInstance().setContent(permitView);
             ShowPane.getInstance().show();
         });
+    }
+
+    public void setTimer(String text) {
+        Platform.runLater(() ->
+            timerProperty.setValue(text)
+        );
+    }
+
+    public void forceEnd() {
+        controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
+    }
+
+    public void forceExposureEnd() {
+        exposureView.setDisable(true);
+        CachedData.getInstance().getController().sendInfo(new ExposeSellablesAction(
+                (Player) CachedData.getInstance().getMe(), new ArrayList<>()));
+    }
+
+    public void forceBuyingEnd() {
+        buySellableView.setDisable(true);
+        CachedData.getInstance().getController().sendInfo(new BuyObjectsAction(
+                        (Player) CachedData.getInstance().getMe(), new ArrayList<>()));
     }
 }

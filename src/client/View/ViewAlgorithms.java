@@ -23,32 +23,31 @@ public class ViewAlgorithms {
 
         int rainbowSize = 0;
         List<CouncilColor> politicsColor = new Vector<>();
-        List<CouncilColor> availableColours = new Vector<>();
+        List<Integer> availableColoursIndexes = new Vector<>();
         List<PoliticsCard> politics = CachedData.getInstance().getPlayerPoliticsCards();
         for(PoliticsCard card : politics) {
-            if(card.getCardColor().equals(CouncilColor.RAINBOW)) {
-                availableColours.add(CouncilColor.RAINBOW);
-                rainbowSize++;
-            }
             politicsColor.add(card.getCardColor());
         }
 
-        int index = CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe());
-
-        for(CouncilColor color : myColors) {
-            if(politicsColor.contains(color)) {
-                int i = politicsColor.indexOf(color);
-                availableColours.add(politicsColor.remove(i));
+        int index = 0;
+        for(CouncilColor color : politicsColor) {
+            if(myColors.contains(color)) {
+                myColors.remove(color);
+                availableColoursIndexes.add(index);
             }
+            if(color.equals(CouncilColor.RAINBOW)) {
+                availableColoursIndexes.add(index);
+                rainbowSize++;
+            }
+            index++;
         }
 
-        int sum = (availableColours.size()>=4) ? rainbowSize : 10+rainbowSize-3*(availableColours.size()-1);
-        availableColours.forEach(color -> {
-            System.out.print(color.name() + " ");
-            cards.add(new PoliticsCard(color));
+        int myCoins = CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe());
+        int sum = (availableColoursIndexes.size()>=4) ? rainbowSize : 10+rainbowSize-3*(availableColoursIndexes.size()-1);
+        availableColoursIndexes.forEach(ind -> {
+            cards.add(politics.get(ind));
         });
-        System.out.println();
-        return sum <= index;
+        return sum <= myCoins;
     }
 
     public static synchronized boolean checkAvailablePermits(TownName townName, List<PermitCard> availablePermits) {

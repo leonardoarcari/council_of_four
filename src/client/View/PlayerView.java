@@ -1,6 +1,7 @@
 package client.View;
 
 import client.CachedData;
+import com.sun.javafx.iio.ImageMetadata;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.geometry.HPos;
@@ -83,19 +84,18 @@ public class PlayerView {
     }
 
     private void loadImages() {
-        ClassLoader loader = this.getClass().getClassLoader();
-        Image fifthRoyal = new Image(loader.getResourceAsStream("fifthRoyal.png"));
-        Image fourthRoyal = new Image(loader.getResourceAsStream("fourthRoyal.png"));
-        Image thirdRoyal = new Image(loader.getResourceAsStream("thirdRoyal.png"));
-        Image secondRoyal = new Image(loader.getResourceAsStream("secondRoyal.png"));
-        Image firstRoyal = new Image(loader.getResourceAsStream("firstRoyal.png"));
-        Image whitePolitics = new Image(loader.getResourceAsStream("whitePolitics.png"));
-        Image blackPolitics = new Image(loader.getResourceAsStream("blackPolitics.png"));
-        Image orangePolitics = new Image(loader.getResourceAsStream("orangePolitics.png"));
-        Image pinkPolitics = new Image(loader.getResourceAsStream("pinkPolitics.png"));
-        Image cyanPolitics = new Image(loader.getResourceAsStream("bluePolitics.png"));
-        Image purplePolitics = new Image(loader.getResourceAsStream("purplePolitics.png"));
-        Image rainbowPolitics = new Image(loader.getResourceAsStream("rainbowPolitics.png"));
+        Image fifthRoyal = ImagesMaps.getInstance().getRoyal("fifth");
+        Image fourthRoyal = ImagesMaps.getInstance().getRoyal("fourth");
+        Image thirdRoyal = ImagesMaps.getInstance().getRoyal("third");
+        Image secondRoyal = ImagesMaps.getInstance().getRoyal("second");
+        Image firstRoyal = ImagesMaps.getInstance().getRoyal("first");
+        Image whitePolitics = ImagesMaps.getInstance().getPolitics("WHITE");
+        Image blackPolitics = ImagesMaps.getInstance().getPolitics("BLACK");
+        Image orangePolitics = ImagesMaps.getInstance().getPolitics("ORANGE");
+        Image pinkPolitics = ImagesMaps.getInstance().getPolitics("PINK");
+        Image cyanPolitics = ImagesMaps.getInstance().getPolitics("CYAN");
+        Image purplePolitics = ImagesMaps.getInstance().getPolitics("PURPLE");
+        Image rainbowPolitics = ImagesMaps.getInstance().getPolitics("RAINBOW");
         cardImages.put("3",fifthRoyal);
         cardImages.put("7",fourthRoyal);
         cardImages.put("12",thirdRoyal);
@@ -238,15 +238,18 @@ public class PlayerView {
     private void setOtherCards(Iterator<RegionCard> regionCardIterator, Iterator<TownTypeCard> townTypeCardIterator, HBox otherCards) {
         otherCards.getChildren().clear();
         while(regionCardIterator.hasNext()) {
-            ImageView myView = new ImageView(GUI.selectRegionCardImage(regionCardIterator.next().getType()));
+            ImageView myView = new ImageView(ImagesMaps.getInstance().getRegionBonus(regionCardIterator.next().getType()));
+            myView.setPreserveRatio(true);
+            myView.setFitHeight(80);
+            otherCards.getChildren().add(myView);
+        }
+        while(townTypeCardIterator.hasNext()) {
+            ImageView myView = new ImageView(ImagesMaps.getInstance().getTownTypeBonus(townTypeCardIterator.next().getTownType()));
             myView.setPreserveRatio(true);
             myView.setFitHeight(80);
             otherCards.getChildren().add(myView);
         }
         otherPane.setContent(otherCards);
-        while(townTypeCardIterator.hasNext()) {
-            //ImageView myView = new ImageView(GUI.)
-        }
     }
 
     public Node getPlayerNode() {

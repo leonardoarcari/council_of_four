@@ -7,6 +7,7 @@ import core.gamemodel.OnSaleItem;
 import core.gamemodel.PermitCard;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.modelinterface.SellableItem;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import sun.misc.Cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +59,7 @@ public class ExposeSellableView extends GridPane {
                     new ArrayList<>(onSaleItems.values())
             ));
             setDisable(true);
+            clearSellableItem();
         });
     }
 

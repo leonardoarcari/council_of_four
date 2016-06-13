@@ -22,7 +22,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Leonardo Arcari on 08/06/2016.
@@ -78,7 +80,8 @@ public class SelectPoliticsView extends BorderPane implements HasMainAction {
         forward.setDisable(true);
         forward.setOnMouseClicked(event -> {
             if(!type.equals(RegionType.KINGBOARD)) {
-                SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, selectedCards);
+                List<PoliticsCard> copyCards = new ArrayList<>(selectedCards);
+                SelectRegionPermitView regionPermitView = new SelectRegionPermitView(type, copyCards);
                 ShowPane.getInstance().setContent(regionPermitView);
                 ShowPane.getInstance().show();
             } else {

@@ -1,13 +1,14 @@
 package core.gamemodel;
 
 import core.Player;
+import core.gamemodel.modelinterface.VictoryPathInterface;
 
 import java.util.ArrayList;
 
 /**
  * Created by Matteo on 24/05/16.
  */
-public class VictoryPath extends AbstractPath {
+public class VictoryPath extends AbstractPath implements VictoryPathInterface {
 
     public VictoryPath() {
         players = new ArrayList<>(100);

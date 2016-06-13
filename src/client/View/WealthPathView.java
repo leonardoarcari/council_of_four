@@ -79,14 +79,6 @@ public class WealthPathView implements PathViewInterface {
         players.addAll(holders);
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getPosY() {
-        return posY;
-    }
-
     private void initializePosX() {
         posX[0] = 0.04212067837046467;
         posX[1] = 0.07323254307592153 ;

@@ -87,18 +87,20 @@ public class FastActionsView implements HasFastAction{
     }
 
     private void regionButtonHandlers() {
-        Player me = (Player) CachedData.getInstance().getMe();
         seaRegion.setOnMouseClicked(event -> {
+            Player me = (Player) CachedData.getInstance().getMe();
             goBack.fire();
             currentAction = new ChangePermitsAction(me,RegionType.SEA);
             CachedData.getInstance().getController().sendInfo(currentAction);
         });
         hillsRegion.setOnMouseClicked(event -> {
+            Player me = (Player) CachedData.getInstance().getMe();
             goBack.fire();
             currentAction = new ChangePermitsAction(me,RegionType.HILLS);
             CachedData.getInstance().getController().sendInfo(currentAction);
         });
         mountainsRegion.setOnMouseClicked(event -> {
+            Player me = (Player) CachedData.getInstance().getMe();
             goBack.fire();
             currentAction = new ChangePermitsAction(me,RegionType.MOUNTAINS);
             CachedData.getInstance().getController().sendInfo(currentAction);

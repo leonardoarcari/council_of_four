@@ -1,20 +1,22 @@
 package client.clientconnection;
 
 import client.CachedData;
+import client.View.ExposeSellableView;
 import client.View.GUI;
 import client.View.TownsWithBonusView;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
-import core.gamelogic.actions.ChatAction;
-import core.gamelogic.actions.EndTurnAction;
-import core.gamelogic.actions.MarketSyncAction;
-import core.gamelogic.actions.SyncAction;
+import core.gamelogic.actions.*;
 import core.gamemodel.Councilor;
+import core.gamemodel.VictoryPath;
 import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -22,6 +24,7 @@ import java.util.List;
  */
 public class GUInfoProcessor implements InfoProcessor {
     private GUI gui;
+    private static int elapsed = 20;
 
     public GUInfoProcessor(GUI gui) {
         this.gui = gui;
@@ -45,6 +48,8 @@ public class GUInfoProcessor implements InfoProcessor {
             gui.updateRegionBonus((RegionInterface) info);
         } else if (info instanceof NobilityPathInterface) {
             gui.updateNobilityPath((NobilityPathInterface) info);
+        } else if (info instanceof VictoryPathInterface) {
+            gui.updateVictoryPath((VictoryPathInterface) info);
         } else if (info instanceof GameBoardInterface) {
             GameBoardInterface gameboard = (GameBoardInterface) info;
             List<Councilor> councilorPool = new ArrayList<>();
@@ -64,6 +69,8 @@ public class GUInfoProcessor implements InfoProcessor {
                 gui.startGame();
             } else if (action.equals(SyncAction.YOUR_TURN)) {
                 gui.yourTurn();
+                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+                //executor.scheduleAtFixedRate(() -> gui.setTimer(setElapsedTurnTime(executor)),2,1, TimeUnit.SECONDS);
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 gui.showRedeemPermitView();
             } else if (action.equals((SyncAction.PICK_TOWN_BONUS))) {
@@ -81,11 +88,37 @@ public class GUInfoProcessor implements InfoProcessor {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
                 gui.showExposeView();
+                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+                executor.scheduleAtFixedRate(() -> setElapsedExposureTime(executor, true),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
                 gui.showBuyItemView();
+                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+                executor.scheduleAtFixedRate(() -> setElapsedExposureTime(executor, false),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 gui.hideMarket();
             }
         }
+    }
+
+    private final String setElapsedTurnTime(ScheduledExecutorService executor) {
+        if(elapsed == 15) {
+            executor.shutdownNow();
+            elapsed = 20;
+            gui.forceEnd();
+            return "Turn ended!";
+        }
+        elapsed--;
+        return "Remaining time: " + elapsed + " seconds";
+    }
+
+    private final void setElapsedExposureTime(ScheduledExecutorService executor, boolean exposure) {
+        if(elapsed == 15) {
+            executor.shutdownNow();
+            elapsed = 20;
+            if(exposure) gui.forceExposureEnd();
+            else gui.forceBuyingEnd();
+            return;
+        }
+        elapsed--;
     }
 }
