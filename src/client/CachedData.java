@@ -1,6 +1,9 @@
 package client;
 
 import core.Player;
+import core.gamelogic.actions.BuyObjectsAction;
+import core.gamelogic.actions.EndTurnAction;
+import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.beans.property.BooleanProperty;
@@ -10,15 +13,19 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by leonardoarcari on 09/06/16.
  */
 public class CachedData {
     private volatile static CachedData instance = null;
+    private static int elapsedTime;
 
     private ControllerUI controller;
     private PlayerInterface me;
+    private ScheduledExecutorService executorService;
     private ObservableList<PermitCard> myPermitCards;
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
@@ -45,6 +52,8 @@ public class CachedData {
 
     private CachedData() {
         me = null;
+        executorService = Executors.newScheduledThreadPool(1);
+        elapsedTime = 20;
         towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
@@ -180,5 +189,32 @@ public class CachedData {
 
     public void setShowcase(ShowcaseInterface showcase) {
         this.showcase = showcase;
+    }
+
+    public ScheduledExecutorService getExecutor() {
+        return executorService;
+    }
+
+    public int isNormalTimerExpired() {
+        if(elapsedTime == 0) {
+            executorService.shutdown();
+            elapsedTime = 20;
+            controller.sendInfo(new EndTurnAction((Player) me));
+            return -1;
+        }
+        elapsedTime--;
+        return elapsedTime;
+    }
+
+    public int isMarketPhaseEnded(Boolean exposureNotAuction) {
+        if(elapsedTime == 0) {
+            executorService.shutdown();
+            elapsedTime = 20;
+            if(exposureNotAuction) controller.sendInfo(new ExposeSellablesAction((Player) me, new ArrayList<>()));
+            else controller.sendInfo(new BuyObjectsAction((Player) me, new ArrayList<>()));
+            return -1;
+        }
+        elapsedTime--;
+        return elapsedTime;
     }
 }
