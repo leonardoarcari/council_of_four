@@ -71,4 +71,25 @@ public class PermitCard implements SellableItem, Serializable {
         result = 31 * result + id;
         return result;
     }
+
+    @Override
+    public String toString() {
+        String townPermits = "\tCan build in: [";
+        String permitBonuses = "\tPermit bonus(es): [";
+        for(TownName townName : townEmporiumPermit) {
+            townPermits = townPermits + townName.name();
+        }
+        townPermits = townPermits +"]";
+        int i = 0;
+        for(Bonus bonus : bonuses) {
+            permitBonuses = permitBonuses + bonus.toString();
+            if(i == bonuses.size()-1) {
+                permitBonuses = permitBonuses + ", ";
+            }
+            i++;
+        }
+        permitBonuses = permitBonuses + "]";
+
+        return townPermits + "\n" + permitBonuses;
+    }
 }

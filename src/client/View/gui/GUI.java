@@ -528,6 +528,7 @@ public class GUI extends Application {
 
     public void updateNobilityPath(NobilityPathInterface nobility) {
         Platform.runLater(() -> nobilityPath.updateNobilityPath(nobility));
+        CachedData.getInstance().setNobilityPath(nobility);
     }
 
     public void updateWealthPath(WealthPathInterface wealthPath) {
@@ -540,6 +541,7 @@ public class GUI extends Application {
 
     public void updateVictoryPath(VictoryPathInterface victory) {
         Platform.runLater(() -> victoryPath.updateVictoryPath(victory));
+        CachedData.getInstance().setVictoryPath(victory);
     }
 
     public TownView getTownView(TownName name) {
