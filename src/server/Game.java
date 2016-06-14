@@ -6,6 +6,8 @@ import core.gamelogic.actions.EndTurnAction;
 import core.gamelogic.actions.MarketSyncAction;
 import core.gamelogic.actions.SyncAction;
 import core.gamemodel.GameBoard;
+import core.gamemodel.Town;
+import core.gamemodel.TownName;
 
 import java.util.*;
 
@@ -15,6 +17,7 @@ import java.util.*;
 public class Game implements Runnable{
     private List<Player> players;
     private GameBoard gameBoard;
+    private ConfigParser mapConfig;
     private InfoProcessor processor;
 
     private Turn currentTurn;
@@ -24,6 +27,13 @@ public class Game implements Runnable{
     private boolean marketPhase;
 
     public Game() {
+        processor = new ServerProcessor(this);
+        marketPhase = false;
+        mapConfig = null;
+    }
+
+    public Game(ConfigParser mapConfig) {
+        this.mapConfig = mapConfig;
         processor = new ServerProcessor(this);
         marketPhase = false;
     }
@@ -45,6 +55,7 @@ public class Game implements Runnable{
         players = WaitingHall.getInstance().pullPlayers();
         WaitingHall.getInstance().createNewGame();
         gameBoard = GameBoard.createGameBoard(players);
+        if (mapConfig != null) setTownLinks();
 
         gameBoard.notifyChildren();
         for (Player player : players) {
@@ -60,6 +71,14 @@ public class Game implements Runnable{
         }
         playerIndex = 0;
         currentTurn = new Turn(players.get(playerIndex));
+    }
+
+    private void setTownLinks() {
+        Map<TownName, Town> gameMap = gameBoard.getTownsMap();
+        gameMap.keySet().forEach(townName -> {
+            Town town = gameMap.get(townName);
+            mapConfig.getLinksFor(townName).forEachRemaining(town::addNearby);
+        });
     }
 
     public Player getPlayerInstance(Player player) {

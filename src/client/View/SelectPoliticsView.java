@@ -85,7 +85,7 @@ public class SelectPoliticsView extends BorderPane implements HasMainAction {
                 ShowPane.getInstance().setContent(regionPermitView);
                 ShowPane.getInstance().show();
             } else {
-                TownsWithBonusView.getInstance().changeTownListener(selectedCards);
+                TownsWithBonusView.getInstance().changeTownListener(new ArrayList<>(selectedCards));
                 ShowPane.getInstance().hide();
             }
         });

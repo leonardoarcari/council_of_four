@@ -1,0 +1,7 @@
+# Questo è un commento. Viene ignorato dal parser
+
+A - C - F - I - K - N
+A - B - D - G - J - L - O - N
+B - E - H - M - O
+H - J
+J - I
