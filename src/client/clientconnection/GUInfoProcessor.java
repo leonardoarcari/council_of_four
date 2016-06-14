@@ -69,8 +69,8 @@ public class GUInfoProcessor implements InfoProcessor {
                 gui.startGame();
             } else if (action.equals(SyncAction.YOUR_TURN)) {
                 gui.yourTurn();
-                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-                //executor.scheduleAtFixedRate(() -> gui.setTimer(setElapsedTurnTime(executor)),2,1, TimeUnit.SECONDS);
+                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
+                //executor.scheduleAtFixedRate(() -> gui.setTimer(setElapsedTurnTime()),2,1, TimeUnit.SECONDS);
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 gui.showRedeemPermitView();
             } else if (action.equals((SyncAction.PICK_TOWN_BONUS))) {
@@ -88,37 +88,30 @@ public class GUInfoProcessor implements InfoProcessor {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
                 gui.showExposeView();
-                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-                executor.scheduleAtFixedRate(() -> setElapsedExposureTime(executor, true),2,1, TimeUnit.SECONDS);
+                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
+                //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(true),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
                 gui.showBuyItemView();
                 ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-                executor.scheduleAtFixedRate(() -> setElapsedExposureTime(executor, false),2,1, TimeUnit.SECONDS);
+                //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(false),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 gui.hideMarket();
             }
         }
     }
 
-    private final String setElapsedTurnTime(ScheduledExecutorService executor) {
-        if(elapsed == 15) {
-            executor.shutdownNow();
-            elapsed = 20;
-            gui.forceEnd();
-            return "Turn ended!";
-        }
-        elapsed--;
-        return "Remaining time: " + elapsed + " seconds";
+    private String setElapsedTurnTime() {
+        int time = CachedData.getInstance().isNormalTimerExpired();
+        if(time == -1) return "Waiting for next turn..";
+        else return "Remaining time: " + time + " seconds";
     }
 
-    private final void setElapsedExposureTime(ScheduledExecutorService executor, boolean exposure) {
-        if(elapsed == 15) {
-            executor.shutdownNow();
-            elapsed = 20;
+    private void setElapsedExposureTime(boolean exposure) {
+        int time = CachedData.getInstance().isMarketPhaseEnded(exposure);
+        if(time == -1) {
             if(exposure) gui.forceExposureEnd();
             else gui.forceBuyingEnd();
             return;
         }
-        elapsed--;
     }
 }

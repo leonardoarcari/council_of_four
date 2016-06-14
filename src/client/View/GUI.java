@@ -774,19 +774,11 @@ public class GUI extends Application {
         );
     }
 
-    public void forceEnd() {
-        controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
-    }
-
     public void forceExposureEnd() {
         exposureView.setDisable(true);
-        CachedData.getInstance().getController().sendInfo(new ExposeSellablesAction(
-                (Player) CachedData.getInstance().getMe(), new ArrayList<>()));
     }
 
     public void forceBuyingEnd() {
         buySellableView.setDisable(true);
-        CachedData.getInstance().getController().sendInfo(new BuyObjectsAction(
-                        (Player) CachedData.getInstance().getMe(), new ArrayList<>()));
     }
 }
