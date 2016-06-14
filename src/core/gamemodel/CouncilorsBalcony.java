@@ -73,6 +73,20 @@ public class CouncilorsBalcony implements BalconyInterface, Subject, Serializabl
         return toString;
     }
 
+    public String toFormattedString() {
+        String regionString = region.name().toLowerCase();
+        regionString = String.valueOf(Character.toUpperCase(regionString.charAt(0))) + regionString.substring(1);
+
+        StringBuilder builder = new StringBuilder(regionString);
+        builder.append("'s balcony [");
+        for (int i = 0; i < councilorsBalcony.length; i++) {
+            builder.append(councilorsBalcony[i])
+                   .append((i != councilorsBalcony.length - 1) ? ", " : "");
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
     private class CouncilorIterator implements Iterator<Councilor> {
         private int current = 0;
 

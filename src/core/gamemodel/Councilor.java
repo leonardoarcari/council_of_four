@@ -20,6 +20,11 @@ public class Councilor implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return councilorColor.name().charAt(0) + councilorColor.name().toLowerCase().substring(1);
+    }
+
+    @Override
     public boolean equals(Object councilor) {
         if (this == councilor) return true;
         if (councilor == null || getClass() != councilor.getClass()) return false;
