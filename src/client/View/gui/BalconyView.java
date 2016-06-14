@@ -1,6 +1,7 @@
-package client.View;
+package client.View.gui;
 
 import client.CachedData;
+import client.View.ViewAlgorithms;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.CouncilorElectionAction;

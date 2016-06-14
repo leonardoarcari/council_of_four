@@ -1,4 +1,4 @@
-package client.View;
+package client.View.gui;
 
 import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;

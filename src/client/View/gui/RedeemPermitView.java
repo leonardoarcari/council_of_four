@@ -1,4 +1,4 @@
-package client.View;
+package client.View.gui;
 
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.BooleanProperty;

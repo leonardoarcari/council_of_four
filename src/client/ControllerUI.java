@@ -1,6 +1,6 @@
 package client;
 
-import client.View.GUI;
+import client.View.gui.GUI;
 import client.clientconnection.GUInfoProcessor;
 import client.clientconnection.RMIConnection;
 import core.connection.Connection;

@@ -1,4 +1,4 @@
-package client.View;
+package client.View.gui;
 
 import client.CachedData;
 import client.ControllerUI;

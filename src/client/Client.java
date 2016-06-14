@@ -1,5 +1,5 @@
 package client;
-import client.View.GUI;
+import client.View.gui.GUI;
 import javafx.application.Application;
 
 /**

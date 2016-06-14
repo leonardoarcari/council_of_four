@@ -1,7 +1,6 @@
-package client.View;
+package client.View.gui;
 
 import client.CachedData;
-import com.sun.javafx.iio.ImageMetadata;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.geometry.HPos;

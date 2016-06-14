@@ -1,14 +1,12 @@
 package client.clientconnection;
 
 import client.CachedData;
-import client.View.ExposeSellableView;
-import client.View.GUI;
-import client.View.TownsWithBonusView;
+import client.View.gui.GUI;
+import client.View.gui.TownsWithBonusView;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.*;
 import core.gamemodel.Councilor;
-import core.gamemodel.VictoryPath;
 import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
 
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 
 /**

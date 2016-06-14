@@ -1,8 +1,7 @@
-package client.View;
+package client.View.gui;
 
 import core.Player;
 import core.gamemodel.modelinterface.VictoryPathInterface;
-import core.gamemodel.modelinterface.WealthPathInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

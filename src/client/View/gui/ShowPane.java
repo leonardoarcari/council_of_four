@@ -1,4 +1,4 @@
-package client.View;
+package client.View.gui;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;

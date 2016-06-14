@@ -1,7 +1,7 @@
-package client.View;
+package client.View.gui;
 
 import client.CachedData;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import client.View.ViewAlgorithms;
 import core.Player;
 import core.gamelogic.actions.BuildEmpoPCAction;
 import core.gamemodel.PermitCard;
