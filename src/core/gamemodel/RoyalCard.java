@@ -23,4 +23,12 @@ public enum RoyalCard implements Serializable {
     public VictoryPoint getRoyalBonus() {
         return victoryPoint;
     }
+
+    @Override
+    public String toString() {
+        String royalCardString = this.name().toLowerCase();
+        royalCardString = String.valueOf(Character.toUpperCase(royalCardString.charAt(0))) + royalCardString.substring(1);
+        royalCardString = royalCardString + ", " + victoryPoint.toString();
+        return royalCardString;
+    }
 }

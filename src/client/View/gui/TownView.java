@@ -51,6 +51,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
     private ObservableList<PermitCard> availablePermits;
     private BooleanProperty isEmporiumBuildable;
     private BooleanProperty servantsAvailable;
+    private BooleanProperty alreadyBuilt;
 
     public TownView(TownName townName, RegionType regionType, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
@@ -59,6 +60,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
         this.town = null;
         isEmporiumBuildable = new SimpleBooleanProperty(false);
         servantsAvailable = new SimpleBooleanProperty(false);
+        alreadyBuilt = new SimpleBooleanProperty(false);
         scroll = new ScrollPane();
         emporiums = FXCollections.observableArrayList();
         availablePermits = FXCollections.observableArrayList();
@@ -152,6 +154,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
                 permitCardView.setOnMouseClicked(event -> {
                     BuildEmpoPCAction action = new BuildEmpoPCAction((Player)CachedData.getInstance().getMe(),regionType,townName,permitCardView.getPermitCard());
                     CachedData.getInstance().getController().sendInfo(action);
+                    alreadyBuilt.setValue(true);
                     scroll.setContent(null);
                     townPopOver.hide();
                 });
@@ -163,7 +166,7 @@ public class TownView extends ObjectImageView implements HasMainAction {
 
     @Override
     public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
-        permitActionButton.disableProperty().bind(Bindings.or(isEmporiumBuildable.not(), mainActionAvailable.not()).or(servantsAvailable.not()));
+        permitActionButton.disableProperty().bind(Bindings.or(isEmporiumBuildable.not(), mainActionAvailable.not()).or(servantsAvailable.not()).or(alreadyBuilt));
     }
 
     public PopOver getTownPopOver() {

@@ -28,4 +28,12 @@ public enum RegionCard implements Serializable {
     public RegionType getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        String regionCardString = type.name().toLowerCase();
+        regionCardString = String.valueOf(Character.toUpperCase(regionCardString.charAt(0))) + regionCardString.substring(1);
+        regionCardString = regionCardString + ", " + victoryPoint.toString();
+        return regionCardString;
+    }
 }

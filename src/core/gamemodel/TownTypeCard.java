@@ -28,4 +28,12 @@ public enum TownTypeCard implements Serializable {
     public TownType getTownType() {
         return townType;
     }
+
+    @Override
+    public String toString() {
+        String townCardString = townType.name().toLowerCase();
+        townCardString = String.valueOf(Character.toUpperCase(townCardString.charAt(0))) + townCardString.substring(1);
+        townCardString = townCardString + ", " + victoryPoint.toString();
+        return townCardString;
+    }
 }

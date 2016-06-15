@@ -30,6 +30,8 @@ public class CachedData {
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
     private WealthPathInterface wealthPath;
+    private NobilityPathInterface nobilityPath;
+    private VictoryPathInterface victoryPath;
     private List<Councilor> councilorPool;
     private Councilor selectedCouncilor;
     private BooleanProperty isCouncilorSelected;
@@ -79,8 +81,24 @@ public class CachedData {
         this.wealthPath = wealthPath;
     }
 
+    public void setNobilityPath(NobilityPathInterface nobilityPath) {
+        this.nobilityPath = nobilityPath;
+    }
+
+    public void setVictoryPath(VictoryPathInterface victoryPath) {
+        this.victoryPath = victoryPath;
+    }
+
     public WealthPathInterface getWealthPath() {
         return wealthPath;
+    }
+
+    public NobilityPathInterface getNobilityPath() {
+        return nobilityPath;
+    }
+
+    public VictoryPathInterface getVictoryPath() {
+        return victoryPath;
     }
 
     public PlayerInterface getMe() {
