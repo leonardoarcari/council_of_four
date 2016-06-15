@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class GUInfoProcessor implements InfoProcessor {
     private GUI gui;
-    private static int elapsed = 20;
 
     public GUInfoProcessor(GUI gui) {
         this.gui = gui;
@@ -32,6 +31,8 @@ public class GUInfoProcessor implements InfoProcessor {
         if (info instanceof TownInterface) {
             TownInterface town = (TownInterface) info;
             CachedData.getInstance().putTown(town.getTownName(), town);
+            if(town.isKingHere())
+                gui.moveKing(town.getTownName());
             gui.getTownView(town.getTownName()).update(town);
             gui.populateTownBonus(town);
         } else if (info instanceof BalconyInterface) {

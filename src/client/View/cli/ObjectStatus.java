@@ -25,14 +25,14 @@ public class ObjectStatus implements CLIState {
         System.out.println("4) Towns");
         System.out.println("5) Wealth path");
         System.out.println("7) Nobility path");
-        System.out.println("7) Victory path");
+        System.out.println("8) Victory path");
         System.out.println("0) Back");
     }
 
     @Override
     public void readInput(String input) {
-        int choiche = Integer.valueOf(input);
-        switch(choiche) {
+        int choice = Integer.valueOf(input);
+        switch(choice) {
             case 1:
                 showCouncilorPool();
                 break;

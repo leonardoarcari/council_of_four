@@ -166,7 +166,8 @@ public class TownsWithBonusView implements HasMainAction{
             TownView myTown = townsView.get(name);
             myTown.getTownPopOver().getContentNode().setDisable(true);
 
-            if(availableTowns.containsKey(name) && myTown.areServantsAvailable()) {
+            if(availableTowns.containsKey(name) && myTown.areServantsAvailable() &&
+                    CachedData.getInstance().getTown(name).hasEmporium((Player)CachedData.getInstance().getMe())) {
                 EventHandler<MouseEvent> handler = setHandler(myTown, ViewAlgorithms.coinForSatisfaction(politicsSelected)+availableTowns.get(name));
                 eventsMap.put(myTown,handler);
 

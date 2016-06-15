@@ -4,6 +4,7 @@ import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.TownType;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class ImagesMaps {
     private Map<RegionType, Image> regionCards;
     private Map<TownType, Image> townTypeCards;
     private Image servant;
+    private Image king;
 
     public static ImagesMaps getInstance() {
         if (instance == null) {
@@ -46,6 +48,7 @@ public class ImagesMaps {
         loadRegionCards();
         loadTownTypeCards();
         servant = new Image(loader.getResourceAsStream("BonusImages/hireservant_1.png"));
+        king = new Image(loader.getResourceAsStream("king.png"));
     }
 
     private void loadPolitics() {
@@ -109,5 +112,9 @@ public class ImagesMaps {
 
     public Image getServant() {
         return servant;
+    }
+
+    public Image getKing() {
+        return king;
     }
 }

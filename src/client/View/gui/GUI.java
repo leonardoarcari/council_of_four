@@ -63,6 +63,7 @@ public class GUI extends Application {
     private VictoryPathView victoryPath;
     private List<ObjectImageView> boardObjects;
     private Map<TownName, TownView> townsView;
+    private ObjectImageView kingIcon;
     private Map<TownName, ObjectImageView> townBonusView;
 
     private PopOver townPopOver;
@@ -97,7 +98,6 @@ public class GUI extends Application {
     private Image firstRoyal;
 
     private Button endTurn;
-    private Label timer;
     private StringProperty timerProperty;
     private ChatView chatView;
 
@@ -375,6 +375,11 @@ public class GUI extends Application {
 
     private void buildTownViews () {
         townsView = TownsWithBonusView.getInstance().getTownsView();
+        kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
+                                        townsView.get(TownName.J).getLeftX()+2*townsView.get(TownName.J).getWidth()/3,
+                                        townsView.get(TownName.J).getTopY()+5*townsView.get(TownName.J).getWidth()/4,
+                                        townsView.get(TownName.J).getWidth()/3);
+        boardObjects.add(kingIcon);
         townsView.values().forEach(townView -> setObjectGlow(townView, TownsWithBonusView.setShadowEffect()));
     }
 
@@ -473,7 +478,7 @@ public class GUI extends Application {
         endTurn = new Button("End Turn");
         endTurn.setOnMouseClicked(event -> controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe())));
         timerProperty = new SimpleStringProperty("N / A");
-        timer = new Label("");
+        Label timer = new Label("");
         timer.setTextAlignment(TextAlignment.CENTER);
         timer.setStyle("color: #B4886B;\n" +
                 "-fx-border-width: 3px;\n" +
@@ -534,8 +539,9 @@ public class GUI extends Application {
     public void updateWealthPath(WealthPathInterface wealthPath) {
         Platform.runLater(() -> {
             this.wealthPath.updateWealthPath(wealthPath);
-            fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
             CachedData.getInstance().setWealthPath(wealthPath);
+            if(CachedData.getInstance().getMe() != null)
+                fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
         });
     }
 
@@ -546,6 +552,13 @@ public class GUI extends Application {
 
     public TownView getTownView(TownName name) {
         return townsView.get(name);
+    }
+
+    public void moveKing(TownName name) {
+        kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
+                townsView.get(name).getLeftX() + 2*townsView.get(name).getWidth()/3,
+                townsView.get(name).getTopY() + 5*townsView.get(TownName.J).getWidth()/4,
+                townsView.get(name).getWidth()/3);
     }
 
     public void populateTownBonus(TownInterface town) {
@@ -734,6 +747,7 @@ public class GUI extends Application {
             mainActionAvailable.setValue(true);
             fastActionAvailable.setValue(true);
             myTurn.setValue(true);
+            fastActionsView.updateEnoughCoinProperty(CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
         });
     }
 
