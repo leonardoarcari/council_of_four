@@ -23,7 +23,12 @@ public class PlayerState implements CLIState {
 
     @Override
     public void readInput(String input) throws IllegalArgumentException {
-        int choice = Integer.valueOf(input);
+        int choice;
+        try {
+            choice = Integer.valueOf(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException();
+        }
         switch(choice) {
             case 1:
                 showUserNick();

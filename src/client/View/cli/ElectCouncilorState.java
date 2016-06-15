@@ -59,7 +59,7 @@ public class ElectCouncilorState implements CLIState {
     }
 
     private void storeBalconyChoice(String choice) throws IllegalArgumentException {
-        int inputChoice = 0;
+        int inputChoice;
         try {
             inputChoice = Integer.valueOf(choice);
         } catch (NumberFormatException e) {

@@ -31,7 +31,12 @@ public class ObjectStatus implements CLIState {
 
     @Override
     public void readInput(String input) {
-        int choice = Integer.valueOf(input);
+        int choice = 0;
+        try {
+            choice = Integer.valueOf(input);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         switch(choice) {
             case 1:
                 showCouncilorPool();
