@@ -90,7 +90,7 @@ public class GUInfoProcessor implements InfoProcessor {
                 //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(true),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
                 gui.showBuyItemView();
-                ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
                 //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(false),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 gui.hideMarket();
