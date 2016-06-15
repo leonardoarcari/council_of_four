@@ -59,9 +59,19 @@ public class ElectCouncilorState implements CLIState {
     }
 
     private void storeBalconyChoice(String choice) throws IllegalArgumentException {
-        Integer inputChoice = Integer.valueOf(choice);
-        if (inputChoice <= 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
-        balconyChoice = balconyMap.get(inputChoice);
+        int inputChoice = 0;
+        try {
+            inputChoice = Integer.valueOf(choice);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException();
+        }
+        if (inputChoice < 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
+        if (inputChoice == 0) {
+            //TODO: Go back to previous state
+            resetState();
+        } else {
+            balconyChoice = balconyMap.get(inputChoice);
+        }
     }
 
     private void printCouncilors() {
@@ -78,23 +88,27 @@ public class ElectCouncilorState implements CLIState {
 
     private void sendElectionAction(String choice) {
         Integer inputChoice = Integer.valueOf(choice);
-        if (inputChoice <= 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
-        Councilor councilor = councilorPoolMap.get(inputChoice);
-        if (councilor == null || balconyChoice == null) throw new NullPointerException("Balcony or Councilor is null");
-        CachedData.getInstance().getController().sendInfo(
-                (electionType.equals(Type.MAIN_ACTION)) ?
-                        new CouncilorElectionAction(
-                                (Player) CachedData.getInstance().getMe(),
-                                councilor,
-                                balconyChoice.getRegion()
-                        ) :
-                        new FastCouncilorElectionAction(
-                                (Player) CachedData.getInstance().getMe(),
-                                balconyChoice.getRegion(),
-                                councilor
-                        )
-        );
-        System.out.println("Action sent");
+        if (inputChoice < 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
+        if (inputChoice == 0) {
+            internalState = BEGIN_STATE;
+        } else {
+            Councilor councilor = councilorPoolMap.get(inputChoice);
+            if (councilor == null || balconyChoice == null) throw new NullPointerException("Balcony or Councilor is null");
+            CachedData.getInstance().getController().sendInfo(
+                    (electionType.equals(Type.MAIN_ACTION)) ?
+                            new CouncilorElectionAction(
+                                    (Player) CachedData.getInstance().getMe(),
+                                    councilor,
+                                    balconyChoice.getRegion()
+                            ) :
+                            new FastCouncilorElectionAction(
+                                    (Player) CachedData.getInstance().getMe(),
+                                    balconyChoice.getRegion(),
+                                    councilor
+                            )
+            );
+            System.out.println("Action sent");
+        }
     }
 
     private void resetState() {

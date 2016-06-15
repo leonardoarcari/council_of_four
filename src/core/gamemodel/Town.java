@@ -99,6 +99,11 @@ public class Town implements Subject, TownInterface, Serializable{
     }
 
     @Override
+    public int getEmporiumsNumber() {
+        return playersEmporium.size();
+    }
+
+    @Override
     public Bonus getTownBonus() {
         return townBonus;
     }

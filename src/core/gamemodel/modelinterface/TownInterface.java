@@ -16,6 +16,7 @@ public interface TownInterface {
     TownName getTownName();
     boolean hasEmporium(Player player);
     Iterator<Player> getPlayersEmporium();
+    int getEmporiumsNumber();
     Iterator<TownName> nearbiesIterator();
     Bonus getTownBonus();
 }
