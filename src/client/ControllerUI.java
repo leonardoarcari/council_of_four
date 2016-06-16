@@ -1,7 +1,7 @@
 package client;
 
-import client.View.gui.GUI;
-import client.clientconnection.GUInfoProcessor;
+import client.View.UserInterface;
+import client.clientconnection.UInfoProcessor;
 import client.clientconnection.RMIConnection;
 import core.connection.Connection;
 import core.connection.InfoProcessor;
@@ -18,11 +18,11 @@ import java.rmi.RemoteException;
 public class ControllerUI {
     private Connection connection;
     private InfoProcessor processor;
-    private GUI gui;
+    private UserInterface userInterface;
 
-    public ControllerUI(GUI gui) {
-        this.gui = gui;
-        processor = new GUInfoProcessor(gui);
+    public ControllerUI(UserInterface userInterface) {
+        this.userInterface = userInterface;
+        processor = new UInfoProcessor(userInterface);
     }
 
     public void rmiConnection() {

@@ -24,6 +24,8 @@ public class BuildEmpoWithKingState implements CLIState {
     private List<PoliticsCard> validPolitics;
     private List<PoliticsCard> chosenPolitics;
 
+    private CLI cli;
+
     private int startingMoney;
     private int moneyForPolitics;
     private int moneyForBuilding;
@@ -31,11 +33,12 @@ public class BuildEmpoWithKingState implements CLIState {
     private Map<Integer, TownInterface> townsSelection;
     private Map<TownName, Integer> reachableTowns;
 
-    public BuildEmpoWithKingState() {
+    public BuildEmpoWithKingState(CLI cli) {
         internalState = BASE_STATE;
         validPolitics = new ArrayList<>();
         chosenPolitics = new ArrayList<>();
         townsSelection = new HashMap<>();
+        this.cli = cli;
     }
 
     @Override

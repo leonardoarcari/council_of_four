@@ -10,6 +10,12 @@ import java.util.Iterator;
  * Created by Matteo on 15/06/16.
  */
 public class PlayerState implements CLIState {
+    private CLI cli;
+
+    public PlayerState(CLI cli) {
+        this.cli = cli;
+    }
+
     @Override
     public void showMenu() {
         System.out.println("Choose object to see its state:");

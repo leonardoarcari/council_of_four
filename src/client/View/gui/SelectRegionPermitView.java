@@ -7,6 +7,7 @@ import core.gamelogic.actions.BuyPermitCardAction;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Region;
 import core.gamemodel.RegionType;
+import core.gamemodel.modelinterface.RegionInterface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -26,7 +27,7 @@ public class SelectRegionPermitView extends ScrollPane implements HasMainAction{
     private List<PermitCardView> permitCardViews;
     private Effect dropShadow;
     private HBox box;
-    private Region region;
+    private RegionInterface region;
     private BooleanProperty turnEnded;
 
     public SelectRegionPermitView(RegionType regionType, List<PoliticsCard> politicsSelected) {
@@ -85,7 +86,7 @@ public class SelectRegionPermitView extends ScrollPane implements HasMainAction{
         permitCardViews.add(view);
     }
 
-    private Region getRegionFrom(RegionType type) {
+    private RegionInterface getRegionFrom(RegionType type) {
         if(type.equals(RegionType.SEA)) return CachedData.getInstance().getSeaRegion();
         else if(type.equals(RegionType.HILLS)) return CachedData.getInstance().getHillsRegion();
         else return CachedData.getInstance().getMountainsRegion();
