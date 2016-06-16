@@ -48,11 +48,10 @@ public class PickTownBonusState implements CLIState {
             throw new IllegalArgumentException();
         }
 
-        if(!namesMap.keySet().contains(choice)) throw new IllegalArgumentException();
-        else {
+        if(namesMap.keySet().contains(choice)) {
             Action action = new PickTownBonusAction((Player) CachedData.getInstance().getMe(), namesMap.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
             //TODO: change context
-        }
+        } else throw new IllegalArgumentException();
     }
 }
