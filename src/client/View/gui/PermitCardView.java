@@ -1,5 +1,6 @@
 package client.View.gui;
 
+import com.sun.istack.internal.Nullable;
 import core.gamemodel.PermitCard;
 import core.gamemodel.bonus.Bonus;
 import javafx.embed.swing.SwingFXUtils;
@@ -40,6 +41,11 @@ public class PermitCardView extends ObjectImageView {
 
     public void setPermitCard(PermitCard permitCard) {
         this.permitCard = permitCard;
+        if(permitCard == null) {
+            myView.setImage(null);
+            return;
+        }
+
         if (!ImagesMaps.getInstance().isPermitLoaded(permitCard)) {
             ImagesMaps.getInstance().putPermitImage(permitCard, permitImage(permitCard));
         }

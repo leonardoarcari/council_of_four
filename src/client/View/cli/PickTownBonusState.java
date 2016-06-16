@@ -54,7 +54,12 @@ public class PickTownBonusState implements CLIState {
         if(namesMap.keySet().contains(choice)) {
             Action action = new PickTownBonusAction((Player) CachedData.getInstance().getMe(), namesMap.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
-            //TODO: change context
+            cli.setCurrentState(cli.getMainActionState());
         } else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public void invalidateState() {
+        //Do nothing
     }
 }

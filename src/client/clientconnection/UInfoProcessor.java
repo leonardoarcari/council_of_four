@@ -53,6 +53,8 @@ public class UInfoProcessor implements InfoProcessor {
                 //executor.scheduleAtFixedRate(() -> gui.setTimer(setElapsedTurnTime()),2,1, TimeUnit.SECONDS);
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 userInterface.showRedeemPermitView();
+            } else if (action.equals(SyncAction.DRAW_PERMIT_BONUS)) {
+                userInterface.showDrawFreePermitView();
             } else if (action.equals((SyncAction.PICK_TOWN_BONUS))) {
                 userInterface.pickTownBonus();
             } else if (action.equals(SyncAction.MAIN_ACTION_DONE)) {

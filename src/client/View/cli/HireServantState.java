@@ -9,8 +9,8 @@ import core.gamelogic.actions.HireServantAction;
  * Created by Matteo on 15/06/16.
  */
 public class HireServantState implements CLIState{
-    public static final int AVAILABLE = 0;
-    public static final int NOT_AVAILABLE = 1;
+    private static final int AVAILABLE = 0;
+    private static final int NOT_AVAILABLE = 1;
     private int currentState;
 
     private CLI cli;
@@ -45,6 +45,11 @@ public class HireServantState implements CLIState{
         else dontSendAction(choice);
     }
 
+    @Override
+    public void invalidateState() {
+        //Do nothing
+    }
+
     private void showOptions() {
         System.out.println("1) Hire a servant (pay 3 coins)");
         System.out.println("0) Go back");
@@ -61,15 +66,14 @@ public class HireServantState implements CLIState{
         if(choice == 1) {
             Action action = new HireServantAction((Player)CachedData.getInstance().getMe());
             CachedData.getInstance().getController().sendInfo(action);
-            //TODO change state go back to main menu
         } else {
-            //TODO change state go back to fastSelectionState
+            cli.setCurrentState(cli.getFastActionState());
         }
     }
 
     private void dontSendAction(int choice) throws IllegalArgumentException {
         if(choice != 0) throw new IllegalArgumentException();
 
-        //TODO change state to go back to fastSelectionState
+        cli.setCurrentState(cli.getFastActionState());
     }
 }

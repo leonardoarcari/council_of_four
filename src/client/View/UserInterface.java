@@ -49,6 +49,8 @@ public interface UserInterface {
 
     void showRedeemPermitView();
 
+    void showDrawFreePermitView();
+
     void setTimer(String text);
 
     void forceExposureEnd();

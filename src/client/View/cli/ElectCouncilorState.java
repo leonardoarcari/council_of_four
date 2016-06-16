@@ -51,6 +51,11 @@ public class ElectCouncilorState implements CLIState {
         }
     }
 
+    @Override
+    public void invalidateState() {
+        resetState();
+    }
+
     private void printBalconies() {
         balconyMap.clear();
         RegionType[] regions = RegionType.values();
@@ -70,7 +75,7 @@ public class ElectCouncilorState implements CLIState {
         }
         if (inputChoice < 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
         if (inputChoice == 0) {
-            //TODO: Go back to previous state
+            cli.setCurrentState(cli.getMainActionState());
             resetState();
         } else {
             balconyChoice = balconyMap.get(inputChoice);

@@ -30,7 +30,6 @@ public class MainState implements CLIState {
         } else if (!mainFast[0] && mainFast[1]) {
             System.out.println("3) Do Fast Action");
         }
-        System.out.println("0) Back");
     }
 
     @Override
@@ -41,14 +40,31 @@ public class MainState implements CLIState {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
         }
-        if (choice < 0 || choice > 4) throw new IllegalArgumentException();
+        if (choice <= 0 || choice > 4) throw new IllegalArgumentException();
         if ((!mainFast[0] || !mainFast[1]) && choice > 3 ) throw new IllegalArgumentException();
-        if (choice == 1) {}
-        else if (choice == 2) {}
-        else if (choice == 3 && mainFast[0] && mainFast[1]) {}
-        else if (choice == 3 && !mainFast[0] && mainFast[1]) {}
-        else if (choice == 3 && mainFast[0] && !mainFast[1]) {}
-        else if (choice == 4) {}
+        if (choice == 1) {
+            cli.setCurrentState(cli.getObjectStatusState());
+        }
+        else if (choice == 2) {
+            cli.setCurrentState(cli.getPlayerState());
+        }
+        else if (choice == 3 && mainFast[0] && mainFast[1]) {
+            cli.setCurrentState(cli.getMainActionState());
+        }
+        else if (choice == 3 && !mainFast[0] && mainFast[1]) {
+            cli.setCurrentState(cli.getFastActionState());
+        }
+        else if (choice == 3 && mainFast[0] && !mainFast[1]) {
+            cli.setCurrentState(cli.getMainActionState());
+        }
+        else if (choice == 4) {
+            cli.setCurrentState(cli.getFastActionState());
+        }
+    }
+
+    @Override
+    public void invalidateState() {
+        mainFast[0] = mainFast[1] = false;
     }
 
     private void buildMenu() {

@@ -586,24 +586,41 @@ public class GUI extends Application implements UserInterface {
             PermitCardView left;
             PermitCardView right;
             if(type.equals(RegionType.SEA)) {
-                CachedData.getInstance().setSeaRegion((Region)region);
+                CachedData.getInstance().setSeaRegion(region);
                 left = seaLeftCard;
                 right = seaRightCard;
             } else if(type.equals(RegionType.HILLS)) {
-                CachedData.getInstance().setHillsRegion((Region)region);
+                CachedData.getInstance().setHillsRegion(region);
                 left = hillsLeftCard;
                 right = hillsRightCard;
+                if(left == null && right == null) hillsBalcony.setNullRegionPermitCards(true);
+                else hillsBalcony.setNullRegionPermitCards(false);
             } else {
-                CachedData.getInstance().setMountainsRegion((Region)region);
+                CachedData.getInstance().setMountainsRegion(region);
                 left = mountainsLeftCard;
                 right = mountainsRightCard;
+                if(left == null && right == null) mountainsBalcony.setNullRegionPermitCards(true);
+                else mountainsBalcony.setNullRegionPermitCards(false);
             }
+
+            setNullPermitBy(region);
 
             left.setPermitCard(region.getLeftPermitCard());
             right.setPermitCard(region.getRightPermitCard());
 
             updateRegionBonus(region);
         });
+    }
+
+    private void setNullPermitBy(RegionInterface region) {
+        boolean permitState;
+        if(region.getLeftPermitCard() == null && region.getRightPermitCard() == null) permitState = true;
+        else permitState = false;
+        if(region.getRegionType().equals(RegionType.SEA)) {
+            seaBalcony.setNullRegionPermitCards(permitState);
+        } else if(region.getRegionType().equals(RegionType.HILLS)) {
+            hillsBalcony.setNullRegionPermitCards(permitState);
+        } else mountainsBalcony.setNullRegionPermitCards(permitState);
     }
 
     private void updateRegionBonus(RegionInterface regionInterface) {
@@ -726,8 +743,6 @@ public class GUI extends Application implements UserInterface {
         });
     }
 
-
-
     @Override
     public void hideMarket() {
         Platform.runLater(() -> ShowPane.getInstance().hide());
@@ -814,6 +829,32 @@ public class GUI extends Application implements UserInterface {
             ShowPane.getInstance().setContent(permitView);
             ShowPane.getInstance().show();
         });
+    }
+
+    @Override
+    public void showDrawFreePermitView() {
+        Platform.runLater(() -> {
+            DrawFreePermitView freePermitView = new DrawFreePermitView();
+            freePermitView.addClickListener(event -> {
+                PermitCard permitCard = ((PermitCardView)event.getSource()).getPermitCard();
+                RegionInterface region = findRegionBy(permitCard);
+                controller.sendInfo(
+                        new PermitNoPayAction((Player) CachedData.getInstance().getMe(),
+                                region.getRegionType(), (region.getLeftPermitCard().equals(permitCard)) ? Region.PermitPos.LEFT : Region.PermitPos.RIGHT)
+                );
+                ShowPane.getInstance().hide();
+            });
+            ShowPane.getInstance().setContent(freePermitView);
+            ShowPane.getInstance().show();
+        });
+    }
+
+    private RegionInterface findRegionBy(PermitCard permitCard) {
+        if(permitCard.equals(seaLeftCard.getPermitCard()) || permitCard.equals(seaRightCard.getPermitCard()))
+            return CachedData.getInstance().getSeaRegion();
+        else if(permitCard.equals(hillsLeftCard.getPermitCard()) || permitCard.equals(hillsRightCard.getPermitCard()))
+            return CachedData.getInstance().getHillsRegion();
+        else return CachedData.getInstance().getMountainsRegion();
     }
 
     @Override

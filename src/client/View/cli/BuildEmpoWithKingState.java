@@ -56,6 +56,11 @@ public class BuildEmpoWithKingState implements CLIState {
         }
     }
 
+    @Override
+    public void invalidateState() {
+        resetState();
+    }
+
     private void printPolitics() {
         kingsBalcony = CachedData.getInstance().getBalcony(RegionType.KINGBOARD);
         buildPoliticsList();

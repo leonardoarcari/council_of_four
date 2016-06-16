@@ -4,6 +4,7 @@ import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.BuyObjectsAction;
+import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.OnSaleItem;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Servant;
@@ -69,6 +70,14 @@ public class MarketAuctionState implements CLIState {
         else checkItemSelection(choice);
     }
 
+    @Override
+    public void invalidateState() {
+        validate = false;
+        currentState = SELECTION_STATE;
+        Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), new ArrayList<>());
+        CachedData.getInstance().getController().sendInfo(action);
+    }
+
     private void fillOnSaleItemMap() {
         Iterator<OnSaleItem> onSaleItemIterator = CachedData.getInstance().getShowcase().onSaleItemIterator();
         int index = 1;
@@ -132,7 +141,7 @@ public class MarketAuctionState implements CLIState {
             Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), itemsToBuy);
             CachedData.getInstance().getController().sendInfo(action);
             validate = false; //Phase ended, next time buying items map has to be re-calculated
-            //TODO stay in idle
+            cli.setCurrentState(cli.getMainState());
         }
     }
 

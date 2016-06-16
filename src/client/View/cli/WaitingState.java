@@ -17,6 +17,11 @@ public class WaitingState implements CLIState{
 
     @Override
     public void readInput(String input) throws IllegalArgumentException {
-        // Do nothing
+        //Do nothing
+    }
+
+    @Override
+    public void invalidateState() {
+        //Do nothing
     }
 }

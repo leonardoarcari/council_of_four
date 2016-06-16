@@ -56,6 +56,11 @@ public class BuyPermitCardState implements CLIState {
         }
     }
 
+    @Override
+    public void invalidateState() {
+        resetState();
+    }
+
     private void printBalconies() {
         balconyMap.clear();
         RegionType[] regions = {RegionType.SEA, RegionType.HILLS, RegionType.MOUNTAINS};

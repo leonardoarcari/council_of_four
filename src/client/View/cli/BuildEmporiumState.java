@@ -52,26 +52,31 @@ public class BuildEmporiumState implements CLIState{
         }
     }
 
+    @Override
+    public void invalidateState() {
+        resetState();
+    }
+
     private void printTowns() {
         me = CachedData.getInstance().getMe();
         if (!validState) buildMaps();
-        townOptions.keySet().iterator().forEachRemaining(integer -> {
-            System.out.println(integer + ") " + townOptions.get(integer).getTownName().toString());
-        });
+        townOptions.keySet().iterator().forEachRemaining(integer ->
+            System.out.println(integer + ") " + townOptions.get(integer).getTownName().toString())
+        );
         currentState = CHOOSE_TOWN;
     }
 
     private void buildMaps() {
         permitsPerTown.clear();
         townOptions.clear();
-        me.permitCardIterator().forEachRemaining(card -> {
+        me.permitCardIterator().forEachRemaining(card ->
             card.getCityPermits().iterator().forEachRemaining(townName -> {
                 if (!haveAlreadyBuilt(me, townName) && hasEnoughServants(me, townName)) {
                     permitsPerTown.putIfAbsent(townName, new ArrayList<>());
                     permitsPerTown.get(townName).add(card);
                 }
-            });
-        });
+            })
+        );
 
         int option = 1;
         for (TownName name : permitsPerTown.keySet()) {
@@ -101,7 +106,7 @@ public class BuildEmporiumState implements CLIState{
         }
         if (choice < 0 || choice > townOptions.size()) throw new IllegalArgumentException();
         if (choice == 0) {
-            //TODO: Add go back to previous state
+            cli.setCurrentState(cli.getMainState());
             resetState();
         }
         else townChoice = townOptions.get(choice);

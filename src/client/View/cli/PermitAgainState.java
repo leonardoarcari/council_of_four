@@ -37,7 +37,7 @@ public class PermitAgainState implements CLIState {
 
         if(currentIndex == 1) {
             System.out.println("You have no permits!");
-            //TODO change state
+            cli.setCurrentState(cli.getMainActionState());
         } else printPermits();
     }
 
@@ -54,8 +54,13 @@ public class PermitAgainState implements CLIState {
             Action action = new SelectAgainPermitAction((Player)CachedData.getInstance().getMe(), permitCardsMap.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
             validate = false;
-            //TODO change state
+            cli.setCurrentState(cli.getMainState());
         } else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public void invalidateState() {
+        validate = false;
     }
 
     private void fillPermitsMap() {

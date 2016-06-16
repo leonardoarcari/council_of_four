@@ -53,6 +53,11 @@ public class ChangePermitState implements CLIState {
         else chooseNoAvailable(choice);
     }
 
+    @Override
+    public void invalidateState() {
+        currentState = NO_OPTIONS;
+    }
+
     private void fillRegionOptions() {
         int i = 1;
         i = checkRegion(CachedData.getInstance().getSeaRegion(), i);
@@ -87,18 +92,20 @@ public class ChangePermitState implements CLIState {
     }
 
     private void chooseAvailable(int choice) throws IllegalArgumentException {
-        if(!regionOptions.keySet().contains(choice)) throw new IllegalArgumentException();
+        if(!regionOptions.keySet().contains(choice) && choice != 0) throw new IllegalArgumentException();
 
-        if(choice == 0) {} //TODO change state
-        else {
+        if(choice != 0) {
             Action action = new ChangePermitsAction((Player)CachedData.getInstance().getMe(), regionOptions.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
-            //TODO change state, return back
+            currentState = NO_OPTIONS;
         }
+        cli.setCurrentState(cli.getMainState());
     }
 
     private void chooseNoAvailable(int choice) throws IllegalArgumentException {
         if(choice != 0) throw new IllegalArgumentException();
-        else {} //TODO change state, return back
+        else {
+            cli.setCurrentState(cli.getMainState());
+        }
     }
 }

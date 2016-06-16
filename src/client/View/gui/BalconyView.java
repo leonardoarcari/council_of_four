@@ -48,6 +48,7 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
     private Button electCouncilor;
     private Button fastElection;
     private BooleanProperty isCouncilSatisfiable;
+    private BooleanProperty nullRegionPermitCards;
     private ObservableList<PoliticsCard> availablePoliticsCards;
 
     public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
@@ -59,6 +60,7 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         buildPopOver();
         setUpCouncilors();
         isCouncilSatisfiable = new SimpleBooleanProperty(false);
+        nullRegionPermitCards = new SimpleBooleanProperty(false);
 
         //Listen when either the balcony or the player politics card
         councilors.addListener((ListChangeListener<? super Councilor>) c -> {
@@ -192,12 +194,16 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
     @Override
     public void setDisableBindingMainAction(BooleanProperty mainActionAvailable) {
         electCouncilor.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), mainActionAvailable.not()));
-        satisfyCouncil.disableProperty().bind(Bindings.or(isCouncilSatisfiable.not(), mainActionAvailable.not()));
+        satisfyCouncil.disableProperty().bind(Bindings.or(isCouncilSatisfiable.not(), mainActionAvailable.not()).or(nullRegionPermitCards));
     }
 
     @Override
     public void setDisableBindingFastAction(BooleanProperty fastActionAvailable) {
         fastElection.disableProperty().bind(Bindings.or(CachedData.getInstance().isCouncilorSelectedProperty().not(), fastActionAvailable.not()));
+    }
+
+    public void setNullRegionPermitCards(Boolean property) {
+        nullRegionPermitCards.setValue(property);
     }
 
     private void setStyle(Button button) {

@@ -40,7 +40,7 @@ public class PickPermitState implements CLIState {
 
         if(currentIndex == 1) {
             System.out.println("No permits available to buy");
-            //TODO change state
+            cli.setCurrentState(cli.getMainState());
         } else printPermits();
     }
 
@@ -60,8 +60,13 @@ public class PickPermitState implements CLIState {
                     (region.getLeftPermitCard().equals(permitCard))? Region.PermitPos.LEFT: Region.PermitPos.RIGHT);
             CachedData.getInstance().getController().sendInfo(action);
             validate = false;
-            //TODO change state
+            cli.setCurrentState(cli.getMainState());
         } else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public void invalidateState() {
+        validate = false;
     }
 
     private void fillMaps() {

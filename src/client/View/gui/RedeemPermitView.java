@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
@@ -48,7 +49,11 @@ public class RedeemPermitView extends ScrollPane implements HasMainAction{
 
         box.setAlignment(Pos.CENTER);
         setPadding(new Insets(20));
-        box.getChildren().addAll(permitCardViews);
+        if(permitCardViews.isEmpty()) {
+            Button button = new Button("No permit to redeem!");
+            button.setOnMouseClicked(event -> ShowPane.getInstance().hide());
+            box.getChildren().add(button);
+        } else box.getChildren().addAll(permitCardViews);
 
         setContent(box);
         setFitToWidth(true);

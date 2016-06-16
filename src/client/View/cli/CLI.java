@@ -25,15 +25,21 @@ public class CLI implements UserInterface {
     private final CLIState buyPermitCardState;
     private final CLIState doOtherActionState;
     private final CLIState hireServantState;
+    private final CLIState changePermitState;
     private final CLIState mainState;
+    private final CLIState mainActionState;
+    private final CLIState fastActionState;
     private final CLIState marketAuctionState;
     private final CLIState marketExposureState;
     private final CLIState objectStatusState;
     private final CLIState pickTownBonusState;
+    private final CLIState permitAgainState;
+    private final CLIState pickPermitState;
     private final CLIState playerState;
     private final CLIState waitingState;
 
     private CLIState currentState;
+    private CLIState nextState;
     private BufferedReader in;
 
     public CLI() {
@@ -44,11 +50,16 @@ public class CLI implements UserInterface {
         buyPermitCardState = new BuyPermitCardState(this);
         doOtherActionState = new DoOtherActionState(this);
         hireServantState = new HireServantState(this);
+        changePermitState = new ChangePermitState(this);
         mainState = new MainState(this);
+        mainActionState = new MainActionState(this);
+        fastActionState = new FastActionState(this);
         marketAuctionState = new MarketAuctionState(this);
         marketExposureState = new MarketExposureState(this);
         objectStatusState = new ObjectStatusState(this);
         pickTownBonusState = new PickTownBonusState(this);
+        permitAgainState = new PermitAgainState(this);
+        pickPermitState = new PickPermitState(this);
         playerState = new PlayerState(this);
         waitingState = new WaitingState(this);
 
@@ -62,11 +73,16 @@ public class CLI implements UserInterface {
                 boolean correct = false;
                 while (!correct) {
                     String input = in.readLine();
-                    try {
-                        currentState.readInput(input);
-                        correct = true;
-                    } catch (IllegalArgumentException e) {
-                        correct = false;
+                    if(nextState.equals(currentState))
+                        try {
+                            currentState.readInput(input);
+                            correct = true;
+                        } catch (IllegalArgumentException e) {
+                            correct = false;
+                        }
+                    else {
+                        System.out.println("-- Not valid input: state has changed --");
+                        currentState = nextState;
                     }
                 }
             } catch (IOException e) {
@@ -111,16 +127,20 @@ public class CLI implements UserInterface {
         return hireServantState;
     }
 
+    public CLIState getChangePermitState() {
+        return changePermitState;
+    }
+
     public CLIState getMainState() {
         return mainState;
     }
 
-    public CLIState getMarketAuctionState() {
-        return marketAuctionState;
+    public CLIState getMainActionState() {
+        return mainActionState;
     }
 
-    public CLIState getMarketExposureState() {
-        return marketExposureState;
+    public CLIState getFastActionState() {
+        return fastActionState;
     }
 
     public CLIState getObjectStatusState() {
@@ -191,17 +211,17 @@ public class CLI implements UserInterface {
 
     @Override
     public void showExposeView() {
-        //TODO: Force switching state
+        nextState = marketExposureState;
     }
 
     @Override
     public void showBuyItemView() {
-        //TODO: Force switching state
+        nextState = marketAuctionState;
     }
 
     @Override
     public void hideMarket() {
-        //TODO: Force switching state
+        nextState = waitingState;
     }
 
     @Override
@@ -211,12 +231,12 @@ public class CLI implements UserInterface {
 
     @Override
     public void startGame() {
-        //TODO: Force switching state
+        currentState = nextState = mainState;
     }
 
     @Override
     public void pickTownBonus() {
-        //TODO: Force switching state
+        nextState = pickTownBonusState;
     }
 
     @Override
@@ -226,27 +246,39 @@ public class CLI implements UserInterface {
 
     @Override
     public void yourTurn() {
-        //TODO: Force switching state
+        setFastActionAvailable(true);
+        setMainActionAvailable(true);
+        nextState = mainState;
     }
 
     @Override
     public void endTurn() {
-        //TODO: Force switching state
+        setMainActionAvailable(false);
+        setFastActionAvailable(false);
+        currentState.invalidateState();
+        nextState = mainState;
     }
 
     @Override
     public void setMainActionAvailable(boolean mainActionAvailable) {
         CachedData.getInstance().setMainActionAvailable(mainActionAvailable);
+        nextState = mainState;
     }
 
     @Override
     public void setFastActionAvailable(boolean fastActionAvailable) {
         CachedData.getInstance().setFastActionAvailable(fastActionAvailable);
+        nextState = mainState;
     }
 
     @Override
     public void showRedeemPermitView() {
-        //TODO: Force switching state
+        nextState = permitAgainState;
+    }
+
+    @Override
+    public void showDrawFreePermitView() {
+        nextState = pickPermitState;
     }
 
     @Override
@@ -263,11 +295,13 @@ public class CLI implements UserInterface {
 
     @Override
     public void forceExposureEnd() {
-        //TODO: Force switching state
+        currentState.invalidateState();
+        nextState = waitingState;
     }
 
     @Override
     public void forceBuyingEnd() {
-        //TODO: Force switching state
+        currentState.invalidateState();
+        nextState = waitingState;
     }
 }

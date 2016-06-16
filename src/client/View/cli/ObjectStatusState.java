@@ -65,11 +65,16 @@ public class ObjectStatusState implements CLIState {
                 showVictoryPath();
                 break;
             case 0:
-                //TODO: change context state
+                cli.setCurrentState(cli.getMainActionState());
                 break;
             default:
                 throw new IllegalArgumentException();
         }
+    }
+
+    @Override
+    public void invalidateState() {
+        //Do nothing
     }
 
     private void showCouncilorPool() {

@@ -6,4 +6,5 @@ package client.View.cli;
 public interface CLIState {
     void showMenu();
     void readInput(String input) throws IllegalArgumentException;
+    void invalidateState();
 }

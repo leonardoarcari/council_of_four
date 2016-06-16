@@ -73,8 +73,6 @@ public class ServerProcessor implements InfoProcessor {
             } else if (info.getClass().equals(ChatAction.class)) {
                 forwardChatMessage((ChatAction) info);
             }
-        } else if (info instanceof SyncAction) {
-            //TODO: Add Sync Action
         } else if(info.getClass().equals(EndTurnAction.class)) {
             endPlayerTurn((EndTurnAction) info);
         }
@@ -142,7 +140,6 @@ public class ServerProcessor implements InfoProcessor {
         } else if (bonusType.equals(HireServant.class)) {
             toPlayer.hireServants((game.getGameBoard().hireServants(bonus.getValue())));
         } else if (bonusType.equals(NobilityPoint.class)) {
-            //TODO: check for this code
             game.getGameBoard().moveNobilityPath(toPlayer, bonus.getValue()).stream().forEach(
                     otherBonus -> redeemBonus(otherBonus, toPlayer));
         } else if (bonusType.equals(VictoryPoint.class)) {
