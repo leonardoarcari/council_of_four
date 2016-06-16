@@ -25,12 +25,15 @@ public class ElectCouncilorState implements CLIState {
     private Map<Integer, Councilor> councilorPoolMap;
     private BalconyInterface balconyChoice;
 
-    public ElectCouncilorState(Type electionType) {
+    private CLI cli;
+
+    public ElectCouncilorState(Type electionType, CLI cli) {
         internalState = BEGIN_STATE;
         this.electionType = electionType;
         balconyMap = new HashMap<>();
         councilorPoolMap = new HashMap<>();
         balconyChoice = null;
+        this.cli = cli;
     }
 
     @Override

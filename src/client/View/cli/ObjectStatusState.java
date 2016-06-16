@@ -4,6 +4,7 @@ import client.CachedData;
 import core.Player;
 import core.gamemodel.*;
 import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.RegionInterface;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,11 @@ import static java.util.Collections.singletonList;
  * Created by Matteo on 14/06/16.
  */
 public class ObjectStatusState implements CLIState {
-    //TODO add context variable
+    private CLI cli;
+
+    public ObjectStatusState(CLI cli) {
+        this.cli = cli;
+    }
 
     @Override
     public void showMenu() {
@@ -89,7 +94,7 @@ public class ObjectStatusState implements CLIState {
         printRegionStatus(CachedData.getInstance().getMountainsRegion());
     }
 
-    private void printRegionStatus(Region region) {
+    private void printRegionStatus(RegionInterface region) {
         System.out.println(region.getRegionType().name() + " region");
         System.out.println((!region.isRegionCardTaken()) ?
                 ("Region card: "+ region.getRegionCard().getRegionBonus().toString()) : "Region card already taken!");

@@ -6,6 +6,7 @@ import core.gamelogic.actions.Action;
 import core.gamelogic.actions.ChangePermitsAction;
 import core.gamemodel.Region;
 import core.gamemodel.RegionType;
+import core.gamemodel.modelinterface.RegionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +18,16 @@ public class ChangePermitState implements CLIState {
     public static final int OPTIONS_AVAILABLE = 0;
     public static final int NO_OPTIONS = 1;
     private int currentState;
+
+    private CLI cli;
+
     private Map<Integer, RegionType> regionOptions;
 
-    public ChangePermitState() {
+    public ChangePermitState(CLI cli) {
         currentState = NO_OPTIONS;
         regionOptions = new HashMap<>();
         fillRegionOptions();
+        this.cli = cli;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class ChangePermitState implements CLIState {
         checkRegion(CachedData.getInstance().getMountainsRegion(), i);
     }
 
-    private int checkRegion(Region region, int index) {
+    private int checkRegion(RegionInterface region, int index) {
         if(region.getLeftPermitCard() != null && region.getRightPermitCard() != null) {
             regionOptions.put(index, region.getRegionType());
             index++;

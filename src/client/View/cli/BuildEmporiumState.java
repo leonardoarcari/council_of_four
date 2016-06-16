@@ -21,17 +21,20 @@ public class BuildEmporiumState implements CLIState{
     private int currentState;
     private boolean validState;
 
+    private CLI cli;
+
     private PlayerInterface me;
     private Map<TownName, List<PermitCard>> permitsPerTown;
     private Map<Integer, TownInterface> townOptions;
     private TownInterface townChoice;
 
 
-    public BuildEmporiumState() {
+    public BuildEmporiumState(CLI cli) {
         currentState = BEGIN_STATE;
         validState = false;
         permitsPerTown = new HashMap<>(15);
         townOptions = new HashMap<>();
+        this.cli = cli;
     }
 
     @Override

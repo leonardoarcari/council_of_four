@@ -23,17 +23,20 @@ public class BuyPermitCardState implements CLIState {
     private BalconyInterface chosenBalcony;
     private RegionInterface chosenRegion;
 
+    private CLI cli;
+
     private Map<BalconyInterface, List<PoliticsCard>> validPoltics;
     private Map<Integer, BalconyInterface> balconyMap;
     private List<PoliticsCard> chosenPolitics;
 
-    public BuyPermitCardState() {
+    public BuyPermitCardState(CLI cli) {
         validPoltics = new HashMap<>();
         balconyMap = new HashMap<>(4);
         internalState = BASE_STATE;
         chosenBalcony = null;
         chosenRegion = null;
         chosenPolitics = new ArrayList<>();
+        this.cli = cli;
     }
 
     @Override

@@ -36,10 +36,14 @@ public class CachedData {
     private Councilor selectedCouncilor;
     private BooleanProperty isCouncilorSelected;
     private ObservableList<PoliticsCard> playerPoliticsCards;
-    private Region seaRegion;
-    private Region hillsRegion;
-    private Region mountainsRegion;
+    private RegionInterface seaRegion;
+    private RegionInterface hillsRegion;
+    private RegionInterface mountainsRegion;
     private ShowcaseInterface showcase;
+
+    private BooleanProperty mainActionAvailable;
+    private BooleanProperty fastActionAvailable;
+    private BooleanProperty myTurn;
 
     public static CachedData getInstance() {
         if (instance == null) {
@@ -67,6 +71,9 @@ public class CachedData {
         seaRegion = null;
         hillsRegion = null;
         mountainsRegion = null;
+        mainActionAvailable = new SimpleBooleanProperty(false);
+        fastActionAvailable = new SimpleBooleanProperty(false);
+        myTurn = new SimpleBooleanProperty(false);
     }
 
     public ControllerUI getController() {
@@ -177,27 +184,27 @@ public class CachedData {
         this.selectedCouncilor = selectedCouncilor;
     }
 
-    public Region getSeaRegion() {
+    public RegionInterface getSeaRegion() {
         return seaRegion;
     }
 
-    public Region getHillsRegion() {
+    public RegionInterface getHillsRegion() {
         return hillsRegion;
     }
 
-    public Region getMountainsRegion() {
+    public RegionInterface getMountainsRegion() {
         return mountainsRegion;
     }
 
-    public void setSeaRegion(Region seaRegion) {
+    public void setSeaRegion(RegionInterface seaRegion) {
         this.seaRegion = seaRegion;
     }
 
-    public void setHillsRegion(Region hillsRegion) {
+    public void setHillsRegion(RegionInterface hillsRegion) {
         this.hillsRegion = hillsRegion;
     }
 
-    public void setMountainsRegion(Region mountainsRegion) {
+    public void setMountainsRegion(RegionInterface mountainsRegion) {
         this.mountainsRegion = mountainsRegion;
     }
 
@@ -234,5 +241,41 @@ public class CachedData {
         }
         elapsedTime--;
         return elapsedTime;
+    }
+
+    public boolean getMainActionAvailable() {
+        return mainActionAvailable.get();
+    }
+
+    public BooleanProperty mainActionAvailableProperty() {
+        return mainActionAvailable;
+    }
+
+    public void setMainActionAvailable(boolean mainActionAvailable) {
+        this.mainActionAvailable.set(mainActionAvailable);
+    }
+
+    public boolean getFastActionAvailable() {
+        return fastActionAvailable.get();
+    }
+
+    public BooleanProperty fastActionAvailableProperty() {
+        return fastActionAvailable;
+    }
+
+    public void setFastActionAvailable(boolean fastActionAvailable) {
+        this.fastActionAvailable.set(fastActionAvailable);
+    }
+
+    public boolean getMyTurn() {
+        return myTurn.get();
+    }
+
+    public BooleanProperty myTurnProperty() {
+        return myTurn;
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn.set(myTurn);
     }
 }

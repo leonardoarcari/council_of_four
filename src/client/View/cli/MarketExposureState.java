@@ -24,11 +24,14 @@ public class MarketExposureState implements CLIState {
     private int currentState;
     private int selectedItemIndex;
 
-    public MarketExposureState() {
+    private CLI cli;
+
+    public MarketExposureState(CLI cli) {
         currentState = SELECTION_STATE;
         sellableItemMap = new HashMap<>();
         onSaleItemMap = new HashMap<>();
         validate = false;
+        this.cli = cli;
     }
 
     @Override

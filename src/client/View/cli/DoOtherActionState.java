@@ -13,8 +13,11 @@ public class DoOtherActionState implements CLIState {
     public static final int NOT_AVAILABLE = 1;
     private int currentState;
 
-    public DoOtherActionState() {
+    private CLI cli;
+
+    public DoOtherActionState(CLI cli) {
         currentState = NOT_AVAILABLE;
+        this.cli = cli;
     }
 
     @Override

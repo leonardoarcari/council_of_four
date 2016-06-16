@@ -24,18 +24,21 @@ public class MarketAuctionState implements CLIState {
     private static final int DESELECT_OBJECT = 6;
     private int microState;
 
+    private CLI cli;
+
     private Map<Integer, OnSaleItem> onSaleItemMap;
     private Map<Integer, OnSaleItem> buyingItemMap;
     private boolean validate;
     private int selectedItemIndex;
     private int myCoins;
 
-    public MarketAuctionState() {
+    public MarketAuctionState(CLI cli) {
         currentState = SELECTION_STATE;
         microState = NOT_ENOUGH_MONEY;
         onSaleItemMap = new HashMap<>();
         buyingItemMap = new HashMap<>();
         validate = false;
+        this.cli = cli;
     }
 
     @Override

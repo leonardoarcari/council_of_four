@@ -13,8 +13,11 @@ public class HireServantState implements CLIState{
     public static final int NOT_AVAILABLE = 1;
     private int currentState;
 
-    public HireServantState() {
+    private CLI cli;
+
+    public HireServantState(CLI cli) {
         currentState = NOT_AVAILABLE;
+        this.cli = cli;
     }
 
     @Override

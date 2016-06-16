@@ -2,6 +2,7 @@ package client.View.gui;
 
 import client.CachedData;
 import client.ControllerUI;
+import client.View.UserInterface;
 import core.Player;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.*;
@@ -11,8 +12,6 @@ import core.gamemodel.modelinterface.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -35,7 +34,7 @@ import java.util.*;
 /**
  * Created by Leonardo Arcari on 31/05/2016.
  */
-public class GUI extends Application {
+public class GUI extends Application implements UserInterface {
     private ClassLoader classLoader;
     private ControllerUI controller;
     private Stage primaryStage;
@@ -101,10 +100,6 @@ public class GUI extends Application {
     private StringProperty timerProperty;
     private ChatView chatView;
 
-    private BooleanProperty mainActionAvailable;
-    private BooleanProperty fastActionAvailable;
-    private BooleanProperty myTurn;
-
     @Override
     public void init() throws Exception {
         super.init();
@@ -114,9 +109,6 @@ public class GUI extends Application {
         classLoader = this.getClass().getClassLoader();
         controller = new ControllerUI(this);
         CachedData.getInstance().setController(controller);
-        mainActionAvailable = new SimpleBooleanProperty(false);
-        fastActionAvailable = new SimpleBooleanProperty(false);
-        myTurn = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -236,7 +228,7 @@ public class GUI extends Application {
         bindDisableProperties();
 
         // Debug
-        gridPane.setGridLinesVisible(true);
+        gridPane.setGridLinesVisible(false);
         gameboardIV.setOnMouseClicked(event -> System.out.println("X scaled: " +
                 event.getX()/gameboardIV.getBoundsInParent().getWidth() + " Y scaled " +
                 event.getY()/ gameboardIV.getBoundsInParent().getHeight())
@@ -441,23 +433,23 @@ public class GUI extends Application {
 
     private void bindDisableProperties() {
         // Main Action
-        seaBalcony.setDisableBindingMainAction(mainActionAvailable);
-        hillsBalcony.setDisableBindingMainAction(mainActionAvailable);
-        mountainsBalcony.setDisableBindingMainAction(mainActionAvailable);
-        boardBalcony.setDisableBindingMainAction(mainActionAvailable);
-        councilorPool.setDisableBindingMainAction(mainActionAvailable);
-        townsView.values().forEach(townView -> townView.setDisableBindingMainAction(mainActionAvailable));
+        seaBalcony.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty());
+        hillsBalcony.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty());
+        mountainsBalcony.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty());
+        boardBalcony.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty());
+        councilorPool.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty());
+        townsView.values().forEach(townView -> townView.setDisableBindingMainAction(CachedData.getInstance().mainActionAvailableProperty()));
 
         // Fast Action
-        seaBalcony.setDisableBindingFastAction(fastActionAvailable);
-        hillsBalcony.setDisableBindingFastAction(fastActionAvailable);
-        mountainsBalcony.setDisableBindingFastAction(fastActionAvailable);
-        boardBalcony.setDisableBindingFastAction(fastActionAvailable);
-        councilorPool.setDisableBindingFastAction(fastActionAvailable);
-        fastActionsView.setDisableBindingFastAction(fastActionAvailable);
+        seaBalcony.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
+        hillsBalcony.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
+        mountainsBalcony.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
+        boardBalcony.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
+        councilorPool.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
+        fastActionsView.setDisableBindingFastAction(CachedData.getInstance().fastActionAvailableProperty());
 
         // Not my turn
-        endTurn.disableProperty().bind(myTurn.not());
+        endTurn.disableProperty().bind(CachedData.getInstance().myTurnProperty().not());
     }
 
     private void buildTabPane() {
@@ -474,7 +466,7 @@ public class GUI extends Application {
 
     private Pane buildPlayerHand() {
         GridPane pane = new GridPane();
-        pane.setGridLinesVisible(true);
+        pane.setGridLinesVisible(false);
         endTurn = new Button("End Turn");
         endTurn.setOnMouseClicked(event -> controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe())));
         timerProperty = new SimpleStringProperty("N / A");
@@ -516,8 +508,10 @@ public class GUI extends Application {
     }
 
     //Update methods
+    @Override
     public void updateBalcony(BalconyInterface balcony) {
         Platform.runLater(() -> {
+            CachedData.getInstance().putBalcony(balcony.getRegion(), balcony);
             RegionType type = balcony.getRegion();
             BalconyView balconyIV;
             if(type.equals(RegionType.SEA)) {
@@ -531,11 +525,13 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void updateNobilityPath(NobilityPathInterface nobility) {
         Platform.runLater(() -> nobilityPath.updateNobilityPath(nobility));
         CachedData.getInstance().setNobilityPath(nobility);
     }
 
+    @Override
     public void updateWealthPath(WealthPathInterface wealthPath) {
         Platform.runLater(() -> {
             this.wealthPath.updateWealthPath(wealthPath);
@@ -545,23 +541,34 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void updateVictoryPath(VictoryPathInterface victory) {
         Platform.runLater(() -> victoryPath.updateVictoryPath(victory));
         CachedData.getInstance().setVictoryPath(victory);
     }
 
-    public TownView getTownView(TownName name) {
+    @Override
+    public void updateTown(TownInterface town) {
+        Platform.runLater(() -> {
+            CachedData.getInstance().putTown(town.getTownName(), town);
+            if (town.isKingHere()) moveKing(town.getTownName());
+            getTownView(town.getTownName()).update(town);
+            populateTownBonus(town);
+        });
+    }
+
+    private TownView getTownView(TownName name) {
         return townsView.get(name);
     }
 
-    public void moveKing(TownName name) {
+    private void moveKing(TownName name) {
         kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
                 townsView.get(name).getLeftX() + 2*townsView.get(name).getWidth()/3,
                 townsView.get(name).getTopY() + 5*townsView.get(TownName.J).getWidth()/4,
                 townsView.get(name).getWidth()/3);
     }
 
-    public void populateTownBonus(TownInterface town) {
+    private void populateTownBonus(TownInterface town) {
         if(town.getTownName().equals(TownName.J)) return;
         if(townBonusView.get(town.getTownName()).getImage() == null) {
             String className = town.getTownBonus().getClass().getName();
@@ -572,6 +579,7 @@ public class GUI extends Application {
         }
     }
 
+    @Override
     public void updatePermitCard(RegionInterface region) {
         Platform.runLater(() -> {
             RegionType type = region.getRegionType();
@@ -593,11 +601,12 @@ public class GUI extends Application {
 
             left.setPermitCard(region.getLeftPermitCard());
             right.setPermitCard(region.getRightPermitCard());
+
+            updateRegionBonus(region);
         });
     }
 
-    public void updateRegionBonus(RegionInterface regionInterface) {
-        Platform.runLater(() -> {
+    private void updateRegionBonus(RegionInterface regionInterface) {
             RegionType type = regionInterface.getRegionType();
             if(type.equals(RegionType.SEA)) {
                 if(seaBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
@@ -607,13 +616,16 @@ public class GUI extends Application {
                     hillsBonusCard.setImage(null);}
             else {
                 if(mountainsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
-                    mountainsBonusCard.setImage(null);}
-        });
-
+                    mountainsBonusCard.setImage(null);
+            }
     }
 
+    @Override
     public void updateGameBoardData(GameBoardInterface gameBoardInterface) {
         Platform.runLater(() -> {
+            List<Councilor> councilorPool = new ArrayList<>();
+            gameBoardInterface.councilorIterator().forEachRemaining(councilorPool::add);
+            CachedData.getInstance().setCouncilorPool(councilorPool);
             updateRoyalCards(gameBoardInterface);
             updateCouncilorsPool(gameBoardInterface);
             updateTownTypeCard(gameBoardInterface);
@@ -680,6 +692,7 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void updateShowCase(ShowcaseInterface showcase) {
         Platform.runLater(() -> {
             CachedData.getInstance().setShowcase(showcase);
@@ -688,6 +701,7 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void showExposeView() {
         Platform.runLater(() -> {
             ExposeSellableView exposeSellableView = new ExposeSellableView();
@@ -703,6 +717,7 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void showBuyItemView() {
         Platform.runLater(() -> {
             ShowPane.getInstance().setContent(buySellableView);
@@ -711,18 +726,24 @@ public class GUI extends Application {
         });
     }
 
+
+
+    @Override
     public void hideMarket() {
         Platform.runLater(() -> ShowPane.getInstance().hide());
     }
 
+    @Override
     public void updatePlayer(PlayerInterface player) {
         Platform.runLater(() -> {
+            CachedData.getInstance().setMe(player);
             fastActionsView.updateEnoughServantsProperty(player.getServantsNumber()>=1,player.getServantsNumber()>=3);
             playerView.setPlayer(player);
             townsView.values().forEach(element -> element.setServantsAvailable(player.getServantsNumber()));
         });
     }
 
+    @Override
     public void startGame() {
         Platform.runLater(() -> {
             scene = new Scene(gridPane, 1280, 800);
@@ -733,6 +754,12 @@ public class GUI extends Application {
         });
     }
 
+    @Override
+    public void pickTownBonus() {
+        Platform.runLater(() -> TownsWithBonusView.getInstance().changeBonusListener());
+    }
+
+    @Override
     public void appendChatMessage(ChatAction action) {
         Platform.runLater(() -> {
             Player sender = action.getPlayer();
@@ -742,31 +769,36 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void yourTurn() {
         Platform.runLater(() -> {
-            mainActionAvailable.setValue(true);
-            fastActionAvailable.setValue(true);
-            myTurn.setValue(true);
+            CachedData.getInstance().mainActionAvailableProperty().setValue(true);
+            CachedData.getInstance().fastActionAvailableProperty().setValue(true);
+            CachedData.getInstance().myTurnProperty().setValue(true);
             fastActionsView.updateEnoughCoinProperty(CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
         });
     }
 
+    @Override
     public void endTurn() {
         Platform.runLater(() -> {
-            mainActionAvailable.setValue(false);
-            fastActionAvailable.setValue(false);
-            myTurn.setValue(false);
+            CachedData.getInstance().mainActionAvailableProperty().setValue(false);
+            CachedData.getInstance().fastActionAvailableProperty().setValue(false);
+            CachedData.getInstance().myTurnProperty().setValue(false);
         });
     }
 
+    @Override
     public void setMainActionAvailable(boolean mainActionAvailable) {
-        Platform.runLater(() -> this.mainActionAvailable.setValue(mainActionAvailable));
+        Platform.runLater(() -> CachedData.getInstance().mainActionAvailableProperty().setValue(mainActionAvailable));
     }
 
+    @Override
     public void setFastActionAvailable(boolean fastActionAvailable) {
-        Platform.runLater(() -> this.fastActionAvailable.setValue(fastActionAvailable));
+        Platform.runLater(() -> CachedData.getInstance().fastActionAvailableProperty().setValue(fastActionAvailable));
     }
 
+    @Override
     public void showRedeemPermitView() {
         Platform.runLater(() -> {
             RedeemPermitView permitView = new RedeemPermitView(CachedData.getInstance().getMe());
@@ -784,16 +816,19 @@ public class GUI extends Application {
         });
     }
 
+    @Override
     public void setTimer(String text) {
         Platform.runLater(() ->
             timerProperty.setValue(text)
         );
     }
 
+    @Override
     public void forceExposureEnd() {
         exposureView.setDisable(true);
     }
 
+    @Override
     public void forceBuyingEnd() {
         buySellableView.setDisable(true);
     }
