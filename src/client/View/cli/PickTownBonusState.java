@@ -18,7 +18,9 @@ public class PickTownBonusState implements CLIState {
     private Map<TownName, Bonus> townBonusMap;
     private Map<Integer, TownName> namesMap;
 
-    public PickTownBonusState() {
+    private CLI cli;
+
+    public PickTownBonusState(CLI cli) {
         townBonusMap = new HashMap<>();
         namesMap = new HashMap<>();
         Map<TownName, TownInterface> temp = CachedData.getInstance().getTowns();
@@ -27,6 +29,7 @@ public class PickTownBonusState implements CLIState {
             townBonusMap.put(name, temp.get(name).getTownBonus());
             namesMap.put(index, name);
         }
+        this.cli = cli;
     }
 
     @Override

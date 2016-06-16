@@ -8,18 +8,135 @@ import core.gamemodel.Councilor;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 16/06/2016.
  */
 public class CLI implements UserInterface {
-    Map<String, CLIState> stateMap;
+    private final CLIState electCouncilorMainState;
+    private final CLIState electCouncilorFastState;
+    private final CLIState buildEmporiumState;
+    private final CLIState buildEmporiumWithKingState;
+    private final CLIState buyPermitCardState;
+    private final CLIState doOtherActionState;
+    private final CLIState hireServantState;
+    private final CLIState mainState;
+    private final CLIState marketAuctionState;
+    private final CLIState marketExposureState;
+    private final CLIState objectStatusState;
+    private final CLIState pickTownBonusState;
+    private final CLIState playerState;
+    private final CLIState waitingState;
+
+    private CLIState currentState;
+    private BufferedReader in;
 
     public CLI() {
+        electCouncilorMainState = new ElectCouncilorState(ElectCouncilorState.Type.MAIN_ACTION, this);
+        electCouncilorFastState = new ElectCouncilorState(ElectCouncilorState.Type.FAST_ACTION, this);
+        buildEmporiumState = new BuildEmporiumState(this);
+        buildEmporiumWithKingState = new BuildEmpoWithKingState(this);
+        buyPermitCardState = new BuyPermitCardState(this);
+        doOtherActionState = new DoOtherActionState(this);
+        hireServantState = new HireServantState(this);
+        mainState = new MainState(this);
+        marketAuctionState = new MarketAuctionState(this);
+        marketExposureState = new MarketExposureState(this);
+        objectStatusState = new ObjectStatusState(this);
+        pickTownBonusState = new PickTownBonusState(this);
+        playerState = new PlayerState(this);
+        waitingState = new WaitingState(this);
 
+        in = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                currentState.showMenu();
+                boolean correct = false;
+                while (!correct) {
+                    String input = in.readLine();
+                    try {
+                        currentState.readInput(input);
+                        correct = true;
+                    } catch (IllegalArgumentException e) {
+                        correct = false;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public CLIState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(CLIState currentState) {
+        this.currentState = currentState;
+    }
+
+    public CLIState getElectCouncilorMainState() {
+        return electCouncilorMainState;
+    }
+
+    public CLIState getElectCouncilorFastState() {
+        return electCouncilorFastState;
+    }
+
+    public CLIState getBuildEmporiumState() {
+        return buildEmporiumState;
+    }
+
+    public CLIState getBuildEmporiumWithKingState() {
+        return buildEmporiumWithKingState;
+    }
+
+    public CLIState getBuyPermitCardState() {
+        return buyPermitCardState;
+    }
+
+    public CLIState getDoOtherActionState() {
+        return doOtherActionState;
+    }
+
+    public CLIState getHireServantState() {
+        return hireServantState;
+    }
+
+    public CLIState getMainState() {
+        return mainState;
+    }
+
+    public CLIState getMarketAuctionState() {
+        return marketAuctionState;
+    }
+
+    public CLIState getMarketExposureState() {
+        return marketExposureState;
+    }
+
+    public CLIState getObjectStatusState() {
+        return objectStatusState;
+    }
+
+    public CLIState getPickTownBonusState() {
+        return pickTownBonusState;
+    }
+
+    public CLIState getPlayerState() {
+        return playerState;
+    }
+
+    public CLIState getWaitingState() {
+        return waitingState;
     }
 
     /************ UserInterface Methods ************/
