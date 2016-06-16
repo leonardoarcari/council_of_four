@@ -6,7 +6,7 @@ import core.gamelogic.actions.Action;
 import core.gamelogic.actions.PermitNoPayAction;
 import core.gamemodel.PermitCard;
 import core.gamemodel.Region;
-import core.gamemodel.RegionType;
+import core.gamemodel.modelinterface.RegionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,12 +15,15 @@ import java.util.Map;
  * Created by Matteo on 16/06/16.
  */
 public class PickPermitState implements CLIState {
-    private Map<PermitCard, Region> permitsMap;
+    private Map<PermitCard, RegionInterface> permitsMap;
     private Map<Integer, PermitCard> indexMap;
     private int currentIndex;
     private boolean validate;
 
-    public PickPermitState() {
+    private CLI cli;
+
+    public PickPermitState(CLI cli) {
+        this.cli = cli;
         permitsMap = new HashMap<>();
         indexMap = new HashMap<>();
         validate = false;
@@ -52,7 +55,7 @@ public class PickPermitState implements CLIState {
 
         if(indexMap.keySet().contains(choice)) {
             PermitCard permitCard = indexMap.get(choice);
-            Region region = permitsMap.get(permitCard);
+            RegionInterface region = permitsMap.get(permitCard);
             Action action = new PermitNoPayAction((Player)CachedData.getInstance().getMe(), region.getRegionType(),
                     (region.getLeftPermitCard().equals(permitCard))? Region.PermitPos.LEFT: Region.PermitPos.RIGHT);
             CachedData.getInstance().getController().sendInfo(action);
@@ -68,7 +71,7 @@ public class PickPermitState implements CLIState {
         validate = true;
     }
 
-    private void fillMapsBy(Region currentRegion) {
+    private void fillMapsBy(RegionInterface currentRegion) {
         if(currentRegion.getLeftPermitCard() != null) {
             permitsMap.put(currentRegion.getLeftPermitCard(),currentRegion);
             indexMap.put(currentIndex++, currentRegion.getLeftPermitCard());

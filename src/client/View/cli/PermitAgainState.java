@@ -18,10 +18,13 @@ public class PermitAgainState implements CLIState {
     private int currentIndex;
     private boolean validate;
 
-    public PermitAgainState() {
+    private CLI cli;
+
+    public PermitAgainState(CLI cli) {
         permitCardsMap = new HashMap<>();
         validate = false;
         currentIndex = 1;
+        this.cli = cli;
     }
 
     @Override
