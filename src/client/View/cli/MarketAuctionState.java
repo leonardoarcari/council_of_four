@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Created by Matteo on 15/06/16.
  */
-public class MarketAuction implements CLIState {
+public class MarketAuctionState implements CLIState {
     private static final int SELECTION_STATE = 0;
     private static final int SHOWING_STATE = 1;
     private static final int BUYING_STATE = 2;
@@ -30,7 +30,7 @@ public class MarketAuction implements CLIState {
     private int selectedItemIndex;
     private int myCoins;
 
-    public MarketAuction() {
+    public MarketAuctionState() {
         currentState = SELECTION_STATE;
         microState = NOT_ENOUGH_MONEY;
         onSaleItemMap = new HashMap<>();

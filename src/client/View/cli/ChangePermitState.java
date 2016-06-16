@@ -13,13 +13,13 @@ import java.util.Map;
 /**
  * Created by Matteo on 15/06/16.
  */
-public class ChangePermit implements CLIState {
+public class ChangePermitState implements CLIState {
     public static final int OPTIONS_AVAILABLE = 0;
     public static final int NO_OPTIONS = 1;
     private int currentState;
     private Map<Integer, RegionType> regionOptions;
 
-    public ChangePermit() {
+    public ChangePermitState() {
         currentState = NO_OPTIONS;
         regionOptions = new HashMap<>();
         fillRegionOptions();

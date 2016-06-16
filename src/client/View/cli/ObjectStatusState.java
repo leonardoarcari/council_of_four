@@ -13,7 +13,7 @@ import static java.util.Collections.singletonList;
 /**
  * Created by Matteo on 14/06/16.
  */
-public class ObjectStatus implements CLIState {
+public class ObjectStatusState implements CLIState {
     //TODO add context variable
 
     @Override

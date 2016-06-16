@@ -87,7 +87,12 @@ public class ElectCouncilorState implements CLIState {
     }
 
     private void sendElectionAction(String choice) {
-        Integer inputChoice = Integer.valueOf(choice);
+        int inputChoice;
+        try {
+            inputChoice = Integer.valueOf(choice);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException();
+        }
         if (inputChoice < 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
         if (inputChoice == 0) {
             internalState = BEGIN_STATE;

@@ -3,27 +3,26 @@ package client.View.cli;
 import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.Action;
-import core.gamelogic.actions.HireServantAction;
+import core.gamelogic.actions.AnotherMainActionAction;
 
 /**
  * Created by Matteo on 15/06/16.
  */
-public class HireServant implements CLIState{
+public class DoOtherActionState implements CLIState {
     public static final int AVAILABLE = 0;
     public static final int NOT_AVAILABLE = 1;
     private int currentState;
 
-    public HireServant() {
+    public DoOtherActionState() {
         currentState = NOT_AVAILABLE;
     }
 
     @Override
     public void showMenu() {
-        if(CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe()) >= 3) {
+        if(CachedData.getInstance().getMe().getServantsNumber() >= 3)
             currentState = AVAILABLE;
-        } else {
+        else
             currentState = NOT_AVAILABLE;
-        }
 
         if(currentState == AVAILABLE) showOptions();
         else showBack();
@@ -43,20 +42,20 @@ public class HireServant implements CLIState{
     }
 
     private void showOptions() {
-        System.out.println("1) Hire a servant (pay 3 coins)");
+        System.out.println("1) Do another action (3 servants required)");
         System.out.println("0) Go back");
     }
 
     private void showBack() {
-        System.out.println("Not enough coins (3 required)");
+        System.out.println("Not enough servants (3 required)");
         System.out.println("0) Go back");
     }
 
-    private void sendAction(int choice) {
+    private void sendAction(int choice) throws IllegalArgumentException {
         if(choice != 1 && choice != 0) throw new IllegalArgumentException();
 
         if(choice == 1) {
-            Action action = new HireServantAction((Player)CachedData.getInstance().getMe());
+            Action action = new AnotherMainActionAction((Player)CachedData.getInstance().getMe());
             CachedData.getInstance().getController().sendInfo(action);
             //TODO change state go back to main menu
         } else {

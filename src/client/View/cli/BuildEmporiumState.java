@@ -108,7 +108,7 @@ public class BuildEmporiumState implements CLIState{
         List<PermitCard> permitCards = permitsPerTown.getOrDefault(townChoice, null);
         if (permitCards != null) {
             for (int i = 0; i < permitCards.size(); i++) {
-                System.out.println(i+1 + ") " + permitCards.get(i).toString());
+                System.out.println((i+1) + ") " + permitCards.get(i).toString());
             }
         }
         currentState = CHOOSE_PERMIT;

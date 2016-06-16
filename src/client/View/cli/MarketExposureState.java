@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Created by Matteo on 15/06/16.
  */
-public class MarketExposure implements CLIState {
+public class MarketExposureState implements CLIState {
     private static final int SELECTION_STATE = 0;
     private static final int SHOWING_STATE = 1;
     private static final int SELECT_PRICE = 2;
@@ -24,7 +24,7 @@ public class MarketExposure implements CLIState {
     private int currentState;
     private int selectedItemIndex;
 
-    public MarketExposure() {
+    public MarketExposureState() {
         currentState = SELECTION_STATE;
         sellableItemMap = new HashMap<>();
         onSaleItemMap = new HashMap<>();
