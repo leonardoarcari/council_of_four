@@ -3,8 +3,10 @@ package client.View.cli;
 import client.CachedData;
 import client.ControllerUI;
 import client.View.UserInterface;
+import core.Player;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
+import core.gamelogic.actions.PlayerInfoAction;
 import core.gamemodel.Councilor;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.*;
@@ -38,10 +40,14 @@ public class CLI implements UserInterface {
     private final CLIState pickPermitState;
     private final CLIState playerState;
     private final CLIState waitingState;
+    private final CLIState loginState;
 
     private CLIState currentState;
     private CLIState nextState;
     private BufferedReader in;
+
+    private String username;
+    private String nickname;
 
     private ControllerUI controller;
 
@@ -65,10 +71,12 @@ public class CLI implements UserInterface {
         pickPermitState = new PickPermitState(this);
         playerState = new PlayerState(this);
         waitingState = new WaitingState(this);
+        loginState = new LoginState(this);
 
         in = new BufferedReader(new InputStreamReader(System.in));
         controller = new ControllerUI(this);
         CachedData.getInstance().setController(controller);
+        currentState = loginState;
     }
 
     public void run() {
@@ -168,6 +176,14 @@ public class CLI implements UserInterface {
         return controller;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     /************ UserInterface Methods ************/
 
     @Override
@@ -241,6 +257,10 @@ public class CLI implements UserInterface {
     @Override
     public void startGame() {
         currentState = nextState = mainState;
+        controller.sendInfo(new PlayerInfoAction(
+                (Player) CachedData.getInstance().getMe(),
+                username,
+                nickname));
     }
 
     @Override

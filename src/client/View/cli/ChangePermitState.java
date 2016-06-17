@@ -66,7 +66,7 @@ public class ChangePermitState implements CLIState {
     }
 
     private int checkRegion(RegionInterface region, int index) {
-        if(region.getLeftPermitCard() != null && region.getRightPermitCard() != null) {
+        if (region.getLeftPermitCard() != null && region.getRightPermitCard() != null) {
             regionOptions.put(index, region.getRegionType());
             index++;
         }
