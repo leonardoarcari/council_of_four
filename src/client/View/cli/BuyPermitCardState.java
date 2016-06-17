@@ -179,10 +179,11 @@ public class BuyPermitCardState implements CLIState {
             Region.PermitPos chosenPermit;
             if (choice == 1) chosenPermit = Region.PermitPos.LEFT;
             else chosenPermit = Region.PermitPos.RIGHT;
+            List<PoliticsCard> myPolitics = new ArrayList<>(chosenPolitics);
             CachedData.getInstance().getController().sendInfo(
                     new BuyPermitCardAction(
                             (Player) CachedData.getInstance().getMe(),
-                            chosenPolitics,
+                            myPolitics,
                             chosenRegion.getRegionType(),
                             chosenPermit
                     )

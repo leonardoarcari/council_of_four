@@ -38,6 +38,7 @@ public class BuildEmpoWithKingState implements CLIState {
         validPolitics = new ArrayList<>();
         chosenPolitics = new ArrayList<>();
         townsSelection = new HashMap<>();
+        reachableTowns = new HashMap<>();
         this.cli = cli;
     }
 
@@ -124,7 +125,7 @@ public class BuildEmpoWithKingState implements CLIState {
             townsSelection.put(index++, CachedData.getInstance().getTown(t));
         }
         townsSelection.keySet().iterator().forEachRemaining(integer -> {
-            System.out.println(integer + ") " + townsSelection.get(integer).toString());
+            System.out.println(integer + ") " + townsSelection.get(integer).getTownName().toString());
         });
         internalState = CHOOSE_TOWN;
     }

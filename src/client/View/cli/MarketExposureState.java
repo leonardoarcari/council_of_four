@@ -73,7 +73,7 @@ public class MarketExposureState implements CLIState {
 
         int servantNumber = CachedData.getInstance().getMe().getServantsNumber();
         for (int i = 0; i < servantNumber; i++) {
-            sellableItemMap.put(i, new Servant());
+            sellableItemMap.put(i+index, new Servant());
         }
         index = index + servantNumber;
 
