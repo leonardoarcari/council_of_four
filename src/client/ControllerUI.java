@@ -19,10 +19,12 @@ public class ControllerUI {
     private Connection connection;
     private InfoProcessor processor;
     private UserInterface userInterface;
+    private Runnable closeTask;
 
     public ControllerUI(UserInterface userInterface) {
         this.userInterface = userInterface;
         processor = new UInfoProcessor(userInterface);
+        closeTask = () -> System.exit(0);
     }
 
     public void rmiConnection() {
@@ -41,6 +43,10 @@ public class ControllerUI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void quit() {
+        closeTask.run();
     }
 
     public void sendInfo(Object info) {

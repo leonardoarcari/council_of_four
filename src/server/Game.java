@@ -2,9 +2,7 @@ package server;
 
 import core.Player;
 import core.connection.InfoProcessor;
-import core.gamelogic.actions.EndTurnAction;
-import core.gamelogic.actions.MarketSyncAction;
-import core.gamelogic.actions.SyncAction;
+import core.gamelogic.actions.*;
 import core.gamemodel.GameBoard;
 import core.gamemodel.Town;
 import core.gamemodel.TownName;
@@ -16,6 +14,7 @@ import java.util.*;
  */
 public class Game implements Runnable{
     private List<Player> players;
+    private List<Player> lastPlayingPlayers;
     private GameBoard gameBoard;
     private ConfigParser mapConfig;
     private InfoProcessor processor;
@@ -25,6 +24,7 @@ public class Game implements Runnable{
 
     private int playerIndex;
     private boolean marketPhase;
+    private boolean lastTurn;
 
     public Game() {
         processor = new ServerProcessor(this);
@@ -55,7 +55,21 @@ public class Game implements Runnable{
         players = WaitingHall.getInstance().pullPlayers();
         WaitingHall.getInstance().createNewGame();
         gameBoard = GameBoard.createGameBoard(players);
-        if (mapConfig != null) setTownLinks();
+        if (mapConfig != null) {
+            setTownLinks();
+            for (Player player : players) {
+                player.getConnection().sendInfo(new LoadMapAction(mapConfig.getFileName()));
+                player.getConnection().setOnDisconnection(() -> {
+                    players.remove(player);
+                    players.iterator().forEachRemaining(player1 -> player1.getConnection().sendInfo(
+                            new ServerMessage(
+                                    "Player " + player.getUsername() +
+                                            " aka " + player.getNickname() +
+                                            " has disconnected"
+                            )));
+                });
+            }
+        }
 
         gameBoard.notifyChildren();
         for (Player player : players) {
@@ -70,6 +84,7 @@ public class Game implements Runnable{
             players.add(players.remove(i));
         }
         playerIndex = 0;
+        lastPlayingPlayers = new ArrayList<>();
         currentTurn = new Turn(players.get(playerIndex));
     }
 
@@ -129,9 +144,17 @@ public class Game implements Runnable{
     public void endTurn(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             player.getConnection().sendInfo(new EndTurnAction(player));
-            playerIndex = (playerIndex + 1) % players.size();
-            if (playerIndex == 0) setUpMarket();
-            else currentTurn = new Turn(players.get(playerIndex));
+            if (!lastTurn) {
+                playerIndex = (playerIndex + 1) % players.size();
+                if (playerIndex == 0) setUpMarket();
+                else currentTurn = new Turn(players.get(playerIndex));
+            } else {
+                lastPlayingPlayers.remove(player);
+                if (lastPlayingPlayers.isEmpty()) endGame();
+                else {
+                    currentTurn = new Turn(lastPlayingPlayers.get(0));
+                }
+            }
         } else throw new NotYourTurnException();
     }
 
@@ -152,6 +175,36 @@ public class Game implements Runnable{
         if (isAllowedToGame(player)) {
             player.getConnection().sendInfo(SyncAction.PICK_TOWN_BONUS);
         }
+    }
+
+    public void firstToTenEmporium(Player player) {
+        lastTurn = true;
+        gameBoard.moveVictoryPath(player, 3);
+        lastPlayingPlayers.addAll(players);
+    }
+
+    private void endGame() {
+        // Give victory points to podium
+        Map<Integer, List<Player>> podium = gameBoard.getNobilityPath().getPodium();
+        if (podium.get(1).size() == 1) {
+            gameBoard.moveVictoryPath(
+                    podium.get(1).get(0),
+                    5
+            );
+            podium.get(2).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 2));
+        } else {
+            podium.get(1).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 5));
+        }
+
+        // Give victory points to highest number of permit cards
+        gameBoard.moveVictoryPath(
+                players.stream().reduce(players.get(0), (player, player2) ->
+                        (player.getPermitCardsNumber() >= player2.getPermitCardsNumber()) ? player : player2),
+                3
+        );
+
+        players.forEach(player -> player.getConnection().sendInfo(new PodiumAction(podium)));
+        // Die
     }
 
     /* Market phase methods */

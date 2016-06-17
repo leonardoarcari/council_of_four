@@ -245,6 +245,16 @@ public class CLI implements UserInterface {
     }
 
     @Override
+    public void handleServerMessage(String message) {
+        System.out.println("Sistema Informativo says: " + message);
+    }
+
+    @Override
+    public void loadMap(String fileName) {
+        //Do nothing. No need to show anything in CLI
+    }
+
+    @Override
     public void yourTurn() {
         setFastActionAvailable(true);
         setMainActionAvailable(true);

@@ -66,6 +66,10 @@ public class UInfoProcessor implements InfoProcessor {
             }
         } else if (info.getClass().equals(EndTurnAction.class)) {
             userInterface.endTurn();
+        } else if (info.getClass().equals(LoadMapAction.class)) {
+            userInterface.loadMap(((LoadMapAction) info).getMapName());
+        }  else if (info.getClass().equals(ServerMessage.class)) {
+            userInterface.handleServerMessage(((ServerMessage) info).getMessage());
         } else if (info.getClass().equals(MarketSyncAction.class)) {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {

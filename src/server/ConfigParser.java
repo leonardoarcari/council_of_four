@@ -11,10 +11,12 @@ import java.util.*;
 public class ConfigParser implements Closeable{
     private Scanner in;
     private Map<TownName, List<TownName>> links;
+    private final String fileName;
 
 
-    public ConfigParser(File configFile) throws FileNotFoundException, SyntaxErrorException {
+    public ConfigParser(File configFile, String fileName) throws FileNotFoundException, SyntaxErrorException {
         in = new Scanner(configFile);
+        this.fileName = fileName;
         links = new HashMap<>();
         Arrays.asList(TownName.values()).forEach(name -> links.put(name, new ArrayList<>()));
         buildMap();
@@ -66,6 +68,10 @@ public class ConfigParser implements Closeable{
     @Override
     public void close() throws IOException {
         in.close();
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public class SyntaxErrorException extends Exception {

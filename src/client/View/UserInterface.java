@@ -56,4 +56,8 @@ public interface UserInterface {
     void forceExposureEnd();
 
     void forceBuyingEnd();
+
+    void loadMap(String fileName);
+
+    void handleServerMessage(String message);
 }

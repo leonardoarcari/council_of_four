@@ -52,7 +52,7 @@ public class ConfigParserTest {
 
     @Before
     public void setUp() throws Exception {
-        parser = new ConfigParser(input);
+        parser = new ConfigParser(input, input.getName());
     }
 
     @Test

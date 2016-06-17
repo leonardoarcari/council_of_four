@@ -41,4 +41,9 @@ public class RMIConnection implements Connection {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void setOnDisconnection(Runnable runnable) {
+
+    }
 }

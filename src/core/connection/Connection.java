@@ -5,4 +5,5 @@ package core.connection;
  */
 public interface Connection extends Communicator {
     void setInfoProcessor(InfoProcessor processor);
+    void setOnDisconnection(Runnable runnable);
 }

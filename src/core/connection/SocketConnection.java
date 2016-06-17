@@ -6,6 +6,7 @@ import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -20,6 +21,7 @@ public class SocketConnection implements Connection, Runnable {
     private Communicator socketCommunicator;
     private BufferedReader in;
     private Gson gson;
+    private Runnable onDisconnect;
 
     public SocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         this.processor = processor;
@@ -68,7 +70,7 @@ public class SocketConnection implements Connection, Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("connection closed from the other side");
-            e.printStackTrace();
+            if (onDisconnect != null) onDisconnect.run();
             try {
                 in.close();
                 socket.close();
@@ -83,5 +85,10 @@ public class SocketConnection implements Connection, Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void setOnDisconnection(Runnable runnable) {
+        onDisconnect = runnable;
     }
 }

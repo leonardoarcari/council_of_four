@@ -120,5 +120,10 @@ public class ServerProcessorTest {
         public void sendInfo(Object info) {
 
         }
+
+        @Override
+        public void setOnDisconnection(Runnable runnable) {
+
+        }
     }
 }

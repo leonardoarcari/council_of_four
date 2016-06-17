@@ -16,6 +16,7 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
     private RMIProcessor clientRMIProcessor;
     private InfoProcessor serverProcessor;
     private Player me;
+    private Runnable onDisconnect;
 
     public RMIConnection(RMIProcessor clientProcessor) throws RemoteException {
         this.clientRMIProcessor = clientProcessor;
@@ -34,7 +35,7 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
             clientRMIProcessor.processInfo(info);
         } catch (RemoteException e) {
             // client disconnected. Remove this player from game's ones.
-            e.printStackTrace();
+            if (onDisconnect != null) onDisconnect.run();
         }
     }
 
@@ -46,6 +47,11 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
     @Override
     public void setProcessor(InfoProcessor processor) throws RemoteException {
         serverProcessor = processor;
+    }
+
+    @Override
+    public void setOnDisconnection(Runnable runnable) {
+        onDisconnect = runnable;
     }
 
     @Override

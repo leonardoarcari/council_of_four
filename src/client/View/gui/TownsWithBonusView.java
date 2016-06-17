@@ -157,9 +157,10 @@ public class TownsWithBonusView implements HasMainAction{
 
         int myCoins = CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe());
         myCoins = myCoins - ViewAlgorithms.coinForSatisfaction(politicsSelected);
-        if(myCoins<0) return;
+        if (myCoins<0) return;
 
         Map<TownName, Integer> availableTowns = new HashMap<>(GraphsAlgorithms.reachableTowns(CachedData.getInstance().getTowns(),source,myCoins));
+        System.out.println("Available town: " + availableTowns.size());
         if (availableTowns.size()<=0) return;
 
         for(TownName name : townsView.keySet()) {
@@ -167,7 +168,7 @@ public class TownsWithBonusView implements HasMainAction{
             myTown.getTownPopOver().getContentNode().setDisable(true);
 
             if(availableTowns.containsKey(name) && myTown.areServantsAvailable() &&
-                    CachedData.getInstance().getTown(name).hasEmporium((Player)CachedData.getInstance().getMe())) {
+                    !CachedData.getInstance().getTown(name).hasEmporium((Player)CachedData.getInstance().getMe())) {
                 EventHandler<MouseEvent> handler = setHandler(myTown, ViewAlgorithms.coinForSatisfaction(politicsSelected)+availableTowns.get(name));
                 eventsMap.put(myTown,handler);
 
@@ -176,6 +177,7 @@ public class TownsWithBonusView implements HasMainAction{
                 myTown.setOnMouseExited(event -> myTown.setEffect(borderGlow));
 
                 myTown.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
+
             } else {
                 myTown.setOnMouseEntered(event -> myTown.setEffect(null));
                 myTown.setOnMouseExited(event -> myTown.setEffect(null));

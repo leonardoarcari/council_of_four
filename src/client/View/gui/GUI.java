@@ -5,7 +5,10 @@ import client.ControllerUI;
 import client.View.UserInterface;
 import core.Player;
 import core.connection.GameBoardInterface;
-import core.gamelogic.actions.*;
+import core.gamelogic.actions.ChatAction;
+import core.gamelogic.actions.EndTurnAction;
+import core.gamelogic.actions.PlayerInfoAction;
+import core.gamelogic.actions.SelectAgainPermitAction;
 import core.gamemodel.*;
 import core.gamemodel.Region;
 import core.gamemodel.modelinterface.*;
@@ -29,6 +32,10 @@ import javafx.util.Duration;
 import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.PopOver;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -124,6 +131,10 @@ public class GUI extends Application implements UserInterface {
         // Scene & Stage setup
         primaryStage.setScene(scene);
         primaryStage.setTitle("The Council of Four");
+        primaryStage.setOnCloseRequest(event -> {
+            controller.quit();
+            System.exit(0);
+        });
         primaryStage.show();
     }
 
@@ -230,8 +241,8 @@ public class GUI extends Application implements UserInterface {
         // Debug
         gridPane.setGridLinesVisible(false);
         gameboardIV.setOnMouseClicked(event -> System.out.println("X scaled: " +
-                event.getX()/gameboardIV.getBoundsInParent().getWidth() + " Y scaled " +
-                event.getY()/ gameboardIV.getBoundsInParent().getHeight())
+                event.getX() / gameboardIV.getBoundsInParent().getWidth() + " Y scaled " +
+                event.getY() / gameboardIV.getBoundsInParent().getHeight())
         );
     }
 
@@ -264,7 +275,7 @@ public class GUI extends Application implements UserInterface {
         councilorPool = new CouncilorPoolView();
 
         actionChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals(councilorPoolSelector)) {
+            if (newValue.equals(councilorPoolSelector)) {
                 choicePane.setMasterNode(councilorPool.getFlowNode());
             } else {
                 choicePane.setMasterNode(fastActionsView.getBoxNode());
@@ -281,7 +292,7 @@ public class GUI extends Application implements UserInterface {
         choicePane.setShowDetailNode(true);
 
         choicePane.dividerPositionProperty().addListener(((observable, oldValue, newValue) -> {
-            if(newValue.doubleValue()>0.5) choicePane.setDividerPosition(0.4);  //Fix divider position
+            if (newValue.doubleValue() > 0.5) choicePane.setDividerPosition(0.4);  //Fix divider position
         }));
 
     }
@@ -318,7 +329,8 @@ public class GUI extends Application implements UserInterface {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     boardAnchor.getChildren().removeAll(c.getRemoved());
-                } if (c.wasAdded()) {
+                }
+                if (c.wasAdded()) {
                     for (ObjectImageView view : c.getList()) {
                         setObjectConstraints(view);
                         setImageViewListener(view);
@@ -331,33 +343,33 @@ public class GUI extends Application implements UserInterface {
 
     private void buildBalconies() {
         Image fullBalcony = new Image(classLoader.getResourceAsStream("fullbalcony.png"));
-        seaBalcony = new BalconyView(fullBalcony,RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
-        hillsBalcony = new BalconyView(fullBalcony,RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
-        mountainsBalcony = new BalconyView(fullBalcony,RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
-        boardBalcony = new BalconyView(fullBalcony,RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
+        seaBalcony = new BalconyView(fullBalcony, RegionType.SEA, 0.14323428884034265, 0.6991224489795919, 0.105586124657067);
+        hillsBalcony = new BalconyView(fullBalcony, RegionType.HILLS, 0.44091336103122086, 0.6991224489795919, 0.105586124657067);
+        mountainsBalcony = new BalconyView(fullBalcony, RegionType.MOUNTAINS, 0.7710212700755381, 0.6991224489795919, 0.105586124657067);
+        boardBalcony = new BalconyView(fullBalcony, RegionType.KINGBOARD, 0.631653891146887, 0.7402176870748299, 0.105586124657067);
         boardObjects.addAll(Arrays.asList(seaBalcony, hillsBalcony, mountainsBalcony, boardBalcony));
     }
 
     private void buildPermitsModel() {
         Image card = new Image(classLoader.getResourceAsStream("permitCard.png"));
-        seaLeftCard = new PermitCardView(card,0.1430406026492049,0.6052670299727521,0.068);
-        seaRightCard = new PermitCardView(card,0.22105902121530668,0.6052670299727521,0.068);
-        hillsLeftCard = new PermitCardView(card,0.44096066535618766,0.6052670299727521,0.068);
-        hillsRightCard = new PermitCardView(card,0.5150327981194318,0.6052670299727521,0.068);
-        mountainsLeftCard = new PermitCardView(card,0.7696557544930834,0.6052670299727521,0.068);
-        mountainsRightCard = new PermitCardView(card,0.8448852643307533,0.6052670299727521,0.068);
+        seaLeftCard = new PermitCardView(card, 0.1430406026492049, 0.6052670299727521, 0.068);
+        seaRightCard = new PermitCardView(card, 0.22105902121530668, 0.6052670299727521, 0.068);
+        hillsLeftCard = new PermitCardView(card, 0.44096066535618766, 0.6052670299727521, 0.068);
+        hillsRightCard = new PermitCardView(card, 0.5150327981194318, 0.6052670299727521, 0.068);
+        mountainsLeftCard = new PermitCardView(card, 0.7696557544930834, 0.6052670299727521, 0.068);
+        mountainsRightCard = new PermitCardView(card, 0.8448852643307533, 0.6052670299727521, 0.068);
         permitZoomListener(seaLeftCard);
         permitZoomListener(seaRightCard);
         permitZoomListener(hillsLeftCard);
         permitZoomListener(hillsRightCard);
         permitZoomListener(mountainsLeftCard);
         permitZoomListener(mountainsRightCard);
-        boardObjects.addAll(Arrays.asList(seaLeftCard,seaRightCard,hillsLeftCard,hillsRightCard,mountainsLeftCard,mountainsRightCard));
+        boardObjects.addAll(Arrays.asList(seaLeftCard, seaRightCard, hillsLeftCard, hillsRightCard, mountainsLeftCard, mountainsRightCard));
     }
 
     private void permitZoomListener(PermitCardView permitCardView) {
         permitCardView.setOnMouseClicked(event -> {
-            if(event.getClickCount() == 2) {
+            if (event.getClickCount() == 2) {
                 if (!permitCardView.getMyPopover().isShowing())
                     permitCardView.getMyPopover().show(permitCardView, 20);
                 else permitCardView.getMyPopover().hide(new Duration(100));
@@ -365,12 +377,12 @@ public class GUI extends Application implements UserInterface {
         });
     }
 
-    private void buildTownViews () {
+    private void buildTownViews() {
         townsView = TownsWithBonusView.getInstance().getTownsView();
         kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
-                                        townsView.get(TownName.J).getLeftX()+2*townsView.get(TownName.J).getWidth()/3,
-                                        townsView.get(TownName.J).getTopY()+5*townsView.get(TownName.J).getWidth()/4,
-                                        townsView.get(TownName.J).getWidth()/3);
+                townsView.get(TownName.J).getLeftX() + 2 * townsView.get(TownName.J).getWidth() / 3,
+                townsView.get(TownName.J).getTopY() + 5 * townsView.get(TownName.J).getWidth() / 4,
+                townsView.get(TownName.J).getWidth() / 3);
         boardObjects.add(kingIcon);
         townsView.values().forEach(townView -> setObjectGlow(townView, TownsWithBonusView.setShadowEffect()));
     }
@@ -386,19 +398,18 @@ public class GUI extends Application implements UserInterface {
         iv.addEventHandler(MouseEvent.MOUSE_EXITED, event -> iv.setEffect(null));
         iv.setOnMouseClicked(event -> {
             ObjectImageView imageView = (ObjectImageView) event.getSource();
-            if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1/4) {
+            if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 1 / 4) {
                 iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
-            } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3/4) {
+            } else if (AnchorPane.getLeftAnchor(imageView) < boardAnchor.widthProperty().getValue() * 3 / 4) {
                 iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
             } else {
                 iv.getTownPopOver().setArrowLocation(PopOver.ArrowLocation.RIGHT_CENTER);
             }
             if (imageView.getClass().equals(TownView.class)) {
-                VBox vbox = (VBox) ((TownView)imageView).getTownPopOver().getContentNode();
-                if(vbox.getChildren().size() == 3) vbox.getChildren().remove(2);
-                ((TownView)imageView).getTownPopOver().show(imageView,10);
-            }
-            else iv.getTownPopOver().show(iv, 60);
+                VBox vbox = (VBox) ((TownView) imageView).getTownPopOver().getContentNode();
+                if (vbox.getChildren().size() == 3) vbox.getChildren().remove(2);
+                ((TownView) imageView).getTownPopOver().show(imageView, 10);
+            } else iv.getTownPopOver().show(iv, 60);
         });
     }
 
@@ -412,23 +423,23 @@ public class GUI extends Application implements UserInterface {
 
     private void buildBonusCards() {
         seaBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.SEA),
-                0.2522803334480774,0.5274207650273224,0.0634);
+                0.2522803334480774, 0.5274207650273224, 0.0634);
         hillsBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.HILLS),
-                0.5490688645010539,0.5274207650273224,0.0634);
+                0.5490688645010539, 0.5274207650273224, 0.0634);
         mountainsBonusCard = new ObjectImageView(ImagesMaps.getInstance().getRegionBonus(RegionType.MOUNTAINS),
-                0.8742918224146726,0.5274207650273224,0.0634);
+                0.8742918224146726, 0.5274207650273224, 0.0634);
         ironBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.IRON),
-                0.7444741305370091,0.8555858310626703,0.0634);
+                0.7444741305370091, 0.8555858310626703, 0.0634);
         bronzeBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.BRONZE),
-                0.7906430688648857,0.8478260869565217,0.0634);
+                0.7906430688648857, 0.8478260869565217, 0.0634);
         silverBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.SILVER),
-                0.8414289010255498,0.8410326086956522,0.0634);
+                0.8414289010255498, 0.8410326086956522, 0.0634);
         goldBonusCard = new ObjectImageView(ImagesMaps.getInstance().getTownTypeBonus(TownType.GOLD),
-                0.8875978393534263,0.8355978260869565,0.0634);
-        royalTopCard = new ObjectImageView(fifthRoyal, 0.8772098282296541,0.7547683923705722,0.0634);
+                0.8875978393534263, 0.8355978260869565, 0.0634);
+        royalTopCard = new ObjectImageView(fifthRoyal, 0.8772098282296541, 0.7547683923705722, 0.0634);
 
-        boardObjects.addAll(Arrays.asList(seaBonusCard,hillsBonusCard,mountainsBonusCard,
-                ironBonusCard,bronzeBonusCard,silverBonusCard,goldBonusCard,royalTopCard));
+        boardObjects.addAll(Arrays.asList(seaBonusCard, hillsBonusCard, mountainsBonusCard,
+                ironBonusCard, bronzeBonusCard, silverBonusCard, goldBonusCard, royalTopCard));
     }
 
     private void bindDisableProperties() {
@@ -514,11 +525,11 @@ public class GUI extends Application implements UserInterface {
             CachedData.getInstance().putBalcony(balcony.getRegion(), balcony);
             RegionType type = balcony.getRegion();
             BalconyView balconyIV;
-            if(type.equals(RegionType.SEA)) {
+            if (type.equals(RegionType.SEA)) {
                 balconyIV = seaBalcony;
-            } else if(type.equals(RegionType.HILLS)) {
+            } else if (type.equals(RegionType.HILLS)) {
                 balconyIV = hillsBalcony;
-            } else if(type.equals(RegionType.MOUNTAINS)) {
+            } else if (type.equals(RegionType.MOUNTAINS)) {
                 balconyIV = mountainsBalcony;
             } else balconyIV = boardBalcony;
             balconyIV.setBalcony(balcony);
@@ -536,8 +547,8 @@ public class GUI extends Application implements UserInterface {
         Platform.runLater(() -> {
             this.wealthPath.updateWealthPath(wealthPath);
             CachedData.getInstance().setWealthPath(wealthPath);
-            if(CachedData.getInstance().getMe() != null)
-                fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
+            if (CachedData.getInstance().getMe() != null)
+                fastActionsView.updateEnoughCoinProperty(wealthPath.getPlayerPosition((Player) CachedData.getInstance().getMe()) >= 3);
         });
     }
 
@@ -551,26 +562,27 @@ public class GUI extends Application implements UserInterface {
     public void updateTown(TownInterface town) {
         Platform.runLater(() -> {
             CachedData.getInstance().putTown(town.getTownName(), town);
-            if (town.isKingHere()) moveKing(town.getTownName());
+            if (town.isKingHere())
+                moveKing(town.getTownName());
             getTownView(town.getTownName()).update(town);
             populateTownBonus(town);
         });
+    }
+
+    private void moveKing(TownName name) {
+        kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
+                townsView.get(name).getLeftX() + 2 * townsView.get(name).getWidth() / 3,
+                townsView.get(name).getTopY() + 5 * townsView.get(TownName.J).getWidth() / 4,
+                townsView.get(name).getWidth() / 3);
     }
 
     private TownView getTownView(TownName name) {
         return townsView.get(name);
     }
 
-    private void moveKing(TownName name) {
-        kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
-                townsView.get(name).getLeftX() + 2*townsView.get(name).getWidth()/3,
-                townsView.get(name).getTopY() + 5*townsView.get(TownName.J).getWidth()/4,
-                townsView.get(name).getWidth()/3);
-    }
-
     private void populateTownBonus(TownInterface town) {
-        if(town.getTownName().equals(TownName.J)) return;
-        if(townBonusView.get(town.getTownName()).getImage() == null) {
+        if (town.getTownName().equals(TownName.J)) return;
+        if (townBonusView.get(town.getTownName()).getImage() == null) {
             String className = town.getTownBonus().getClass().getName();
             String toLoad;
             toLoad = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
@@ -585,18 +597,18 @@ public class GUI extends Application implements UserInterface {
             RegionType type = region.getRegionType();
             PermitCardView left;
             PermitCardView right;
-            if(type.equals(RegionType.SEA)) {
-                CachedData.getInstance().setSeaRegion(region);
+            if (type.equals(RegionType.SEA)) {
+                CachedData.getInstance().setSeaRegion((Region) region);
                 left = seaLeftCard;
                 right = seaRightCard;
-            } else if(type.equals(RegionType.HILLS)) {
-                CachedData.getInstance().setHillsRegion(region);
+            } else if (type.equals(RegionType.HILLS)) {
+                CachedData.getInstance().setHillsRegion((Region) region);
                 left = hillsLeftCard;
                 right = hillsRightCard;
                 if(left == null && right == null) hillsBalcony.setNullRegionPermitCards(true);
                 else hillsBalcony.setNullRegionPermitCards(false);
             } else {
-                CachedData.getInstance().setMountainsRegion(region);
+                CachedData.getInstance().setMountainsRegion((Region) region);
                 left = mountainsLeftCard;
                 right = mountainsRightCard;
                 if(left == null && right == null) mountainsBalcony.setNullRegionPermitCards(true);
@@ -624,17 +636,17 @@ public class GUI extends Application implements UserInterface {
     }
 
     private void updateRegionBonus(RegionInterface regionInterface) {
-            RegionType type = regionInterface.getRegionType();
-            if(type.equals(RegionType.SEA)) {
-                if(seaBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
-                    seaBonusCard.setImage(null);}
-            else if(type.equals(RegionType.HILLS)) {
-                if(hillsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
-                    hillsBonusCard.setImage(null);}
-            else {
-                if(mountainsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
-                    mountainsBonusCard.setImage(null);
-            }
+        RegionType type = regionInterface.getRegionType();
+        if (type.equals(RegionType.SEA)) {
+            if (seaBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                seaBonusCard.setImage(null);
+        } else if (type.equals(RegionType.HILLS)) {
+            if (hillsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                hillsBonusCard.setImage(null);
+        } else {
+            if (mountainsBonusCard.getImage() != null && regionInterface.isRegionCardTaken())
+                mountainsBonusCard.setImage(null);
+        }
     }
 
     @Override
@@ -652,21 +664,21 @@ public class GUI extends Application implements UserInterface {
     private void updateRoyalCards(GameBoardInterface gameboard) {
         Platform.runLater(() -> {
             Iterator<RoyalCard> royalCardIterator = gameboard.royalCardIterator();
-            if(!royalCardIterator.hasNext()) {
+            if (!royalCardIterator.hasNext()) {
                 royalTopCard.setImage(null);
                 return;
             }
 
             RoyalCard royalTop = null;
-            while(royalCardIterator.hasNext()) {
+            while (royalCardIterator.hasNext()) {
                 royalTop = royalCardIterator.next();
             }
             int identifier = royalTop.getRoyalBonus().getValue();
             Image currentImage;
-            if(identifier == 3) currentImage = fifthRoyal;
-            else if(identifier == 7) currentImage = fourthRoyal;
-            else if(identifier == 12) currentImage = thirdRoyal;
-            else if(identifier == 18) currentImage = secondRoyal;
+            if (identifier == 3) currentImage = fifthRoyal;
+            else if (identifier == 7) currentImage = fourthRoyal;
+            else if (identifier == 12) currentImage = thirdRoyal;
+            else if (identifier == 18) currentImage = secondRoyal;
             else currentImage = firstRoyal;
             royalTopCard.setImage(currentImage);
         });
@@ -677,7 +689,7 @@ public class GUI extends Application implements UserInterface {
         Platform.runLater(() -> {
             Iterator<Councilor> councilorIterator = gameboard.councilorIterator();
             List<Councilor> councilorList = new Vector<>();
-            while(councilorIterator.hasNext()) {
+            while (councilorIterator.hasNext()) {
                 councilorList.add(councilorIterator.next());
             }
             councilorPool.setPool(councilorList);
@@ -691,20 +703,20 @@ public class GUI extends Application implements UserInterface {
             List<TownType> boardTypes = new ArrayList<>();
 
             Iterator<TownTypeCard> townTypeCardIterator = gameboard.townTypeCardIterator();
-            while(townTypeCardIterator.hasNext()) {
+            while (townTypeCardIterator.hasNext()) {
                 TownType cardType = townTypeCardIterator.next().getTownType();
                 boardTypes.add(cardType);
             }
             allTypes.removeAll(boardTypes);
 
-            for(TownType type : allTypes) {
-                if(type.equals(TownType.IRON)) {
-                    if(ironBonusCard.getImage() != null) ironBonusCard.setImage(null);
-                } else if(type.equals(TownType.BRONZE)) {
-                    if(bronzeBonusCard.getImage() != null) bronzeBonusCard.setImage(null);
-                } else if(type.equals(TownType.SILVER)) {
-                    if(silverBonusCard.getImage() != null) silverBonusCard.setImage(null);
-                } else if(goldBonusCard.getImage() != null) goldBonusCard.setImage(null);
+            for (TownType type : allTypes) {
+                if (type.equals(TownType.IRON)) {
+                    if (ironBonusCard.getImage() != null) ironBonusCard.setImage(null);
+                } else if (type.equals(TownType.BRONZE)) {
+                    if (bronzeBonusCard.getImage() != null) bronzeBonusCard.setImage(null);
+                } else if (type.equals(TownType.SILVER)) {
+                    if (silverBonusCard.getImage() != null) silverBonusCard.setImage(null);
+                } else if (goldBonusCard.getImage() != null) goldBonusCard.setImage(null);
             }
         });
     }
@@ -752,7 +764,7 @@ public class GUI extends Application implements UserInterface {
     public void updatePlayer(PlayerInterface player) {
         Platform.runLater(() -> {
             CachedData.getInstance().setMe(player);
-            fastActionsView.updateEnoughServantsProperty(player.getServantsNumber()>=1,player.getServantsNumber()>=3);
+            fastActionsView.updateEnoughServantsProperty(player.getServantsNumber() >= 1, player.getServantsNumber() >= 3);
             playerView.setPlayer(player);
             townsView.values().forEach(element -> element.setServantsAvailable(player.getServantsNumber()));
         });
@@ -762,7 +774,7 @@ public class GUI extends Application implements UserInterface {
     public void startGame() {
         Platform.runLater(() -> {
             scene = new Scene(gridPane, 1280, 800);
-            ShowPane.getInstance().setSceneAndParent(scene,gridPane);
+            ShowPane.getInstance().setSceneAndParent(scene, gridPane);
             primaryStage.setScene(scene);
             controller.sendInfo(new PlayerInfoAction((Player) playerView.getPlayer(), username.getText(),
                     nickname.getText()));
@@ -790,7 +802,7 @@ public class GUI extends Application implements UserInterface {
             CachedData.getInstance().mainActionAvailableProperty().setValue(true);
             CachedData.getInstance().fastActionAvailableProperty().setValue(true);
             CachedData.getInstance().myTurnProperty().setValue(true);
-            fastActionsView.updateEnoughCoinProperty(CachedData.getInstance().getWealthPath().getPlayerPosition((Player)CachedData.getInstance().getMe())>=3);
+            fastActionsView.updateEnoughCoinProperty(CachedData.getInstance().getWealthPath().getPlayerPosition((Player) CachedData.getInstance().getMe()) >= 3);
         });
     }
 
@@ -860,7 +872,7 @@ public class GUI extends Application implements UserInterface {
     @Override
     public void setTimer(String text) {
         Platform.runLater(() ->
-            timerProperty.setValue(text)
+                timerProperty.setValue(text)
         );
     }
 
@@ -872,5 +884,27 @@ public class GUI extends Application implements UserInterface {
     @Override
     public void forceBuyingEnd() {
         buySellableView.setDisable(true);
+    }
+
+    @Override
+    public void loadMap(String fileName) {
+        Platform.runLater(() -> {
+            String imageFileName = fileName.substring(0, fileName.lastIndexOf(".txt")).concat(".png");
+            Path image = Paths.get("", "mapsConfig", "images", imageFileName);
+            try {
+                Image gameboardImage = new Image(new FileInputStream(image.toFile()));
+                gameboardIV.setImage(gameboardImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void handleServerMessage(String message) {
+        Platform.runLater(() -> {
+            String serverMessage = "Sistema Informativo says: " + message;
+            chatView.append(serverMessage);
+        });
     }
 }

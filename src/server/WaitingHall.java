@@ -51,13 +51,13 @@ public class WaitingHall {
     }
 
     private void loadMapsConfig() {
-        Path currentPath = Paths.get("", "mapsConfig");
+        Path paths = Paths.get("", "mapsConfig", "paths");
         try {
-            Files.list(currentPath).forEach(System.out::println);
-            Files.list(currentPath).forEach(path -> {
+            Files.list(paths).forEach(System.out::println);
+            Files.list(paths).forEach(path -> {
                 try {
-                    System.out.println(path.toString());
-                    maps.add(new ConfigParser(path.toFile()));
+                    System.out.println(path.toString() + "\t" + path.getFileName().toString());
+                    maps.add(new ConfigParser(path.toFile(), path.getFileName().toString()));
                 } catch (FileNotFoundException | ConfigParser.SyntaxErrorException e) {
                     e.printStackTrace();
                 }

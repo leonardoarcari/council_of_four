@@ -188,6 +188,15 @@ public class ServerProcessor implements InfoProcessor {
             regionCompletion(player, regionType);
             typeCompletion(player, townName);
         }
+        if (getNumberOfEmporium(player) == 10) game.firstToTenEmporium(player);
+    }
+
+    private int getNumberOfEmporium(Player player) {
+        int counter = 0;
+        for (Town town : game.getGameBoard().getTownsMap().values()) {
+            if (town.hasEmporium(player)) counter++;
+        }
+        return counter;
     }
 
     private void redeemLinkedTowns(Player player, TownName townName) {
