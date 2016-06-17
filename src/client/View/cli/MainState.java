@@ -1,6 +1,8 @@
 package client.View.cli;
 
 import client.CachedData;
+import core.Player;
+import core.gamelogic.actions.EndTurnAction;
 
 import java.util.List;
 import java.util.Map;
@@ -22,13 +24,14 @@ public class MainState implements CLIState {
         buildMenu();
         System.out.println("1) Show Gameboard status");
         System.out.println("2) Show Player's status");
+        System.out.println("3) End Turn");
         if (mainFast[0] && mainFast[1]) {
-            System.out.println("3) Do Main Action");
-            System.out.println("4) Do Fast Action");
+            System.out.println("4) Do Main Action");
+            System.out.println("5) Do Fast Action");
         } else if (mainFast[0] && !mainFast[1]) {
-            System.out.println("3) Do Main Action");
+            System.out.println("4) Do Main Action");
         } else if (!mainFast[0] && mainFast[1]) {
-            System.out.println("3) Do Fast Action");
+            System.out.println("4) Do Fast Action");
         }
     }
 
@@ -47,17 +50,20 @@ public class MainState implements CLIState {
         }
         else if (choice == 2) {
             cli.setCurrentState(cli.getPlayerState());
-        }
-        else if (choice == 3 && mainFast[0] && mainFast[1]) {
+        } else if (choice == 3) {
+            CachedData.getInstance().getController().sendInfo(new EndTurnAction(
+                    (Player) CachedData.getInstance().getMe()
+            ));
+        } else if (choice == 4 && mainFast[0] && mainFast[1]) {
             cli.setCurrentState(cli.getMainActionState());
         }
-        else if (choice == 3 && !mainFast[0] && mainFast[1]) {
+        else if (choice == 4 && !mainFast[0] && mainFast[1]) {
             cli.setCurrentState(cli.getFastActionState());
         }
-        else if (choice == 3 && mainFast[0] && !mainFast[1]) {
+        else if (choice == 4 && mainFast[0] && !mainFast[1]) {
             cli.setCurrentState(cli.getMainActionState());
         }
-        else if (choice == 4) {
+        else if (choice == 5) {
             cli.setCurrentState(cli.getFastActionState());
         }
     }

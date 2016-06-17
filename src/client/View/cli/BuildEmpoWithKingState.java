@@ -83,7 +83,7 @@ public class BuildEmpoWithKingState implements CLIState {
     private void satisfyAction(String input) throws IllegalArgumentException{
         // Catch back action
         if (input.trim().equals("0")) {
-            // TODO: Go back to previous state
+            cli.setCurrentState(cli.getMainActionState());
         } else { // Validate input
             String toParse = input.trim().replaceAll(" ", "");
             StringTokenizer tokenizer = new StringTokenizer(toParse, ",");

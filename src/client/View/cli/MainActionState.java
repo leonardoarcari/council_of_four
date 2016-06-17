@@ -54,7 +54,7 @@ public class MainActionState implements CLIState {
                 cli.setCurrentState(cli.getBuildEmporiumWithKingState());
                 break;
             case 0:
-                cli.setCurrentState(cli.getMainActionState());
+                cli.setCurrentState(cli.getMainState());
                 break;
         }
     }

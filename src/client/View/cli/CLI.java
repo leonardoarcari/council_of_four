@@ -1,6 +1,7 @@
 package client.View.cli;
 
 import client.CachedData;
+import client.ControllerUI;
 import client.View.UserInterface;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
@@ -42,6 +43,8 @@ public class CLI implements UserInterface {
     private CLIState nextState;
     private BufferedReader in;
 
+    private ControllerUI controller;
+
     public CLI() {
         electCouncilorMainState = new ElectCouncilorState(ElectCouncilorState.Type.MAIN_ACTION, this);
         electCouncilorFastState = new ElectCouncilorState(ElectCouncilorState.Type.FAST_ACTION, this);
@@ -64,6 +67,8 @@ public class CLI implements UserInterface {
         waitingState = new WaitingState(this);
 
         in = new BufferedReader(new InputStreamReader(System.in));
+        controller = new ControllerUI(this);
+        CachedData.getInstance().setController(controller);
     }
 
     public void run() {
@@ -73,7 +78,7 @@ public class CLI implements UserInterface {
                 boolean correct = false;
                 while (!correct) {
                     String input = in.readLine();
-                    if(nextState.equals(currentState))
+                    if (nextState.equals(currentState))
                         try {
                             currentState.readInput(input);
                             correct = true;
@@ -157,6 +162,10 @@ public class CLI implements UserInterface {
 
     public CLIState getWaitingState() {
         return waitingState;
+    }
+
+    public ControllerUI getController() {
+        return controller;
     }
 
     /************ UserInterface Methods ************/
