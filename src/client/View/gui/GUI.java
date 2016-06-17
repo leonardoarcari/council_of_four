@@ -5,10 +5,7 @@ import client.ControllerUI;
 import client.View.UserInterface;
 import core.Player;
 import core.connection.GameBoardInterface;
-import core.gamelogic.actions.ChatAction;
-import core.gamelogic.actions.EndTurnAction;
-import core.gamelogic.actions.PlayerInfoAction;
-import core.gamelogic.actions.SelectAgainPermitAction;
+import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.Region;
 import core.gamemodel.modelinterface.*;
@@ -379,11 +376,6 @@ public class GUI extends Application implements UserInterface {
 
     private void buildTownViews() {
         townsView = TownsWithBonusView.getInstance().getTownsView();
-        kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
-                townsView.get(TownName.J).getLeftX() + 2 * townsView.get(TownName.J).getWidth() / 3,
-                townsView.get(TownName.J).getTopY() + 5 * townsView.get(TownName.J).getWidth() / 4,
-                townsView.get(TownName.J).getWidth() / 3);
-        boardObjects.add(kingIcon);
         townsView.values().forEach(townView -> setObjectGlow(townView, TownsWithBonusView.setShadowEffect()));
     }
 
@@ -570,10 +562,15 @@ public class GUI extends Application implements UserInterface {
     }
 
     private void moveKing(TownName name) {
+        if(kingIcon != null)
+            boardAnchor.getChildren().remove(kingIcon);
         kingIcon = new ObjectImageView(ImagesMaps.getInstance().getKing(),
                 townsView.get(name).getLeftX() + 2 * townsView.get(name).getWidth() / 3,
-                townsView.get(name).getTopY() + 5 * townsView.get(TownName.J).getWidth() / 4,
+                townsView.get(name).getTopY() + 5 * townsView.get(name).getWidth() / 4,
                 townsView.get(name).getWidth() / 3);
+        setObjectConstraints(kingIcon);
+        setImageViewListener(kingIcon);
+        boardAnchor.getChildren().add(kingIcon);
     }
 
     private TownView getTownView(TownName name) {
@@ -598,17 +595,17 @@ public class GUI extends Application implements UserInterface {
             PermitCardView left;
             PermitCardView right;
             if (type.equals(RegionType.SEA)) {
-                CachedData.getInstance().setSeaRegion((Region) region);
+                CachedData.getInstance().setSeaRegion(region);
                 left = seaLeftCard;
                 right = seaRightCard;
             } else if (type.equals(RegionType.HILLS)) {
-                CachedData.getInstance().setHillsRegion((Region) region);
+                CachedData.getInstance().setHillsRegion(region);
                 left = hillsLeftCard;
                 right = hillsRightCard;
                 if(left == null && right == null) hillsBalcony.setNullRegionPermitCards(true);
                 else hillsBalcony.setNullRegionPermitCards(false);
             } else {
-                CachedData.getInstance().setMountainsRegion((Region) region);
+                CachedData.getInstance().setMountainsRegion(region);
                 left = mountainsLeftCard;
                 right = mountainsRightCard;
                 if(left == null && right == null) mountainsBalcony.setNullRegionPermitCards(true);
@@ -617,8 +614,10 @@ public class GUI extends Application implements UserInterface {
 
             setNullPermitBy(region);
 
-            left.setPermitCard(region.getLeftPermitCard());
-            right.setPermitCard(region.getRightPermitCard());
+            if(left != null)
+                left.setPermitCard(region.getLeftPermitCard());
+            if(right != null)
+                right.setPermitCard(region.getRightPermitCard());
 
             updateRegionBonus(region);
         });

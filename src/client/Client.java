@@ -1,4 +1,6 @@
 package client;
+import client.View.UserInterface;
+import client.View.cli.CLI;
 import client.View.gui.GUI;
 import javafx.application.Application;
 
