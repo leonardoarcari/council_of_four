@@ -5,7 +5,6 @@ package core.gamelogic.actions;
  */
 public enum SyncAction {
     GAME_START,
-    YOUR_TURN,
     DRAW_PERMIT_BONUS,
     PICK_PERMIT_AGAIN,
     PICK_TOWN_BONUS,

@@ -9,6 +9,7 @@ import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
 
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -47,10 +48,6 @@ public class UInfoProcessor implements InfoProcessor {
             SyncAction action = (SyncAction) info;
             if (action.equals(SyncAction.GAME_START)) {
                 userInterface.startGame();
-            } else if (action.equals(SyncAction.YOUR_TURN)) {
-                userInterface.yourTurn();
-                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
-                //executor.scheduleAtFixedRate(() -> gui.setTimer(setElapsedTurnTime()),2,1, TimeUnit.SECONDS);
             } else if (action.equals(SyncAction.PICK_PERMIT_AGAIN)) {
                 userInterface.showRedeemPermitView();
             } else if (action.equals(SyncAction.DRAW_PERMIT_BONUS)) {
@@ -64,6 +61,10 @@ public class UInfoProcessor implements InfoProcessor {
             } else if (action.equals(SyncAction.FAST_ACTION_DONE)) {
                 userInterface.setFastActionAvailable(false);
             }
+        } else if (info.getClass().equals(YourTurnAction.class)) {
+            userInterface.yourTurn();
+            ScheduledExecutorService executor = CachedData.getInstance().getExecutor(((YourTurnAction) info).getTimerLength());
+            executor.scheduleAtFixedRate(() -> userInterface.setTimer(setElapsedTurnTime()),2,1, TimeUnit.SECONDS);
         } else if (info.getClass().equals(EndTurnAction.class)) {
             userInterface.endTurn();
         } else if (info.getClass().equals(LoadMapAction.class)) {
@@ -74,11 +75,11 @@ public class UInfoProcessor implements InfoProcessor {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
                 userInterface.showExposeView();
-                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
+                //ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
                 //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(true),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
                 userInterface.showBuyItemView();
-                ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
+                //ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
                 //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(false),2,1, TimeUnit.SECONDS);
             } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 userInterface.hideMarket();
@@ -88,8 +89,9 @@ public class UInfoProcessor implements InfoProcessor {
 
     private String setElapsedTurnTime() {
         int time = CachedData.getInstance().isNormalTimerExpired();
-        if(time == -1) return "Waiting for next turn..";
-        else return "Remaining time: " + time + " seconds";
+        //if(time == -1) return "Waiting for next turn..";
+        //else return "Remaining time: " + time + " seconds";
+        return String.valueOf(time);
     }
 
     private void setElapsedExposureTime(boolean exposure) {

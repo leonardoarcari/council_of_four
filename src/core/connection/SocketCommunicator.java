@@ -35,7 +35,7 @@ public class SocketCommunicator implements Communicator {
         String jsonString = gson.toJson(info);
         String className = info.getClass().getName();
         jsonString = className + SEPARATOR + jsonString + END_JSON;
-        System.out.println("Sending:\nClass: " + className + "\n" + jsonString);
+        //System.out.println("Sending:\nClass: " + className + "\n" + jsonString);
         try {
             out.write(jsonString+"\n");
             out.flush();

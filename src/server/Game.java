@@ -8,6 +8,10 @@ import core.gamemodel.Town;
 import core.gamemodel.TownName;
 
 import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Leonardo Arcari on 23/05/2016.
@@ -26,16 +30,24 @@ public class Game implements Runnable{
     private boolean marketPhase;
     private boolean lastTurn;
 
+    private ScheduledExecutorService timerGenerator;
+    private ScheduledFuture timer;
+    public static final int TURN_TIMER = 20;
+    public static final int AUCTION_TIMER = 30;
+    public static final int BUY_ITEMS_TIMER = 30;
+
     public Game() {
         processor = new ServerProcessor(this);
         marketPhase = false;
         mapConfig = null;
+        timerGenerator = new ScheduledThreadPoolExecutor(1);
     }
 
     public Game(ConfigParser mapConfig) {
         this.mapConfig = mapConfig;
         processor = new ServerProcessor(this);
         marketPhase = false;
+        timerGenerator = new ScheduledThreadPoolExecutor(1);
     }
 
     public GameBoard getGameBoard() {
@@ -58,7 +70,6 @@ public class Game implements Runnable{
         if (mapConfig != null) {
             setTownLinks();
             for (Player player : players) {
-                player.getConnection().sendInfo(new LoadMapAction(mapConfig.getFileName()));
                 player.getConnection().setOnDisconnection(() -> {
                     players.remove(player);
                     players.iterator().forEachRemaining(player1 -> player1.getConnection().sendInfo(
@@ -68,6 +79,7 @@ public class Game implements Runnable{
                                             " has disconnected"
                             )));
                 });
+                player.getConnection().sendInfo(new LoadMapAction(mapConfig.getFileName()));
             }
         }
 
@@ -143,6 +155,7 @@ public class Game implements Runnable{
 
     public void endTurn(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
+            if (!timer.isDone()) timer.cancel(true);
             player.getConnection().sendInfo(new EndTurnAction(player));
             if (!lastTurn) {
                 playerIndex = (playerIndex + 1) % players.size();
@@ -270,7 +283,17 @@ public class Game implements Runnable{
             mainActionTokens.push(true);
             doneFastAction = false;
             currentPlayer.addPoliticsCard(gameBoard.drawPoliticsCard());
-            currentPlayer.getConnection().sendInfo(SyncAction.YOUR_TURN);
+            timer = timerGenerator.schedule(
+                    () -> {
+                        try {
+                            endTurn(currentPlayer);
+                        } catch (NotYourTurnException e) {
+                            e.printStackTrace();
+                        }
+                    },
+                    TURN_TIMER,
+                    TimeUnit.SECONDS);
+            currentPlayer.getConnection().sendInfo(new YourTurnAction(TURN_TIMER - 10));
         }
     }
 

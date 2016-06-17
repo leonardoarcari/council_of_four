@@ -24,6 +24,8 @@ public class ElectCouncilorState implements CLIState {
     private Map<Integer, BalconyInterface> balconyMap;
     private Map<Integer, Councilor> councilorPoolMap;
     private BalconyInterface balconyChoice;
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_RESET = "\u001B[0m";
 
     private CLI cli;
 
@@ -62,7 +64,9 @@ public class ElectCouncilorState implements CLIState {
         for (int i = 0; i < regions.length; i++) {
             balconyMap.put(i+1, CachedData.getInstance().getBalcony(regions[i]));
         }
-        balconyMap.keySet().forEach(integer -> System.out.println(integer + ") " + balconyMap.get(integer)));
+        System.out.println(ANSI_BLUE + "Choose the balcony which you wanna elect a councilor in:" + ANSI_RESET);
+        balconyMap.keySet().forEach(integer -> System.out.println(integer + ") " + balconyMap.get(integer).toFormattedString()));
+        System.out.println("0) Go Back");
         internalState = CHOOSE_BALCONY;
     }
 
@@ -89,8 +93,9 @@ public class ElectCouncilorState implements CLIState {
         while (poolIterator.hasNext()) {
             councilorPoolMap.put(counter++, poolIterator.next());
         }
-
+        System.out.println(ANSI_BLUE + "Pick a councilor you want to elect:" + ANSI_RESET);
         councilorPoolMap.keySet().forEach(integer -> System.out.println(integer + ") " + councilorPoolMap.get(integer)));
+        System.out.println("0) Go Back");
         internalState = CHOOSE_COUNCILOR;
     }
 

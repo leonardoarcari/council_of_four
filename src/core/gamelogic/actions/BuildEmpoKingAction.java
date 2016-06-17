@@ -12,11 +12,11 @@ import java.util.List;
  * Created by Matteo on 23/05/16.
  */
 public class BuildEmpoKingAction extends Action implements NormalAction {
-    List<PoliticsCard> kingSatisfCards;
-    int spentCoins;
-    TownName startingTown;
-    TownName buildingTown;
-    RegionType regionType;
+    private final List<PoliticsCard> kingSatisfCards;
+    private final int spentCoins;
+    private final TownName startingTown;
+    private final TownName buildingTown;
+    private final RegionType regionType;
 
     public BuildEmpoKingAction(Player player, List<PoliticsCard> kingSatisfCards, RegionType regionType, TownName startingTown, TownName buildingTown, int spentCoins) {
         super(player);

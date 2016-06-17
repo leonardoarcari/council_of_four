@@ -160,7 +160,7 @@ public class BuildEmpoWithKingState implements CLIState {
             moneyForBuilding = reachableTowns.get(chosenTown.getTownName());
             CachedData.getInstance().getController().sendInfo(new BuildEmpoKingAction(
                     (Player) CachedData.getInstance().getMe(),
-                    chosenPolitics,
+                    new ArrayList<>(chosenPolitics),
                     getRegionType(chosenTown.getTownName()),
                     withKing.getTownName(),
                     chosenTown.getTownName(),

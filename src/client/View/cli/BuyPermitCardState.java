@@ -182,7 +182,7 @@ public class BuyPermitCardState implements CLIState {
             CachedData.getInstance().getController().sendInfo(
                     new BuyPermitCardAction(
                             (Player) CachedData.getInstance().getMe(),
-                            chosenPolitics,
+                            new ArrayList<>(chosenPolitics),
                             chosenRegion.getRegionType(),
                             chosenPermit
                     )

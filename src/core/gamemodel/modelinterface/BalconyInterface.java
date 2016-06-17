@@ -11,4 +11,5 @@ import java.util.Iterator;
 public interface BalconyInterface {
     Iterator<Councilor> councilorsIterator();
     RegionType getRegion();
+    String toFormattedString();
 }

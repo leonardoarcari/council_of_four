@@ -73,6 +73,7 @@ public class CouncilorsBalcony implements BalconyInterface, Subject, Serializabl
         return toString;
     }
 
+    @Override
     public String toFormattedString() {
         String regionString = region.name().toLowerCase();
         regionString = String.valueOf(Character.toUpperCase(regionString.charAt(0))) + regionString.substring(1);

@@ -6,7 +6,6 @@ import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -53,16 +52,16 @@ public class SocketConnection implements Connection, Runnable {
                 String info = in.readLine();
                 if (!info.endsWith(SocketCommunicator.END_JSON)) {
                     in.reset();
-                    System.out.println("Reset");
+                    System.out.println("SocketConnection: BufferedReader Reset");
                 } else {
                     StringTokenizer jsonTokenizer = new StringTokenizer(info, SocketCommunicator.END_JSON);
                     while (jsonTokenizer.hasMoreTokens()) {
                         String socketData = jsonTokenizer.nextToken();
-                        System.out.println(socketData);
+                        //System.out.println(socketData);
                         StringTokenizer tokenizer = new StringTokenizer(socketData, SocketCommunicator.SEPARATOR);
                         String className = tokenizer.nextToken();
                         String json = tokenizer.nextToken();
-                        System.out.println(className + "\n" + json);
+                        //System.out.println(className + "\n" + json);
                         Object data = gson.fromJson(json, Class.forName(className));
                         processor.processInfo(data);
                     }

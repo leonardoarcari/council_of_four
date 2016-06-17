@@ -312,11 +312,13 @@ public class CLI implements UserInterface {
 
     @Override
     public void endTurn() {
-        System.out.println(ANSI_RED + "Turn ended!" + ANSI_RESET);
-        setMainActionAvailable(false);
-        setFastActionAvailable(false);
+        System.out.println(ANSI_RED + "Turn ended! Press any key + return to continue" + ANSI_RESET);
+        CachedData.getInstance().setMainActionAvailable(false);
+        CachedData.getInstance().setFastActionAvailable(false);
+        CachedData.getInstance().setMyTurn(false);
         currentState.invalidateState();
         currentState = mainState;
+        validState = false;
     }
 
     @Override

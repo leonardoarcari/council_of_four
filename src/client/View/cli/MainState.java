@@ -4,20 +4,28 @@ import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.EndTurnAction;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 16/06/2016.
  */
 public class MainState implements CLIState {
-    private boolean[] mainFast;
-    private int maxOptions;
+    private final int END_TURN = 1;
+    private final int MAIN_ACTION = 2;
+    private final int FAST_ACTION = 3;
     private CLI cli;
 
+    private Map<Integer, Integer> dynamicOptions;
+    private Map<Integer, String> optionStrings;
+
     public MainState(CLI cli) {
-        mainFast = new boolean[] {false, false};
         this.cli = cli;
+        dynamicOptions = new HashMap<>();
+        optionStrings = new HashMap<>(3);
+        optionStrings.put(END_TURN, "End Turn");
+        optionStrings.put(MAIN_ACTION, "Do a Main Action");
+        optionStrings.put(FAST_ACTION, "Do a Fast Action");
     }
 
     @Override
@@ -25,18 +33,9 @@ public class MainState implements CLIState {
         buildMenu();
         System.out.println("1) Show Gameboard status");
         System.out.println("2) Show Player's status");
-        System.out.println("3) End Turn");
-        if (mainFast[0] && mainFast[1]) {
-            System.out.println("4) Do Main Action");
-            System.out.println("5) Do Fast Action");
-            maxOptions = 5;
-        } else if (mainFast[0] && !mainFast[1]) {
-            System.out.println("4) Do Main Action");
-            maxOptions = 4;
-        } else if (!mainFast[0] && mainFast[1]) {
-            System.out.println("4) Do Fast Action");
-            maxOptions = 4;
-        } else maxOptions = 3;
+        dynamicOptions.keySet().iterator().forEachRemaining(integer -> {
+            System.out.println(integer + ") " + optionStrings.get(dynamicOptions.get(integer)));
+        });
     }
 
     @Override
@@ -47,48 +46,45 @@ public class MainState implements CLIState {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
         }
-        if (choice <= 0 || choice > maxOptions) throw new IllegalArgumentException();
-        if ((!mainFast[0] || !mainFast[1]) && choice > 3 ) throw new IllegalArgumentException();
+        if (choice <= 0 || choice > 2 + dynamicOptions.size()) throw new IllegalArgumentException();
         if (choice == 1) {
             cli.setCurrentState(cli.getObjectStatusState());
         }
         else if (choice == 2) {
             cli.setCurrentState(cli.getPlayerState());
-        } else if (choice == 3) {
-            CachedData.getInstance().getController().sendInfo(new EndTurnAction(
-                    (Player) CachedData.getInstance().getMe()
-            ));
-        } else if (choice == 4 && mainFast[0] && mainFast[1]) {
-            cli.setCurrentState(cli.getMainActionState());
-        } else if (choice == 4 && !mainFast[0] && mainFast[1]) {
-            cli.setCurrentState(cli.getFastActionState());
-        } else if (choice == 4 && mainFast[0] && !mainFast[1]) {
-            cli.setCurrentState(cli.getMainActionState());
-        } else if (choice == 5) {
-            cli.setCurrentState(cli.getFastActionState());
-        }
+        } else doDynamicOption(dynamicOptions.get(choice));
+        invalidateState();
     }
 
     @Override
     public void invalidateState() {
-        mainFast[0] = mainFast[1] = false;
+        dynamicOptions.clear();
     }
 
     private void buildMenu() {
+        dynamicOptions.clear();
+        int counter = 3;
         if (CachedData.getInstance().myTurnProperty().getValue()) {
             if (CachedData.getInstance().mainActionAvailableProperty().getValue()) {
-                mainFast[0] = true;
-            } else {
-                mainFast[0] = false;
+                dynamicOptions.put(counter++, MAIN_ACTION);
             }
             if (CachedData.getInstance().fastActionAvailableProperty().getValue()) {
-                mainFast[1] = true;
-            } else {
-                mainFast[1] = false;
+                dynamicOptions.put(counter++, FAST_ACTION);
             }
-        } else {
-            mainFast[0] = mainFast[1] = false;
+            dynamicOptions.put(counter, END_TURN);
         }
-        System.out.println("Main: "+ mainFast[0] + " Fast: " + mainFast[1]);
+    }
+
+    private void doDynamicOption(int constChoice) {
+        if (constChoice == END_TURN) {
+            CachedData.getInstance().getController().sendInfo(new EndTurnAction(
+                    (Player) CachedData.getInstance().getMe()
+            ));
+            cli.setCurrentState(cli.getWaitingState());
+        } else if (constChoice == MAIN_ACTION) {
+            cli.setCurrentState(cli.getMainActionState());
+        } else if (constChoice == FAST_ACTION) {
+            cli.setCurrentState(cli.getFastActionState());
+        }
     }
 }

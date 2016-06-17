@@ -59,7 +59,7 @@ public class CachedData {
     private CachedData() {
         me = null;
         executorService = Executors.newScheduledThreadPool(1);
-        elapsedTime = 20;
+        elapsedTime = -1;
         towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
@@ -220,14 +220,14 @@ public class CachedData {
         this.showcase = showcase;
     }
 
-    public ScheduledExecutorService getExecutor() {
+    public ScheduledExecutorService getExecutor(int beginningSeconds) {
+        elapsedTime = beginningSeconds;
         return executorService;
     }
 
     public int isNormalTimerExpired() {
-        if(elapsedTime == 0) {
+        if (elapsedTime == 0) {
             executorService.shutdown();
-            elapsedTime = 20;
             controller.sendInfo(new EndTurnAction((Player) me));
             return -1;
         }
