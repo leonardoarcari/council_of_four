@@ -89,6 +89,7 @@ public class MarketAuctionState implements CLIState {
                 index++;
             }
         }
+        validate = true;
     }
 
     private void printSelectionMenu() {
@@ -105,7 +106,7 @@ public class MarketAuctionState implements CLIState {
                 System.out.println(index+") Servant at " + onSaleItem.getPrice() + " coin(s)");
             } else if(onSaleItem.getItem().getClass().equals(PoliticsCard.class)) {
                 System.out.println(index + ") " + onSaleItem.getItem().toString() +
-                        "politics card at " + onSaleItem.getPrice() + " coin(s)");
+                        " politics card at " + onSaleItem.getPrice() + " coin(s)");
             } else System.out.println(index + ") Permit card\n" + onSaleItem.getItem().toString()
                     + "\n\tat " + onSaleItem.getPrice() + " coin(s)");
         }
@@ -149,9 +150,7 @@ public class MarketAuctionState implements CLIState {
         if(choice == 0) {
             currentState = SELECTION_STATE;
             selectedItemIndex = 0;
-        }
-
-        if(onSaleItemMap.keySet().contains(choice)) {
+        }else if(onSaleItemMap.keySet().contains(choice)) {
             currentState = BUYING_STATE;
             selectedItemIndex = choice;
         } else throw new IllegalArgumentException();
