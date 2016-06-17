@@ -98,7 +98,7 @@ public class BuyPermitCardState implements CLIState {
         }
         if (choice < 0 || choice > balconyMap.size()) throw new IllegalArgumentException();
         if (choice == 0) {
-            //TODO: Go back to previous state
+            cli.setCurrentState(cli.getMainActionState());
             resetState();
         } else {
             chosenBalcony = balconyMap.get(choice);

@@ -106,7 +106,7 @@ public class BuildEmporiumState implements CLIState{
         }
         if (choice < 0 || choice > townOptions.size()) throw new IllegalArgumentException();
         if (choice == 0) {
-            cli.setCurrentState(cli.getMainState());
+            cli.setCurrentState(cli.getMainActionState());
             resetState();
         }
         else townChoice = townOptions.get(choice);

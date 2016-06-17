@@ -54,7 +54,7 @@ public class FastActionState implements CLIState {
                 cli.setCurrentState(cli.getDoOtherActionState());
                 break;
             case 0:
-                cli.setCurrentState(cli.getMainActionState());
+                cli.setCurrentState(cli.getMainState());
                 break;
         }
     }
