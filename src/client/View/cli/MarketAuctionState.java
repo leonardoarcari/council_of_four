@@ -85,7 +85,7 @@ public class MarketAuctionState implements CLIState {
             OnSaleItem onSaleItem = onSaleItemIterator.next();
             //Don't show items who exceed the player's coins
             if(onSaleItem.getPrice() <= myCoins) {
-                onSaleItemMap.put(index, onSaleItemIterator.next());
+                onSaleItemMap.put(index, onSaleItem);
                 index++;
             }
         }

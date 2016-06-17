@@ -339,6 +339,9 @@ public class ServerProcessor implements InfoProcessor {
         Player player = game.getPlayerInstance(action.getPlayer());
         player.setUsername(action.getUsername());
         player.setNickname(action.getNickname());
+        game.getGameBoard().getWealthPath().notifyObservers();
+        game.getGameBoard().getNobilityPath().notifyObservers();
+        game.getGameBoard().getVictoryPath().notifyObservers();
     }
 
     private void forwardChatMessage(ChatAction action) {

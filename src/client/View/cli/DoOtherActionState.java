@@ -65,6 +65,7 @@ public class DoOtherActionState implements CLIState {
         if(choice == 1) {
             Action action = new AnotherMainActionAction((Player)CachedData.getInstance().getMe());
             CachedData.getInstance().getController().sendInfo(action);
+            cli.setCurrentState(cli.getWaitingState());
         } else {
             cli.setCurrentState(cli.getFastActionState());
         }

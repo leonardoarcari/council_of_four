@@ -78,6 +78,7 @@ public class BuildEmpoWithKingState implements CLIState {
         List<PoliticsCard> validCards = new ArrayList<>();
         kingsBalcony.councilorsIterator().forEachRemaining(councilors::add);
         ViewAlgorithms.checkForSatisfaction(councilors, validCards);
+        validPolitics = validCards;
     }
 
     private void satisfyAction(String input) throws IllegalArgumentException{

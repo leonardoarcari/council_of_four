@@ -36,8 +36,9 @@ public class PermitAgainState implements CLIState {
         }
 
         if(currentIndex == 1) {
-            System.out.println("You have no permits!");
-            cli.setCurrentState(cli.getMainActionState());
+            System.out.println("You have no permits! -- Press return to continue");
+            cli.setCurrentState(cli.getMainState());
+            cli.setValidation(false);
         } else printPermits();
     }
 

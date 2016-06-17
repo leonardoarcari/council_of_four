@@ -39,8 +39,9 @@ public class PickPermitState implements CLIState {
         }
 
         if(currentIndex == 1) {
-            System.out.println("No permits available to buy");
+            System.out.println("No permits available to buy -- press return to continue");
             cli.setCurrentState(cli.getMainState());
+            cli.setValidation(false);
         } else printPermits();
     }
 

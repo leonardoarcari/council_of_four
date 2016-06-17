@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class MainState implements CLIState {
     private boolean[] mainFast;
+    private int maxOptions;
     private CLI cli;
 
     public MainState(CLI cli) {
@@ -28,11 +29,14 @@ public class MainState implements CLIState {
         if (mainFast[0] && mainFast[1]) {
             System.out.println("4) Do Main Action");
             System.out.println("5) Do Fast Action");
+            maxOptions = 5;
         } else if (mainFast[0] && !mainFast[1]) {
             System.out.println("4) Do Main Action");
+            maxOptions = 4;
         } else if (!mainFast[0] && mainFast[1]) {
             System.out.println("4) Do Fast Action");
-        }
+            maxOptions = 4;
+        } else maxOptions = 3;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class MainState implements CLIState {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
         }
-        if (choice <= 0 || choice > 4) throw new IllegalArgumentException();
+        if (choice <= 0 || choice > maxOptions) throw new IllegalArgumentException();
         if ((!mainFast[0] || !mainFast[1]) && choice > 3 ) throw new IllegalArgumentException();
         if (choice == 1) {
             cli.setCurrentState(cli.getObjectStatusState());
@@ -56,14 +60,11 @@ public class MainState implements CLIState {
             ));
         } else if (choice == 4 && mainFast[0] && mainFast[1]) {
             cli.setCurrentState(cli.getMainActionState());
-        }
-        else if (choice == 4 && !mainFast[0] && mainFast[1]) {
+        } else if (choice == 4 && !mainFast[0] && mainFast[1]) {
             cli.setCurrentState(cli.getFastActionState());
-        }
-        else if (choice == 4 && mainFast[0] && !mainFast[1]) {
+        } else if (choice == 4 && mainFast[0] && !mainFast[1]) {
             cli.setCurrentState(cli.getMainActionState());
-        }
-        else if (choice == 5) {
+        } else if (choice == 5) {
             cli.setCurrentState(cli.getFastActionState());
         }
     }
@@ -74,13 +75,13 @@ public class MainState implements CLIState {
     }
 
     private void buildMenu() {
-        if (CachedData.getInstance().myTurnProperty().get()) {
-            if (CachedData.getInstance().mainActionAvailableProperty().get()) {
+        if (CachedData.getInstance().myTurnProperty().getValue()) {
+            if (CachedData.getInstance().mainActionAvailableProperty().getValue()) {
                 mainFast[0] = true;
             } else {
                 mainFast[0] = false;
             }
-            if (CachedData.getInstance().fastActionAvailableProperty().get()) {
+            if (CachedData.getInstance().fastActionAvailableProperty().getValue()) {
                 mainFast[1] = true;
             } else {
                 mainFast[1] = false;
@@ -88,5 +89,6 @@ public class MainState implements CLIState {
         } else {
             mainFast[0] = mainFast[1] = false;
         }
+        System.out.println("Main: "+ mainFast[0] + " Fast: " + mainFast[1]);
     }
 }

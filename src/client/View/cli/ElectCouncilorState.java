@@ -121,6 +121,7 @@ public class ElectCouncilorState implements CLIState {
                             )
             );
             System.out.println("Action sent");
+            cli.setCurrentState(cli.getWaitingState());
         }
     }
 

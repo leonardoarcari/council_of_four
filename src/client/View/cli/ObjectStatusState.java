@@ -5,7 +5,9 @@ import core.Player;
 import core.gamemodel.*;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.RegionInterface;
+import core.gamemodel.modelinterface.TownInterface;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,8 +31,8 @@ public class ObjectStatusState implements CLIState {
         System.out.println("3) Regions");
         System.out.println("4) Towns");
         System.out.println("5) Wealth path");
-        System.out.println("7) Nobility path");
-        System.out.println("8) Victory path");
+        System.out.println("6) Nobility path");
+        System.out.println("7) Victory path");
         System.out.println("0) Back");
     }
 
@@ -65,7 +67,7 @@ public class ObjectStatusState implements CLIState {
                 showVictoryPath();
                 break;
             case 0:
-                cli.setCurrentState(cli.getMainActionState());
+                cli.setCurrentState(cli.getMainState());
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -87,10 +89,10 @@ public class ObjectStatusState implements CLIState {
     }
 
     private void showBalconies() {
-        ((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.SEA)).toFormattedString();
-        ((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.HILLS)).toFormattedString();
-        ((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.MOUNTAINS)).toFormattedString();
-        ((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.KINGBOARD)).toFormattedString();
+        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.SEA)).toFormattedString());
+        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.HILLS)).toFormattedString());
+        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.MOUNTAINS)).toFormattedString());
+        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.KINGBOARD)).toFormattedString());
     }
 
     private void showRegions() {
@@ -110,11 +112,11 @@ public class ObjectStatusState implements CLIState {
     }
 
     private void showTowns() {
-        List<Town> towns = singletonList((Town) CachedData.getInstance().getTowns().values());
-        for(Town town : towns) {
-            System.out.println(town.getTownName().name().toUpperCase());
+        List<TownInterface> towns = new ArrayList<>(CachedData.getInstance().getTowns().values());
+        for(TownInterface town : towns) {
+            System.out.println(town.getTownName().toString().toUpperCase());
             System.out.println("\tType:" + town.getTownType().name());
-            System.out.println("\tBonus: " + town.getTownBonus().toString());
+            System.out.println("\tBonus: " + ((town.getTownBonus()==null) ? "no bonus" : town.getTownBonus().toString()));
             System.out.print("\tNearby towns: [ ");
             town.nearbiesIterator().forEachRemaining(townName -> System.out.print(townName.name() + " "));
             System.out.println("]");

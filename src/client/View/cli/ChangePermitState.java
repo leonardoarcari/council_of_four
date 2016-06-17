@@ -18,6 +18,7 @@ public class ChangePermitState implements CLIState {
     public static final int OPTIONS_AVAILABLE = 0;
     public static final int NO_OPTIONS = 1;
     private int currentState;
+    private boolean alreadyFilled;
 
     private CLI cli;
 
@@ -26,12 +27,13 @@ public class ChangePermitState implements CLIState {
     public ChangePermitState(CLI cli) {
         currentState = NO_OPTIONS;
         regionOptions = new HashMap<>();
-        fillRegionOptions();
+        alreadyFilled = false;
         this.cli = cli;
     }
 
     @Override
     public void showMenu() {
+        if(!alreadyFilled) fillRegionOptions();
         if(CachedData.getInstance().getMe().getServantsNumber() >= 1)
             currentState = OPTIONS_AVAILABLE;
         else

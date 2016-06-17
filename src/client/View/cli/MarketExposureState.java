@@ -103,7 +103,7 @@ public class MarketExposureState implements CLIState {
             if(sellableItemMap.get(index).getClass().equals(Servant.class)) {
                 System.out.println(index+") Servant");
             } else if(sellableItemMap.get(index).getClass().equals(PoliticsCard.class)) {
-                System.out.println(index + ") " + sellableItemMap.get(index).toString() + "politics card");
+                System.out.println(index + ") " + sellableItemMap.get(index).toString() + " politics card");
             } else System.out.println(index + ") Permit card\n" + sellableItemMap.get(index).toString());
         }
         System.out.println("0) Go back");
@@ -134,9 +134,7 @@ public class MarketExposureState implements CLIState {
         if(choice == 0) {
             currentState = SELECTION_STATE;
             selectedItemIndex = 0;
-        }
-
-        if(sellableItemMap.keySet().contains(choice)) {
+        }else if(sellableItemMap.keySet().contains(choice)) {
             currentState = SELECT_PRICE;
             selectedItemIndex = choice;
         } else throw new IllegalArgumentException();

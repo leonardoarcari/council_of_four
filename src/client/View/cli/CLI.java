@@ -21,6 +21,9 @@ import java.util.List;
  * Created by Leonardo Arcari on 16/06/2016.
  */
 public class CLI implements UserInterface {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+
     private final CLIState electCouncilorMainState;
     private final CLIState electCouncilorFastState;
     private final CLIState buildEmporiumState;
@@ -43,7 +46,7 @@ public class CLI implements UserInterface {
     private final CLIState loginState;
 
     private CLIState currentState;
-    private CLIState nextState;
+    private boolean validState;
     private BufferedReader in;
 
     private String username;
@@ -77,6 +80,7 @@ public class CLI implements UserInterface {
         controller = new ControllerUI(this);
         CachedData.getInstance().setController(controller);
         currentState = loginState;
+        validState = true;
     }
 
     public void run() {
@@ -86,7 +90,7 @@ public class CLI implements UserInterface {
                 boolean correct = false;
                 while (!correct) {
                     String input = in.readLine();
-                    if (nextState.equals(currentState))
+                    if (validState)
                         try {
                             currentState.readInput(input);
                             correct = true;
@@ -94,14 +98,18 @@ public class CLI implements UserInterface {
                             correct = false;
                         }
                     else {
-                        System.out.println("-- Not valid input: state has changed --");
-                        currentState = nextState;
+                        validState = true;
+                        break;
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setValidation(boolean validation) {
+        validState = validation;
     }
 
     public CLIState getCurrentState() {
@@ -236,17 +244,23 @@ public class CLI implements UserInterface {
 
     @Override
     public void showExposeView() {
-        nextState = marketExposureState;
+        currentState = marketExposureState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to expose items" + ANSI_RESET);
     }
 
     @Override
     public void showBuyItemView() {
-        nextState = marketAuctionState;
+        currentState = marketAuctionState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to participate the auction" + ANSI_RESET);
     }
 
     @Override
     public void hideMarket() {
-        nextState = waitingState;
+        currentState = waitingState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to continue" + ANSI_RESET);
     }
 
     @Override
@@ -256,7 +270,8 @@ public class CLI implements UserInterface {
 
     @Override
     public void startGame() {
-        currentState = nextState = mainState;
+        currentState = mainState;
+        validState = false;
         controller.sendInfo(new PlayerInfoAction(
                 (Player) CachedData.getInstance().getMe(),
                 username,
@@ -265,7 +280,9 @@ public class CLI implements UserInterface {
 
     @Override
     public void pickTownBonus() {
-        nextState = pickTownBonusState;
+        currentState = pickTownBonusState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to redeem a town bonus" + ANSI_RESET);
     }
 
     @Override
@@ -285,39 +302,49 @@ public class CLI implements UserInterface {
 
     @Override
     public void yourTurn() {
-        setFastActionAvailable(true);
-        setMainActionAvailable(true);
-        nextState = mainState;
+        CachedData.getInstance().myTurnProperty().setValue(true);
+        CachedData.getInstance().mainActionAvailableProperty().setValue(true);
+        CachedData.getInstance().fastActionAvailableProperty().setValue(true);
+        currentState = mainState;
+        validState = false;
+        System.out.println(ANSI_RED + "Your turn, press any key + return to continue" + ANSI_RESET);
     }
 
     @Override
     public void endTurn() {
+        System.out.println(ANSI_RED + "Turn ended!" + ANSI_RESET);
         setMainActionAvailable(false);
         setFastActionAvailable(false);
         currentState.invalidateState();
-        nextState = mainState;
+        currentState = mainState;
     }
 
     @Override
     public void setMainActionAvailable(boolean mainActionAvailable) {
         CachedData.getInstance().setMainActionAvailable(mainActionAvailable);
-        nextState = mainState;
+        currentState = mainState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to continue"+ ANSI_RESET);
     }
 
     @Override
     public void setFastActionAvailable(boolean fastActionAvailable) {
         CachedData.getInstance().setFastActionAvailable(fastActionAvailable);
-        nextState = mainState;
+        currentState = mainState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to continue" + ANSI_RESET);
     }
 
     @Override
     public void showRedeemPermitView() {
-        nextState = permitAgainState;
+        currentState = permitAgainState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to redeem a permit" + ANSI_RESET);
     }
 
     @Override
     public void showDrawFreePermitView() {
-        nextState = pickPermitState;
+        currentState = pickPermitState;
     }
 
     @Override
@@ -328,19 +355,22 @@ public class CLI implements UserInterface {
         } catch (NumberFormatException e) {
             return;
         }
-        if (timer < 5) System.out.println("Hurry! Time over in " + timer + " seconds");
-        else if (timer % 5 == 0) System.out.println("Time over in " + timer + " seconds");
+        if (timer < 5) System.out.println(ANSI_RED + "Hurry! Time over in " + timer + " seconds" + ANSI_RESET);
+        else if (timer % 5 == 0) System.out.println(ANSI_RED + "Time over in " + timer + " seconds" + ANSI_RESET);
     }
 
     @Override
     public void forceExposureEnd() {
         currentState.invalidateState();
-        nextState = waitingState;
+        validState = false;
+        currentState = waitingState;
+        System.out.println(ANSI_RED + "Exposure time expired" + ANSI_RESET);
     }
 
     @Override
     public void forceBuyingEnd() {
         currentState.invalidateState();
-        nextState = waitingState;
+        validState = false;
+        System.out.println(ANSI_RED + "Auction time expired" + ANSI_RESET);
     }
 }

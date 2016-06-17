@@ -229,8 +229,8 @@ public class PlayerView {
                 currentView.setFitHeight(80);
                 politicsBox.getChildren().add(currentView);
             }
-            CachedData.getInstance().getPlayerPoliticsCards().clear();
-            CachedData.getInstance().getPlayerPoliticsCards().addAll(tempList);
+            /*CachedData.getInstance().getPlayerPoliticsCards().clear();
+            CachedData.getInstance().getPlayerPoliticsCards().addAll(tempList);*/
         }
     }
 

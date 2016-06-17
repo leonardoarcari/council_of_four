@@ -83,13 +83,13 @@ public class PermitCard implements SellableItem, Serializable {
         int i = 0;
         for(Bonus bonus : bonuses) {
             permitBonuses = permitBonuses + bonus.toString();
-            if(i == bonuses.size()-1) {
+            if(i != bonuses.size()-1) {
                 permitBonuses = permitBonuses + ", ";
             }
             i++;
         }
         permitBonuses = permitBonuses + "]";
 
-        return townPermits + "\n" + permitBonuses;
+        return townPermits + "\n" + permitBonuses + "\n";
     }
 }

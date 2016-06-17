@@ -52,7 +52,7 @@ public class PlayerState implements CLIState {
                 showBonusCards();
                 break;
             case 0:
-                cli.setCurrentState(cli.getMainActionState());
+                cli.setCurrentState(cli.getMainState());
                 break;
             default:
                 throw new IllegalArgumentException();

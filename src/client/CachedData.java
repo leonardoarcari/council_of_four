@@ -115,13 +115,17 @@ public class CachedData {
     public void setMe(PlayerInterface me) {
         this.me = me;
         myPermitCards.clear();
+        playerPoliticsCards.clear();
         List<PermitCard> permitCardsTemp = new ArrayList<>();
         Iterator<PermitCard> permitIterator = this.me.permitCardIterator();
         while(permitIterator.hasNext()) {
             permitCardsTemp.add(permitIterator.next());
         }
         myPermitCards.addAll(permitCardsTemp);
-        myPermitCards.forEach(permitCard -> System.out.println("Is burned : "+ permitCard.isBurned()));
+
+        List<PoliticsCard> tempPolitics = new ArrayList<>();
+        this.me.politicsCardIterator().forEachRemaining(tempPolitics::add);
+        playerPoliticsCards.addAll(tempPolitics);
     }
 
     public void putTown(TownName townName, TownInterface town) {
