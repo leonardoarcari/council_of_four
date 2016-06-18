@@ -471,7 +471,10 @@ public class GUI extends Application implements UserInterface {
         GridPane pane = new GridPane();
         pane.setGridLinesVisible(false);
         endTurn = new Button("End Turn");
-        endTurn.setOnMouseClicked(event -> controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe())));
+        endTurn.setOnMouseClicked(event -> {
+            controller.stopTimer();
+            controller.sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
+        });
         timerProperty = new SimpleStringProperty("N / A");
         Label timer = new Label("");
         timer.setTextAlignment(TextAlignment.CENTER);
@@ -869,9 +872,11 @@ public class GUI extends Application implements UserInterface {
     }
 
     @Override
-    public void setTimer(String text) {
-        Platform.runLater(() ->
-                timerProperty.setValue(text)
+    public void setTimer(int time) {
+        Platform.runLater(() -> {
+            if (time < 1) timerProperty.setValue("Waiting for next turn..");
+            else timerProperty.setValue("Remaining time: " + time + " seconds");
+            }
         );
     }
 
@@ -905,5 +910,10 @@ public class GUI extends Application implements UserInterface {
             String serverMessage = "Sistema Informativo says: " + message;
             chatView.append(serverMessage);
         });
+    }
+
+    @Override
+    public ControllerUI getController() {
+        return controller;
     }
 }

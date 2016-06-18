@@ -50,20 +50,22 @@ public class SocketConnection implements Connection, Runnable {
         try {
             while (true) {
                 String info = in.readLine();
-                if (!info.endsWith(SocketCommunicator.END_JSON)) {
-                    in.reset();
-                    System.out.println("SocketConnection: BufferedReader Reset");
-                } else {
-                    StringTokenizer jsonTokenizer = new StringTokenizer(info, SocketCommunicator.END_JSON);
-                    while (jsonTokenizer.hasMoreTokens()) {
-                        String socketData = jsonTokenizer.nextToken();
-                        //System.out.println(socketData);
-                        StringTokenizer tokenizer = new StringTokenizer(socketData, SocketCommunicator.SEPARATOR);
-                        String className = tokenizer.nextToken();
-                        String json = tokenizer.nextToken();
-                        //System.out.println(className + "\n" + json);
-                        Object data = gson.fromJson(json, Class.forName(className));
-                        processor.processInfo(data);
+                if (info != null) {
+                    if (!info.endsWith(SocketCommunicator.END_JSON)) {
+                        in.reset();
+                        System.out.println("SocketConnection: BufferedReader Reset");
+                    } else {
+                        StringTokenizer jsonTokenizer = new StringTokenizer(info, SocketCommunicator.END_JSON);
+                        while (jsonTokenizer.hasMoreTokens()) {
+                            String socketData = jsonTokenizer.nextToken();
+                            //System.out.println(socketData);
+                            StringTokenizer tokenizer = new StringTokenizer(socketData, SocketCommunicator.SEPARATOR);
+                            String className = tokenizer.nextToken();
+                            String json = tokenizer.nextToken();
+                            //System.out.println(className + "\n" + json);
+                            Object data = gson.fromJson(json, Class.forName(className));
+                            processor.processInfo(data);
+                        }
                     }
                 }
             }

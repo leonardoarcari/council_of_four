@@ -19,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 public class Game implements Runnable{
     private List<Player> players;
     private List<Player> lastPlayingPlayers;
+    private List<Player> disconnectedPlayers;
     private GameBoard gameBoard;
     private ConfigParser mapConfig;
     private InfoProcessor processor;
 
+    private Stack<Player> turnPlayers;
     private Turn currentTurn;
     private MarketPhase market;
 
@@ -33,8 +35,8 @@ public class Game implements Runnable{
     private ScheduledExecutorService timerGenerator;
     private ScheduledFuture timer;
     public static final int TURN_TIMER = 20;
-    public static final int AUCTION_TIMER = 30;
-    public static final int BUY_ITEMS_TIMER = 30;
+    public static final int EXPOSURE_TIMER = 20;
+    public static final int BUY_ITEMS_TIMER = 20;
 
     public Game() {
         processor = new ServerProcessor(this);
@@ -65,13 +67,24 @@ public class Game implements Runnable{
     @Override
     public void run() {
         players = WaitingHall.getInstance().pullPlayers();
+        disconnectedPlayers = new ArrayList<>();
+        turnPlayers = new Stack<>();
         WaitingHall.getInstance().createNewGame();
         gameBoard = GameBoard.createGameBoard(players);
         if (mapConfig != null) {
             setTownLinks();
             for (Player player : players) {
                 player.getConnection().setOnDisconnection(() -> {
-                    players.remove(player);
+                    disconnectedPlayers.add(players.remove(players.indexOf(player)));
+                    turnPlayers.remove(player);
+                    if (!marketPhase && currentTurn.currentPlayer.equals(player)) {
+                        timer.cancel(true);
+                        try {
+                            endTurn(player);
+                        } catch (NotYourTurnException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     players.iterator().forEachRemaining(player1 -> player1.getConnection().sendInfo(
                             new ServerMessage(
                                     "Player " + player.getUsername() +
@@ -97,7 +110,8 @@ public class Game implements Runnable{
         }
         playerIndex = 0;
         lastPlayingPlayers = new ArrayList<>();
-        currentTurn = new Turn(players.get(playerIndex));
+        fillTurnPlayers();
+        currentTurn = new Turn(turnPlayers.peek());
     }
 
     private void setTownLinks() {
@@ -156,16 +170,16 @@ public class Game implements Runnable{
     public void endTurn(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             if (!timer.isDone()) timer.cancel(true);
-            player.getConnection().sendInfo(new EndTurnAction(player));
+            if (players.contains(player)) player.getConnection().sendInfo(new EndTurnAction(player));
             if (!lastTurn) {
-                playerIndex = (playerIndex + 1) % players.size();
-                if (playerIndex == 0) setUpMarket();
-                else currentTurn = new Turn(players.get(playerIndex));
+                if (!turnPlayers.isEmpty()) turnPlayers.pop();
+                if (turnPlayers.isEmpty()) setUpMarket();
+                else currentTurn = new Turn(turnPlayers.peek());
             } else {
-                lastPlayingPlayers.remove(player);
-                if (lastPlayingPlayers.isEmpty()) endGame();
+                if (!turnPlayers.isEmpty()) turnPlayers.pop();
+                if (turnPlayers.isEmpty()) endGame();
                 else {
-                    currentTurn = new Turn(lastPlayingPlayers.get(0));
+                    currentTurn = new Turn(turnPlayers.peek());
                 }
             }
         } else throw new NotYourTurnException();
@@ -193,7 +207,13 @@ public class Game implements Runnable{
     public void firstToTenEmporium(Player player) {
         lastTurn = true;
         gameBoard.moveVictoryPath(player, 3);
+        lastPlayingPlayers.clear();
         lastPlayingPlayers.addAll(players);
+        lastPlayingPlayers.remove(player);
+        turnPlayers.clear();
+        for (int i = lastPlayingPlayers.size() - 1; i < 0; i--) {
+            turnPlayers.push(lastPlayingPlayers.get(i));
+        }
     }
 
     private void endGame() {
@@ -226,8 +246,9 @@ public class Game implements Runnable{
             if (market.playersReady < players.size()) {
                 market.playersReady++;
                 if (market.playersReady == players.size()) {
+                    timer.cancel(true);
                     market.setUpAction(players);
-                    market.currentPlayer.getConnection().sendInfo(MarketSyncAction.AUCTION_START_ACTION);
+                    market.currentPlayer.getConnection().sendInfo(new AuctionStartAction(BUY_ITEMS_TIMER - 10));
                 }
             } else throw new UnsupportedOperationException("Every player is already ready!");
         } else throw new NotYourTurnException();
@@ -235,10 +256,11 @@ public class Game implements Runnable{
 
     public synchronized void endAuctionOf(Player player) throws NotYourTurnException {
         if (isAllowedToMarket(player)) {
+            timer.cancel(true);
             player.getConnection().sendInfo(MarketSyncAction.END_AUCTION_ACTION);
             try {
                 market.changePlayer();
-                market.currentPlayer.getConnection().sendInfo(MarketSyncAction.AUCTION_START_ACTION);
+                market.currentPlayer.getConnection().sendInfo(new AuctionStartAction(BUY_ITEMS_TIMER - 10));
             } catch (MarketPhase.EndMarketException e) {
                 endMarket();
             }
@@ -248,9 +270,21 @@ public class Game implements Runnable{
     private void setUpMarket() {
         marketPhase = true;
         for (Player player : players) {
-            player.getConnection().sendInfo(MarketSyncAction.MARKET_START_ACTION);
+            player.getConnection().sendInfo(new MarketStartAction(EXPOSURE_TIMER - 10));
         }
         market = new MarketPhase();
+        timer = timerGenerator.schedule(
+                () -> {
+                    market.playersReady = players.size();
+                    try {
+                        sellableExposed(players.get(0));
+                    } catch (NotYourTurnException e) {
+                        e.printStackTrace();
+                    }
+                },
+                EXPOSURE_TIMER,
+                TimeUnit.SECONDS
+        );
     }
 
     public void endMarket() {
@@ -260,7 +294,8 @@ public class Game implements Runnable{
         }
         gameBoard.getShowcase().returnItemsToOwner();
         System.out.println("new round");
-        currentTurn = new Turn(players.get(playerIndex));
+        fillTurnPlayers();
+        currentTurn = new Turn(turnPlayers.peek());
     }
 
 
@@ -270,6 +305,12 @@ public class Game implements Runnable{
 
     private boolean isAllowedToGame(Player player) {
         return player.equals(currentTurn.currentPlayer) && !marketPhase;
+    }
+
+    private void fillTurnPlayers() {
+        for (int i = players.size() - 1; i < 0; i--) {
+            turnPlayers.push(players.get(i));
+        }
     }
 
     private class Turn {
@@ -312,11 +353,33 @@ public class Game implements Runnable{
             auctionPlayers = new ArrayList<>(playerList);
             Collections.shuffle(auctionPlayers);
             currentPlayer = auctionPlayers.get(0);
+            timer = timerGenerator.schedule(
+                    () -> {
+                        try {
+                            endAuctionOf(currentPlayer);
+                        } catch (NotYourTurnException e) {
+                            e.printStackTrace();
+                        }
+                    },
+                    BUY_ITEMS_TIMER,
+                    TimeUnit.SECONDS
+            );
         }
 
         void changePlayer() throws EndMarketException {
             if (playerMarketIndex < auctionPlayers.size() - 1) {
                 currentPlayer = auctionPlayers.get(++playerMarketIndex);
+                timer = timerGenerator.schedule(
+                        () -> {
+                            try {
+                                endAuctionOf(currentPlayer);
+                            } catch (NotYourTurnException e) {
+                                e.printStackTrace();
+                            }
+                        },
+                        BUY_ITEMS_TIMER,
+                        TimeUnit.SECONDS
+                );
             } else throw new EndMarketException();
         }
 

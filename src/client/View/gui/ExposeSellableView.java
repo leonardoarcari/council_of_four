@@ -52,6 +52,7 @@ public class ExposeSellableView extends GridPane {
         getChildren().addAll(scrollPane, buttonBox);
 
         exposeButton.setOnMouseClicked(event -> {
+            CachedData.getInstance().getController().stopTimer();
             CachedData.getInstance().getController().sendInfo(new ExposeSellablesAction(
                     (Player) CachedData.getInstance().getMe(),
                     new ArrayList<>(onSaleItems.values())

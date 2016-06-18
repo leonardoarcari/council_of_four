@@ -1,15 +1,11 @@
 package client.clientconnection;
 
-import client.CachedData;
 import client.View.UserInterface;
 import core.connection.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.*;
 import core.gamemodel.WealthPath;
 import core.gamemodel.modelinterface.*;
-
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -63,43 +59,26 @@ public class UInfoProcessor implements InfoProcessor {
             }
         } else if (info.getClass().equals(YourTurnAction.class)) {
             userInterface.yourTurn();
-            ScheduledExecutorService executor = CachedData.getInstance().getExecutor(((YourTurnAction) info).getTimerLength());
-            executor.scheduleAtFixedRate(() -> userInterface.setTimer(setElapsedTurnTime()),2,1, TimeUnit.SECONDS);
+            userInterface.getController().runTurnTimer(((YourTurnAction) info).getTimerLength());
         } else if (info.getClass().equals(EndTurnAction.class)) {
             userInterface.endTurn();
         } else if (info.getClass().equals(LoadMapAction.class)) {
             userInterface.loadMap(((LoadMapAction) info).getMapName());
         }  else if (info.getClass().equals(ServerMessage.class)) {
             userInterface.handleServerMessage(((ServerMessage) info).getMessage());
+        } else if (info instanceof MarketAction) {
+            if (info.getClass().equals(MarketStartAction.class)) {
+                userInterface.showExposeView();
+                userInterface.getController().runMarketTimer(((MarketStartAction) info).getTimer(), true);
+            } else if (info.getClass().equals(AuctionStartAction.class)) {
+                userInterface.showBuyItemView();
+                userInterface.getController().runMarketTimer(((AuctionStartAction) info).getTimer(), false);
+            }
         } else if (info.getClass().equals(MarketSyncAction.class)) {
             MarketSyncAction action = (MarketSyncAction) info;
-            if (action.equals(MarketSyncAction.MARKET_START_ACTION)) {
-                userInterface.showExposeView();
-                //ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
-                //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(true),2,1, TimeUnit.SECONDS);
-            } else if (action.equals(MarketSyncAction.AUCTION_START_ACTION)) {
-                userInterface.showBuyItemView();
-                //ScheduledExecutorService executor = CachedData.getInstance().getExecutor();
-                //executor.scheduleAtFixedRate(() -> setElapsedExposureTime(false),2,1, TimeUnit.SECONDS);
-            } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
+            if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 userInterface.hideMarket();
             }
-        }
-    }
-
-    private String setElapsedTurnTime() {
-        int time = CachedData.getInstance().isNormalTimerExpired();
-        //if(time == -1) return "Waiting for next turn..";
-        //else return "Remaining time: " + time + " seconds";
-        return String.valueOf(time);
-    }
-
-    private void setElapsedExposureTime(boolean exposure) {
-        int time = CachedData.getInstance().isMarketPhaseEnded(exposure);
-        if(time == -1) {
-            if(exposure) userInterface.forceExposureEnd();
-            else userInterface.forceBuyingEnd();
-            return;
         }
     }
 }

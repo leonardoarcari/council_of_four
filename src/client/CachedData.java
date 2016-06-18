@@ -21,11 +21,9 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class CachedData {
     private volatile static CachedData instance = null;
-    private static int elapsedTime;
 
     private ControllerUI controller;
     private PlayerInterface me;
-    private ScheduledExecutorService executorService;
     private ObservableList<PermitCard> myPermitCards;
     private Map<TownName, TownInterface> towns;
     private Map<RegionType, BalconyInterface> balconies;
@@ -58,9 +56,7 @@ public class CachedData {
 
     private CachedData() {
         me = null;
-        executorService = Executors.newScheduledThreadPool(1);
-        elapsedTime = -1;
-        towns = new HashMap<>(15);
+            towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
         wealthPath = null;
@@ -218,33 +214,6 @@ public class CachedData {
 
     public void setShowcase(ShowcaseInterface showcase) {
         this.showcase = showcase;
-    }
-
-    public ScheduledExecutorService getExecutor(int beginningSeconds) {
-        elapsedTime = beginningSeconds;
-        return executorService;
-    }
-
-    public int isNormalTimerExpired() {
-        if (elapsedTime == 0) {
-            executorService.shutdown();
-            controller.sendInfo(new EndTurnAction((Player) me));
-            return -1;
-        }
-        elapsedTime--;
-        return elapsedTime;
-    }
-
-    public int isMarketPhaseEnded(Boolean exposureNotAuction) {
-        if(elapsedTime == 0) {
-            executorService.shutdown();
-            elapsedTime = 20;
-            if(exposureNotAuction) controller.sendInfo(new ExposeSellablesAction((Player) me, new ArrayList<>()));
-            else controller.sendInfo(new BuyObjectsAction((Player) me, new ArrayList<>()));
-            return -1;
-        }
-        elapsedTime--;
-        return elapsedTime;
     }
 
     public boolean getMainActionAvailable() {

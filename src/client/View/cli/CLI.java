@@ -180,6 +180,7 @@ public class CLI implements UserInterface {
         return waitingState;
     }
 
+    @Override
     public ControllerUI getController() {
         return controller;
     }
@@ -350,15 +351,9 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void setTimer(String text) {
-        int timer;
-        try {
-            timer = Integer.valueOf(text);
-        } catch (NumberFormatException e) {
-            return;
-        }
-        if (timer < 5) System.out.println(ANSI_RED + "Hurry! Time over in " + timer + " seconds" + ANSI_RESET);
-        else if (timer % 5 == 0) System.out.println(ANSI_RED + "Time over in " + timer + " seconds" + ANSI_RESET);
+    public void setTimer(int time) {
+        if (time < 5) System.out.println(ANSI_RED + "Hurry! Time over in " + time + " seconds" + ANSI_RESET);
+        else if (time % 5 == 0) System.out.println(ANSI_RED + "Time over in " + time + " seconds" + ANSI_RESET);
     }
 
     @Override

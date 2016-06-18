@@ -55,6 +55,7 @@ public class BuySellableView extends GridPane {
         getChildren().addAll(scrollPane, buttonBox);
 
         exposeButton.setOnMouseClicked(event -> {
+            CachedData.getInstance().getController().stopTimer();
             CachedData.getInstance().getController().sendInfo(new BuyObjectsAction(
                     (Player) CachedData.getInstance().getMe(),
                     itemToBuy

@@ -1,5 +1,6 @@
 package client.View;
 
+import client.ControllerUI;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
 import core.gamemodel.modelinterface.*;
@@ -51,7 +52,7 @@ public interface UserInterface {
 
     void showDrawFreePermitView();
 
-    void setTimer(String text);
+    void setTimer(int time);
 
     void forceExposureEnd();
 
@@ -60,4 +61,6 @@ public interface UserInterface {
     void loadMap(String fileName);
 
     void handleServerMessage(String message);
+
+    ControllerUI getController();
 }

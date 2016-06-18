@@ -77,6 +77,7 @@ public class MainState implements CLIState {
 
     private void doDynamicOption(int constChoice) {
         if (constChoice == END_TURN) {
+            cli.getController().stopTimer();
             CachedData.getInstance().getController().sendInfo(new EndTurnAction(
                     (Player) CachedData.getInstance().getMe()
             ));

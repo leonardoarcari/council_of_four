@@ -74,8 +74,8 @@ public class MarketAuctionState implements CLIState {
     public void invalidateState() {
         validate = false;
         currentState = SELECTION_STATE;
-        Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), new ArrayList<>());
-        CachedData.getInstance().getController().sendInfo(action);
+        //Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), new ArrayList<>());
+        //CachedData.getInstance().getController().sendInfo(action);
     }
 
     private void fillOnSaleItemMap() {
@@ -139,7 +139,8 @@ public class MarketAuctionState implements CLIState {
         } else {
             List<OnSaleItem> itemsToBuy = new ArrayList<>();
             buyingItemMap.values().forEach(itemsToBuy::add);
-            Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), itemsToBuy);
+            BuyObjectsAction action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), new ArrayList<>(itemsToBuy));
+            cli.getController().stopTimer();
             CachedData.getInstance().getController().sendInfo(action);
             validate = false; //Phase ended, next time buying items map has to be re-calculated
             cli.setCurrentState(cli.getMainState());
