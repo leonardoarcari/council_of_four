@@ -74,6 +74,8 @@ public class UInfoProcessor implements InfoProcessor {
                 userInterface.showBuyItemView();
                 userInterface.getController().runMarketTimer(((AuctionStartAction) info).getTimer(), false);
             }
+        } else if( info.getClass().equals(PodiumAction.class)) {
+            userInterface.endGame((PodiumAction) info);
         } else if (info.getClass().equals(MarketSyncAction.class)) {
             MarketSyncAction action = (MarketSyncAction) info;
             if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {

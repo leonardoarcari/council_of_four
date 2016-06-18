@@ -48,12 +48,12 @@ public class ShowPane{
 
         pane = new GridPane();
         RowConstraints rc0 = new RowConstraints();
-        rc0.setPercentHeight(30);
+        rc0.setPercentHeight(20);
         rc0.setValignment(VPos.CENTER);
         rc0.setVgrow(Priority.ALWAYS);
         rc0.setFillHeight(true);
         RowConstraints rc1 = new RowConstraints();
-        rc1.setPercentHeight(70);
+        rc1.setPercentHeight(80);
         rc1.setValignment(VPos.CENTER);
         rc1.setVgrow(Priority.ALWAYS);
         rc1.setFillHeight(true);

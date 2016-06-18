@@ -1,9 +1,5 @@
 package client;
 
-import core.Player;
-import core.gamelogic.actions.BuyObjectsAction;
-import core.gamelogic.actions.EndTurnAction;
-import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.*;
 import javafx.beans.property.BooleanProperty;
@@ -11,10 +7,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.text.Font;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.List;
 
 /**
  * Created by leonardoarcari on 09/06/16.
@@ -43,6 +41,8 @@ public class CachedData {
     private BooleanProperty fastActionAvailable;
     private BooleanProperty myTurn;
 
+    private Font customFont;
+
     public static CachedData getInstance() {
         if (instance == null) {
             synchronized (CachedData.class) {
@@ -56,7 +56,7 @@ public class CachedData {
 
     private CachedData() {
         me = null;
-            towns = new HashMap<>(15);
+        towns = new HashMap<>(15);
         balconies = new HashMap<>(4);
         councilorPool = new ArrayList<>();
         wealthPath = null;
@@ -70,6 +70,8 @@ public class CachedData {
         mainActionAvailable = new SimpleBooleanProperty(false);
         fastActionAvailable = new SimpleBooleanProperty(false);
         myTurn = new SimpleBooleanProperty(false);
+
+        customFont = Font.loadFont(this.getClass().getClassLoader().getResourceAsStream("KnightsQuest.ttf"), 22f);
     }
 
     public ControllerUI getController() {
@@ -250,5 +252,9 @@ public class CachedData {
 
     public void setMyTurn(boolean myTurn) {
         this.myTurn.set(myTurn);
+    }
+
+    public Font getCustomFont() {
+        return customFont;
     }
 }

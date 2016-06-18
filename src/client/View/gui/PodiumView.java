@@ -6,13 +6,15 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ public class PodiumView extends ScrollPane {
         this.podium = podium;
         podiumShow = new VBox(5);
         buildPodiumShow();
+        ShowPane.getInstance().setTitle("Results");
     }
 
     private void buildPodiumShow() {
@@ -41,18 +44,21 @@ public class PodiumView extends ScrollPane {
             }
         }
 
+        podiumShow.setPadding(new Insets(0,250f,10f,250f));
         setContent(podiumShow);
     }
 
     private void buildPlayerInfoGrid(Player player, int position) {
         GridPane podiumGrid = new GridPane();
-        podiumGrid.setPrefHeight(180.0);
         setGridConstraints(podiumGrid);
 
         //Position label
         Label positionLabel = new Label(position + numberSuffix(position) + " place to: ");
-        GridPane.setConstraints(positionLabel,0, 0);
-        GridPane.setColumnSpan(positionLabel, 3);
+        GridPane.setConstraints(positionLabel,0, 0, 3, 1, HPos.LEFT, VPos.CENTER);
+        positionLabel.setFont(CachedData.getInstance().getCustomFont());
+        positionLabel.setPadding(new Insets(10,10,10,0));
+        if(position == 1) positionLabel.setTextFill(Color.GOLD);
+        else positionLabel.setTextFill(Color.SILVER);
 
         //Color box
         VBox colorBox = new VBox();
@@ -61,32 +67,49 @@ public class PodiumView extends ScrollPane {
         colorBox.setAlignment(Pos.CENTER);
         Circle circle = new Circle(30, player.getColor());
         colorBox.getChildren().add(circle);
-        GridPane.setConstraints(colorBox,0,1);
-        GridPane.setRowSpan(colorBox,3);
+        GridPane.setConstraints(colorBox,0, 1, 1, 3, HPos.CENTER, VPos.CENTER);
+        colorBox.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
         //Player info node
-        VBox infoBox = new VBox();
+        VBox infoBox = new VBox(50);
         infoBox.setPadding(new Insets(5));
         infoBox.setAlignment(Pos.CENTER);
-        Label label = new Label(player.getNickname());
-        label.setWrapText(true);
-        GridPane.setConstraints(infoBox,1,1);
-        GridPane.setRowSpan(infoBox,3);
+        Text label = new Text("Player nickname: ");
+        label.setFont(CachedData.getInstance().getCustomFont());
+        label.setFill(player.getColor());
+        Text label2 = new Text(player.getNickname());
+        label2.setFont(CachedData.getInstance().getCustomFont());
+        infoBox.getChildren().addAll(label, label2);
+        GridPane.setConstraints(infoBox,1, 1, 1, 3, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+        infoBox.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
         //Player points nodes
         HBox coinBox = buildCoinBox(player);
-        GridPane.setConstraints(coinBox,2,1);
+        GridPane.setConstraints(coinBox, 2, 1, 1, 1, HPos.CENTER, VPos.CENTER);
+        coinBox.setPadding(new Insets(10));
+        coinBox.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
         HBox nobilityBox = buildNobilityBox(player);
-        GridPane.setConstraints(nobilityBox,2,2);
+        GridPane.setConstraints(nobilityBox, 2, 2, 1, 1, HPos.CENTER, VPos.CENTER);
+        nobilityBox.setPadding(new Insets(10));
+        nobilityBox.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
         HBox victoryBox = buildVictoryBox(player);
-        GridPane.setConstraints(victoryBox,2,3);
+        GridPane.setConstraints(victoryBox, 2, 3, 1, 1, HPos.CENTER, VPos.CENTER);
+        victoryBox.setPadding(new Insets(10));
+        victoryBox.setStyle("-fx-border-width: 3px; -fx-border-color: black");
+
+        podiumGrid.getChildren().addAll(positionLabel,colorBox,infoBox,coinBox,nobilityBox,victoryBox);
+
+        podiumGrid.setAlignment(Pos.CENTER);
+        podiumShow.getChildren().add(podiumGrid);
+        setFitToWidth(true);
+        setFitToHeight(true);
     }
 
     private void setGridConstraints(GridPane gridPane) {
         ColumnConstraints colorColumn = new ColumnConstraints();
-        colorColumn.setFillWidth(true);
+        colorColumn.setHgrow(Priority.ALWAYS);
         ColumnConstraints playerNicknameColumn = new ColumnConstraints();
         playerNicknameColumn.setHgrow(Priority.ALWAYS);
         playerNicknameColumn.setHalignment(HPos.CENTER);
@@ -108,6 +131,8 @@ public class PodiumView extends ScrollPane {
         coinRow.setFillHeight(true);
 
         gridPane.getRowConstraints().addAll(positionRow, coinRow, nobilityRow, victoryRow);
+        // turn layout pixel snapping off on the grid so that grid lines will be an even width.
+        gridPane.setSnapToPixel(false);
     }
 
     private HBox buildCoinBox(Player player) {
@@ -119,6 +144,7 @@ public class PodiumView extends ScrollPane {
         coinIcon.setPreserveRatio(true);
         coinIcon.setFitHeight(50);
         Label coinLabel = new Label(String.valueOf(CachedData.getInstance().getWealthPath().getPlayerPosition(player)));
+        coinLabel.setFont(CachedData.getInstance().getCustomFont());
         coinBox.getChildren().addAll(coinLabel,coinIcon);
 
         return coinBox;
@@ -133,6 +159,7 @@ public class PodiumView extends ScrollPane {
         nobilityIcon.setPreserveRatio(true);
         nobilityIcon.setFitHeight(50);
         Label nobilityLabel = new Label(String.valueOf(CachedData.getInstance().getNobilityPath().getPlayerPosition(player)));
+        nobilityLabel.setFont(CachedData.getInstance().getCustomFont());
         nobilityBox.getChildren().addAll(nobilityLabel,nobilityIcon);
 
         return nobilityBox;
@@ -147,6 +174,7 @@ public class PodiumView extends ScrollPane {
         victoryIcon.setPreserveRatio(true);
         victoryIcon.setFitHeight(50);
         Label victoryLabel = new Label(String.valueOf(CachedData.getInstance().getVictoryPath().getPlayerPosition(player)));
+        victoryLabel.setFont(CachedData.getInstance().getCustomFont());
         victoryBox.getChildren().addAll(victoryLabel,victoryIcon);
 
         return victoryBox;
