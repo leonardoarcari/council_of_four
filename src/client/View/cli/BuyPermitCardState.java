@@ -4,7 +4,10 @@ import client.CachedData;
 import client.View.ViewAlgorithms;
 import core.Player;
 import core.gamelogic.actions.BuyPermitCardAction;
-import core.gamemodel.*;
+import core.gamemodel.Councilor;
+import core.gamemodel.PoliticsCard;
+import core.gamemodel.Region;
+import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.RegionInterface;
 

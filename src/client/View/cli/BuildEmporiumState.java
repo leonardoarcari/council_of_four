@@ -9,7 +9,10 @@ import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.PlayerInterface;
 import core.gamemodel.modelinterface.TownInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 14/06/2016.

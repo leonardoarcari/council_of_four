@@ -815,6 +815,14 @@ public class GUI extends Application implements UserInterface {
     }
 
     @Override
+    public void endGame(PodiumAction podiumAction) {
+        Platform.runLater(() -> {
+            PodiumView podiumView = new PodiumView(podiumAction.getPodium());
+            ShowPane.getInstance().setContent(podiumView.getNode());
+        });
+    }
+
+    @Override
     public void setMainActionAvailable(boolean mainActionAvailable) {
         Platform.runLater(() -> CachedData.getInstance().mainActionAvailableProperty().setValue(mainActionAvailable));
     }

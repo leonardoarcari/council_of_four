@@ -1,6 +1,5 @@
 package client.View.gui;
 
-import com.sun.istack.internal.Nullable;
 import core.gamemodel.PermitCard;
 import core.gamemodel.bonus.Bonus;
 import javafx.embed.swing.SwingFXUtils;

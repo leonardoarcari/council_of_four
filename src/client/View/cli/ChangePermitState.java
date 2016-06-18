@@ -4,7 +4,6 @@ import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.ChangePermitsAction;
-import core.gamemodel.Region;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.RegionInterface;
 

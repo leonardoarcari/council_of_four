@@ -84,6 +84,8 @@ public class UInfoProcessor implements InfoProcessor {
             } else if (action.equals(MarketSyncAction.END_MARKET_ACTION)) {
                 userInterface.hideMarket();
             }
+        } else if (info.getClass().equals(PodiumAction.class)) {
+            userInterface.endGame((PodiumAction) info);
         }
     }
 

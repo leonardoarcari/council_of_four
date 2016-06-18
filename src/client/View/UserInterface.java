@@ -2,6 +2,7 @@ package client.View;
 
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
+import core.gamelogic.actions.PodiumAction;
 import core.gamemodel.modelinterface.*;
 
 /**
@@ -42,6 +43,8 @@ public interface UserInterface {
     void yourTurn();
 
     void endTurn();
+
+    void endGame(PodiumAction podiumAction);
 
     void setMainActionAvailable(boolean mainActionAvailable);
 

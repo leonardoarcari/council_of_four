@@ -3,15 +3,15 @@ package server;
 
 import core.Player;
 import core.connection.InfoProcessor;
-import core.gamemodel.TownName;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

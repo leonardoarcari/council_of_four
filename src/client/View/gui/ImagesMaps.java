@@ -4,7 +4,6 @@ import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.TownType;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;

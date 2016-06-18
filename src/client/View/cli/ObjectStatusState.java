@@ -2,7 +2,9 @@ package client.View.cli;
 
 import client.CachedData;
 import core.Player;
-import core.gamemodel.*;
+import core.gamemodel.Councilor;
+import core.gamemodel.CouncilorsBalcony;
+import core.gamemodel.RegionType;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.RegionInterface;
 import core.gamemodel.modelinterface.TownInterface;
@@ -10,8 +12,6 @@ import core.gamemodel.modelinterface.TownInterface;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 /**
  * Created by Matteo on 14/06/16.

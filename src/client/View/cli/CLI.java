@@ -7,6 +7,7 @@ import core.Player;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
 import core.gamelogic.actions.PlayerInfoAction;
+import core.gamelogic.actions.PodiumAction;
 import core.gamemodel.Councilor;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.*;
@@ -44,6 +45,7 @@ public class CLI implements UserInterface {
     private final CLIState playerState;
     private final CLIState waitingState;
     private final CLIState loginState;
+    private final CLIState podiumState;
 
     private CLIState currentState;
     private boolean validState;
@@ -75,6 +77,7 @@ public class CLI implements UserInterface {
         playerState = new PlayerState(this);
         waitingState = new WaitingState(this);
         loginState = new LoginState(this);
+        podiumState = new PodiumState();
 
         in = new BufferedReader(new InputStreamReader(System.in));
         controller = new ControllerUI(this);
@@ -166,10 +169,6 @@ public class CLI implements UserInterface {
 
     public CLIState getObjectStatusState() {
         return objectStatusState;
-    }
-
-    public CLIState getPickTownBonusState() {
-        return pickTownBonusState;
     }
 
     public CLIState getPlayerState() {
@@ -319,6 +318,14 @@ public class CLI implements UserInterface {
         currentState.invalidateState();
         currentState = mainState;
         validState = false;
+    }
+
+    @Override
+    public void endGame(PodiumAction podiumAction) {
+        ((PodiumState) podiumState).setUpPodium(podiumAction.getPodium());
+        currentState = podiumState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to see the podium" + ANSI_RESET);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package client;
 
 import client.View.UserInterface;
-import client.clientconnection.UInfoProcessor;
 import client.clientconnection.RMIConnection;
+import client.clientconnection.UInfoProcessor;
 import core.connection.Connection;
 import core.connection.InfoProcessor;
 import core.connection.SocketConnection;

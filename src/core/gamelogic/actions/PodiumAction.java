@@ -16,6 +16,10 @@ public class PodiumAction implements Serializable {
         this.podium = podium;
     }
 
+    public Map<Integer, List<Player>> getPodium() {
+        return podium;
+    }
+
     public List<Player> getFirst() {
         return podium.get(1);
     }

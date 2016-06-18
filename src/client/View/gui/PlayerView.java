@@ -1,6 +1,5 @@
 package client.View.gui;
 
-import client.CachedData;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.geometry.HPos;

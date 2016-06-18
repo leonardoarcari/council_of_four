@@ -1,7 +1,5 @@
 package client.View.cli;
 
-import core.gamelogic.actions.PlayerInfoAction;
-
 /**
  * Created by Leonardo Arcari on 17/06/2016.
  */
