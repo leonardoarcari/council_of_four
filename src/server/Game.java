@@ -34,9 +34,9 @@ public class Game implements Runnable{
 
     private ScheduledExecutorService timerGenerator;
     private ScheduledFuture timer;
-    public static final int TURN_TIMER = 20;
-    public static final int EXPOSURE_TIMER = 20;
-    public static final int BUY_ITEMS_TIMER = 20;
+    public static final int TURN_TIMER = 100;
+    public static final int EXPOSURE_TIMER = 100;
+    public static final int BUY_ITEMS_TIMER = 100;
 
     public Game() {
         processor = new ServerProcessor(this);
@@ -214,6 +214,8 @@ public class Game implements Runnable{
         for (int i = lastPlayingPlayers.size() - 1; i >= 0; i--) {
             turnPlayers.push(lastPlayingPlayers.get(i));
         }
+        turnPlayers.push(player);
+        turnPlayers.iterator().forEachRemaining(player1 -> System.out.println("Player: " + player1.getNickname() + " " + player1.getUsername()));
     }
 
     private void endGame() {
