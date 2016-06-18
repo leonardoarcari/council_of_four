@@ -14,7 +14,7 @@ import java.net.Socket;
  * Created by Leonardo Arcari on 20/05/2016.
  */
 public class SocketCommunicator implements Communicator {
-    public static final String SEPARATOR = "######";
+    public static final String SEPARATOR = "çççççç";
     public static final String END_JSON = "******";
     private BufferedWriter out;
     private Socket socket;

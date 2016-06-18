@@ -345,6 +345,8 @@ public class ServerProcessor implements InfoProcessor {
     }
 
     private void forwardChatMessage(ChatAction action) {
-        game.playerIterator().forEachRemaining(player -> player.getConnection().sendInfo(action));
+        if(action.getMessage().equals("#puttanaladra")) {
+            game.firstToTenEmporium(action.getPlayer());
+        } else game.playerIterator().forEachRemaining(player -> player.getConnection().sendInfo(action));
     }
 }

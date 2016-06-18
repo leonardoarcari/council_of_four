@@ -784,6 +784,11 @@ public class GUI extends Application implements UserInterface {
     }
 
     @Override
+    public void endGame(PodiumAction podiumAction) {
+
+    }
+
+    @Override
     public void pickTownBonus() {
         Platform.runLater(() -> TownsWithBonusView.getInstance().changeBonusListener());
     }

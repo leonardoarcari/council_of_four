@@ -3,6 +3,7 @@ package client.View;
 import client.ControllerUI;
 import core.connection.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
+import core.gamelogic.actions.PodiumAction;
 import core.gamemodel.modelinterface.*;
 
 /**
@@ -35,6 +36,8 @@ public interface UserInterface {
     void updatePlayer(PlayerInterface player);
 
     void startGame();
+
+    void endGame(PodiumAction podiumAction);
 
     void pickTownBonus();
 
