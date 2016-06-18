@@ -30,10 +30,6 @@ public class PodiumView extends ScrollPane {
         buildPodiumShow();
     }
 
-    public Node getNode() {
-        return podiumShow;
-    }
-
     private void buildPodiumShow() {
         podiumShow.setPadding(new Insets(10));
         podiumShow.setAlignment(Pos.CENTER);
