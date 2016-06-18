@@ -86,6 +86,16 @@ public class BuySellableView extends GridPane {
 
         CheckBox checkBox = new CheckBox();
         checkBox.setText(String.valueOf(item.getPrice()));
+        // Control availability
+        checkBox.setDisable(
+                coinsSpentProperty.intValue() + item.getPrice() >
+                        CachedData.getInstance().getWealthPath().getPlayerPosition(
+                                (Player) CachedData.getInstance().getMe()
+                        )
+                        && !checkBox.selectedProperty().getValue()
+        );
+
+        // Add listeners
         coinsSpentProperty.addListener((observable, oldValue, newValue) -> {
             checkBox.setDisable(
                     newValue.intValue() + item.getPrice() >
