@@ -211,7 +211,7 @@ public class Game implements Runnable{
         lastPlayingPlayers.addAll(players);
         lastPlayingPlayers.remove(player);
         turnPlayers.clear();
-        for (int i = lastPlayingPlayers.size() - 1; i < 0; i--) {
+        for (int i = lastPlayingPlayers.size() - 1; i >= 0; i--) {
             turnPlayers.push(lastPlayingPlayers.get(i));
         }
     }
@@ -308,7 +308,8 @@ public class Game implements Runnable{
     }
 
     private void fillTurnPlayers() {
-        for (int i = players.size() - 1; i < 0; i--) {
+        turnPlayers.clear();
+        for (int i = players.size() - 1; i >= 0; i--) {
             turnPlayers.push(players.get(i));
         }
     }
@@ -324,6 +325,7 @@ public class Game implements Runnable{
             mainActionTokens.push(true);
             doneFastAction = false;
             currentPlayer.addPoliticsCard(gameBoard.drawPoliticsCard());
+            System.out.println("User: " + currentPlayer.getUsername() + currentPlayer.getNickname());
             timer = timerGenerator.schedule(
                     () -> {
                         try {
