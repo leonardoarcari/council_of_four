@@ -16,7 +16,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Leonardo Arcari on 16/06/2016.
@@ -171,10 +173,6 @@ public class CLI implements UserInterface {
         return objectStatusState;
     }
 
-    public CLIState getPickTownBonusState() {
-        return pickTownBonusState;
-    }
-
     public CLIState getPlayerState() {
         return playerState;
     }
@@ -283,12 +281,6 @@ public class CLI implements UserInterface {
     }
 
     @Override
-    public void endGame(PodiumAction podiumAction) {
-        //((PodiumState) podiumState).setUpPodium(podiumAction.);
-        currentState = podiumState;
-    }
-
-    @Override
     public void pickTownBonus() {
         currentState = pickTownBonusState;
         validState = false;
@@ -329,6 +321,17 @@ public class CLI implements UserInterface {
         currentState.invalidateState();
         currentState = mainState;
         validState = false;
+    }
+
+    @Override
+    public void endGame(PodiumAction podiumAction) {
+        Map<Integer, List<Player>> podiumMap = new HashMap<>();
+        podiumMap.put(1,podiumAction.getFirst());
+        podiumMap.put(2,podiumAction.getSecond());
+        ((PodiumState) podiumState).setUpPodium(podiumMap);
+        currentState = podiumState;
+        validState = false;
+        System.out.println(ANSI_RED + "Press any key + return to see the podium" + ANSI_RESET);
     }
 
     @Override

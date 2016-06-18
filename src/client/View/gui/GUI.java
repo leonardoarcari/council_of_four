@@ -785,7 +785,14 @@ public class GUI extends Application implements UserInterface {
 
     @Override
     public void endGame(PodiumAction podiumAction) {
-
+        Platform.runLater(() -> {
+            Map<Integer, List<Player>> podiumMap = new HashMap<>();
+            podiumMap.put(1, podiumAction.getFirst());
+            podiumMap.put(2, podiumAction.getSecond());
+            PodiumView view = new PodiumView(podiumMap);
+            ShowPane.getInstance().setContent(view);
+            ShowPane.getInstance().show();
+        });
     }
 
     @Override
