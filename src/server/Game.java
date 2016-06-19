@@ -301,6 +301,10 @@ public class Game implements Runnable{
 
     private void setOnDisconnect(Player player) {
         player.getConnection().setOnDisconnection(() -> {
+            // Remove player from observer lists in game Model
+            gameBoard.removeObserver((ServerConnection) player.getConnection());
+            player.removeObserver((ServerConnection) player.getConnection());
+
             // Remove it from playing players
             disconnectedPlayers.add(players.remove(players.indexOf(player)));
             if (!marketPhase && !currentTurn.currentPlayer.equals(player)) turnPlayers.remove(player);
@@ -325,9 +329,6 @@ public class Game implements Runnable{
                                     " aka " + player.getNickname() +
                                     " has disconnected"
                     )));
-
-            // Remove player from observer lists in game Model
-            gameBoard.removeObserver((ServerConnection) player.getConnection());
         });
     }
 
