@@ -37,20 +37,4 @@ public class NobilityPath extends AbstractPath implements NobilityPathInterface{
         }
         throw new NoSuchElementException();
     }
-
-    @Override
-    public Map<Integer, List<Player>> getPodium() {
-        Map<Integer, List<Player>> resultMap = new HashMap<>(2);
-        int firstPosition = 0;
-        int secondPosition = -1;
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).size() > 0) {
-                secondPosition = firstPosition;
-                firstPosition = i;
-            }
-        }
-        resultMap.put(1, players.get(firstPosition));
-        resultMap.put(2, players.get(secondPosition));
-        return resultMap;
-    }
 }

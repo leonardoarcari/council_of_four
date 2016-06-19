@@ -40,7 +40,7 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         GameBoard gameBoard = new GameBoard();
         Iterator<Player> iterator = players.iterator();
         int wealthPos = 10;
-        int servantsNumber = 5;
+        int servantsNumber = 1;
         while (iterator.hasNext()) {
             Player player = iterator.next();
             player.hireServants(gameBoard.hireServants(servantsNumber++));

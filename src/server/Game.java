@@ -220,24 +220,25 @@ public class Game implements Runnable{
 
     private void endGame() {
         // Give victory points to podium
-        Map<Integer, List<Player>> podium = gameBoard.getNobilityPath().getPodium();
-        if (podium.get(1).size() == 1) {
+        Map<Integer, List<Player>> nobilities = gameBoard.getNobilityPath().getPodium();
+        if (nobilities.get(1).size() == 1) {
             gameBoard.moveVictoryPath(
-                    podium.get(1).get(0),
+                    nobilities.get(1).get(0),
                     5
             );
-            podium.get(2).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 2));
+            nobilities.get(2).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 2));
         } else {
-            podium.get(1).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 5));
+            nobilities.get(1).iterator().forEachRemaining(player -> gameBoard.moveVictoryPath(player, 5));
         }
 
         // Give victory points to highest number of permit cards
         gameBoard.moveVictoryPath(
                 players.stream().reduce(players.get(0), (player, player2) ->
-                        (player.getPermitCardsNumber() >= player2.getPermitCardsNumber()) ? player : player2),
+                        (player.getPermitCardsNumber() > player2.getPermitCardsNumber()) ? player : player2),
                 3
         );
 
+        Map<Integer, List<Player>> podium = gameBoard.getVictoryPath().getPodium();
         players.forEach(player -> player.getConnection().sendInfo(new PodiumAction(podium)));
         // Die
     }

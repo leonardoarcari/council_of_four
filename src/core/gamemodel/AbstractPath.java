@@ -6,9 +6,7 @@ import core.Subject;
 import core.gamemodel.modelinterface.AbstractPathInterface;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Matteo on 23/05/16.
@@ -66,5 +64,22 @@ public abstract class AbstractPath implements AbstractPathInterface, Subject, Se
         for (Observer o : observers) {
             o.update(this);
         }
+    }
+
+    @Override
+    public Map<Integer, List<Player>> getPodium() {
+        Map<Integer, List<Player>> resultMap = new HashMap<>(2);
+        int firstPosition = 0;
+        int secondPosition = -1;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).size() > 0) {
+                secondPosition = firstPosition;
+                firstPosition = i;
+            }
+        }
+        resultMap.put(1, players.get(firstPosition));
+        if(firstPosition != secondPosition)
+            resultMap.put(2, players.get(secondPosition));
+        return resultMap;
     }
 }
