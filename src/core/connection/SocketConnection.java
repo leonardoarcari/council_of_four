@@ -73,14 +73,12 @@ public class SocketConnection implements Connection, Runnable {
             System.out.println("connection closed from the other side");
             if (onDisconnect != null) onDisconnect.run();
             try {
-                in.close();
                 socket.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
         } finally {
             try {
-                in.close();
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();

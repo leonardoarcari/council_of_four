@@ -41,6 +41,11 @@ public class SocketCommunicator implements Communicator {
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }

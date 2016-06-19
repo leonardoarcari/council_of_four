@@ -6,6 +6,7 @@ import core.gamelogic.actions.*;
 import core.gamemodel.GameBoard;
 import core.gamemodel.Town;
 import core.gamemodel.TownName;
+import server.serverconnection.ServerConnection;
 
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
@@ -73,28 +74,9 @@ public class Game implements Runnable{
         gameBoard = GameBoard.createGameBoard(players);
         if (mapConfig != null) {
             setTownLinks();
-            for (Player player : players) {
-                player.getConnection().setOnDisconnection(() -> {
-                    disconnectedPlayers.add(players.remove(players.indexOf(player)));
-                    turnPlayers.remove(player);
-                    if (!marketPhase && currentTurn.currentPlayer.equals(player)) {
-                        timer.cancel(true);
-                        try {
-                            endTurn(player);
-                        } catch (NotYourTurnException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    players.iterator().forEachRemaining(player1 -> player1.getConnection().sendInfo(
-                            new ServerMessage(
-                                    "Player " + player.getUsername() +
-                                            " aka " + player.getNickname() +
-                                            " has disconnected"
-                            )));
-                });
-                player.getConnection().sendInfo(new LoadMapAction(mapConfig.getFileName()));
-            }
+            players.iterator().forEachRemaining(player -> player.getConnection().sendInfo(new LoadMapAction(mapConfig.getFileName())));
         }
+        players.iterator().forEachRemaining(this::setOnDisconnect);
 
         gameBoard.notifyChildren();
         for (Player player : players) {
@@ -315,6 +297,38 @@ public class Game implements Runnable{
         for (int i = players.size() - 1; i >= 0; i--) {
             turnPlayers.push(players.get(i));
         }
+    }
+
+    private void setOnDisconnect(Player player) {
+        player.getConnection().setOnDisconnection(() -> {
+            // Remove it from playing players
+            disconnectedPlayers.add(players.remove(players.indexOf(player)));
+            if (!marketPhase && !currentTurn.currentPlayer.equals(player)) turnPlayers.remove(player);
+
+            // Stop running timers and end its turn in case it's needed
+            if ((!marketPhase && currentTurn.currentPlayer.equals(player)) ||
+                    marketPhase && market.currentPlayer.equals(player)) {
+                timer.cancel(true);
+                if (!marketPhase) { // In case of Turn of the Game
+                    try {
+                        endTurn(player);
+                    } catch (NotYourTurnException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // Inform other players on its disconnection
+            players.iterator().forEachRemaining(player1 -> player1.getConnection().sendInfo(
+                    new ServerMessage(
+                            "Player " + player.getUsername() +
+                                    " aka " + player.getNickname() +
+                                    " has disconnected"
+                    )));
+
+            // Remove player from observer lists in game Model
+            gameBoard.removeObserver((ServerConnection) player.getConnection());
+        });
     }
 
     private class Turn {
