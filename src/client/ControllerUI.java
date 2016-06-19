@@ -54,7 +54,16 @@ public class ControllerUI {
         try {
             Socket socket = new Socket("127.0.0.1", 2828);
             connection = new SocketConnection(processor, socket);
-            new Thread((SocketConnection) connection).start();
+            Thread socketThread = new Thread((SocketConnection) connection);
+            closeTask = () -> {
+                try {
+                    ((SocketConnection) connection).close();
+                    socketThread.interrupt();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
+            socketThread.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

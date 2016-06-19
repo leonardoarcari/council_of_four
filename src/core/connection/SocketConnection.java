@@ -6,6 +6,7 @@ import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -14,7 +15,7 @@ import java.util.StringTokenizer;
 /**
  * Created by Leonardo Arcari on 20/05/2016.
  */
-public class SocketConnection implements Connection, Runnable {
+public class SocketConnection implements Connection, Runnable, Closeable {
     private Socket socket;
     private InfoProcessor processor;
     private Communicator socketCommunicator;
@@ -67,10 +68,14 @@ public class SocketConnection implements Connection, Runnable {
                             processor.processInfo(data);
                         }
                     }
+                } else {
+                    System.out.println("Connection closed from the other side");
+                    if (onDisconnect != null) onDisconnect.run();
+                    break;
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("connection closed from the other side");
+            System.out.println("Connection closed from the other side");
             if (onDisconnect != null) onDisconnect.run();
             try {
                 socket.close();
@@ -89,5 +94,10 @@ public class SocketConnection implements Connection, Runnable {
     @Override
     public void setOnDisconnection(Runnable runnable) {
         onDisconnect = runnable;
+    }
+
+    @Override
+    public void close() throws IOException {
+        socket.close();
     }
 }
