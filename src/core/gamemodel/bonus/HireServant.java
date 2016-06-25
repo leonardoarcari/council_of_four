@@ -5,13 +5,23 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Created by Matteo on 16/05/16.
+ * The HireServant class is one of the bonuses of the game: it allows
+ * the player to hire a servant from the servants pool of the game board.
  */
 public class HireServant extends Bonus {
+    /**
+     * @param bonusNumber is the number of other bonuses in the owner
+     * @see Bonus
+     */
     public HireServant(BonusNumber bonusNumber) {
         super(bonusNumber);
     }
 
+    /**
+     * @param probabilityLevel is the probability set number of the bonus
+     * @see Bonus
+     * @return a randomly generated value
+     */
     @Override
     public int getRandomValue(BonusNumber probabilityLevel) {
         ArrayList<Float> probabilities = new ArrayList<>();

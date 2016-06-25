@@ -5,13 +5,23 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Created by Matteo on 16/05/16.
+ * The Coin class is one of the bonuses of the game: it allows the player
+ * to gain coins.
  */
 public class Coin extends Bonus {
+    /**
+     * @param bonusNumber is the number of other bonuses in the owner
+     * @see Bonus
+     */
     public Coin(BonusNumber bonusNumber) {
         super(bonusNumber);
     }
 
+    /**
+     * @param probabilityLevel is the probability set number of the bonus
+     * @see Bonus
+     * @return a randomly generated value
+     */
     protected int getRandomValue(BonusNumber probabilityLevel) {
         ArrayList<Float> probabilities = new ArrayList<>();
         switch(probabilityLevel) {

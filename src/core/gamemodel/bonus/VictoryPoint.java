@@ -5,14 +5,33 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Created by Matteo on 16/05/16.
+ * The VictoryPoint class is one of the bonuses of the game: it allows
+ * the player to advance in the victory path by as much boxes as the bonus
+ * value.
  */
 public class VictoryPoint extends Bonus {
+    /**
+     * @param bonusNumber is the number of other bonuses in the owner
+     * @see Bonus
+     */
     public VictoryPoint(BonusNumber bonusNumber) {
         super(bonusNumber);
     }
+
+    /**
+     * This constructor is invoked when creating special cards, such
+     * as the royal cards or the region cards.
+     *
+     * @param bonusFixedValue is the fixed value assigned to the bonus
+     * @see Bonus
+     */
     public VictoryPoint(int bonusFixedValue) { super(bonusFixedValue); }
 
+    /**
+     * @param probabilityLevel is the probability set number of the bonus
+     * @see Bonus
+     * @return a randomly generated value
+     */
     @Override
     public int getRandomValue(BonusNumber probabilityLevel) {
         ArrayList<Float> probabilities = new ArrayList<>();
