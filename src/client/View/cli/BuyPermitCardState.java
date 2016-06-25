@@ -11,9 +11,14 @@ import core.gamemodel.modelinterface.RegionInterface;
 import java.util.*;
 
 /**
- * Created by Leonardo Arcari on 15/06/2016.
+ * The class is the state where the player falls when he wants to buy a permit card.
+ * This action is formed by different phases, such as the selection of the balcony,
+ * the choice of the politics cards to satisfy it and the selection of the permit card.
+ * These phases are the internal states of the class: BASE_STATE, CHOOSE_BALCONY, CHOOSE_POLITICS
+ * and CHOOSE_PERMIT.
  */
 public class BuyPermitCardState implements CLIState {
+    // Internal states of the action
     private static final int BASE_STATE = 0;
     private static final int CHOOSE_BALCONY = 1;
     private static final int CHOOSE_POLITICS = 2;
@@ -23,12 +28,20 @@ public class BuyPermitCardState implements CLIState {
     private BalconyInterface chosenBalcony;
     private RegionInterface chosenRegion;
 
+    // Reference to the context
     private CLI cli;
 
+    // Class attributes
     private Map<BalconyInterface, List<PoliticsCard>> validPoltics;
     private Map<Integer, BalconyInterface> balconyMap;
     private List<PoliticsCard> chosenPolitics;
 
+    /**
+     * The constructor sets the beginning state
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public BuyPermitCardState(CLI cli) {
         validPoltics = new HashMap<>();
         balconyMap = new HashMap<>(4);
@@ -39,6 +52,9 @@ public class BuyPermitCardState implements CLIState {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if (internalState == BASE_STATE) printBalconies();
@@ -46,6 +62,11 @@ public class BuyPermitCardState implements CLIState {
         else if (internalState == CHOOSE_POLITICS) printPermit();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         if (internalState == CHOOSE_BALCONY) storeChosenBalcony(input);
@@ -56,6 +77,9 @@ public class BuyPermitCardState implements CLIState {
         }
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         resetState();

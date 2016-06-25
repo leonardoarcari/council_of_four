@@ -12,7 +12,6 @@ public class Coin extends Bonus {
         super(bonusNumber);
     }
 
-    @Override
     protected int getRandomValue(BonusNumber probabilityLevel) {
         ArrayList<Float> probabilities = new ArrayList<>();
         switch(probabilityLevel) {

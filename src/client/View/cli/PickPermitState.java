@@ -12,16 +12,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Matteo on 16/06/16.
+ * This class represents the bonus action gained from the nobility path
+ * that allows the player to pick a permit card for free. If no card is
+ * available, a simple information message is displayed and the player
+ * is invited to press a key to continue.
  */
 public class PickPermitState implements CLIState {
+    // Reference to the context
+    private CLI cli;
+
+    // Attributes of the class
     private Map<PermitCard, RegionInterface> permitsMap;
     private Map<Integer, PermitCard> indexMap;
     private int currentIndex;
     private boolean validate;
 
-    private CLI cli;
-
+    /**
+     * The constructor validates the class, meaning that the permit cards are already
+     * set, and if there is more than one invocation on the show method, the map
+     * containing the cards won't be built again.
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public PickPermitState(CLI cli) {
         this.cli = cli;
         permitsMap = new HashMap<>();
@@ -29,6 +42,9 @@ public class PickPermitState implements CLIState {
         validate = false;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if(!validate) {
@@ -45,6 +61,11 @@ public class PickPermitState implements CLIState {
         } else printPermits();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -65,6 +86,9 @@ public class PickPermitState implements CLIState {
         } else throw new IllegalArgumentException();
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         validate = false;

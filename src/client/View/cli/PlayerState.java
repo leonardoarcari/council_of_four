@@ -7,15 +7,26 @@ import core.gamemodel.*;
 import java.util.Iterator;
 
 /**
- * Created by Matteo on 15/06/16.
+ * This class acts as an information centre of the player. Here he can choose
+ * his own info's such as Username and Nickname, politics cards, coins and so on.
  */
 public class PlayerState implements CLIState {
+    // Reference to the context
     private CLI cli;
 
+    /**
+     * The constructor sets the context
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public PlayerState(CLI cli) {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         System.out.println("Choose object to see its state:");
@@ -27,6 +38,11 @@ public class PlayerState implements CLIState {
         System.out.println("0) Back");
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -59,6 +75,9 @@ public class PlayerState implements CLIState {
         }
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         //Do nothing

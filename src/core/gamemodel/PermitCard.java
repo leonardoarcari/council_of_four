@@ -1,5 +1,6 @@
 package core.gamemodel;
 
+import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.TownNameFactory;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.SellableItem;
@@ -20,11 +21,14 @@ public class PermitCard implements SellableItem, Serializable {
     private List<TownName> townEmporiumPermit = new ArrayList<>();
     private int id;
 
-    public PermitCard(RegionType region, List<Bonus> bonuses, int cardId) {
+    public PermitCard(RegionType region, AbstractBonusFactory factory, int cardId) {
         this.region = region;
-        this.bonuses = bonuses;
         this.id = cardId;
         isBurned = false;
+        bonuses = new ArrayList<>();
+
+        bonuses = factory.generateBonuses();
+
         int townEmporiumPermitNumber = emporiumPermitCalculator();
 
         for(int i = 0; i < townEmporiumPermitNumber; i++) {

@@ -4,7 +4,6 @@ import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.ChangePermitsAction;
-import core.gamemodel.Region;
 import core.gamemodel.RegionType;
 import core.gamemodel.modelinterface.RegionInterface;
 
@@ -12,37 +11,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Matteo on 15/06/16.
+ * The class is the state where the player falls when he wants to change the permit
+ * cards of a region. There could have been only one internal state, the selection
+ * of the region, but it may happens that there are no available cards to change.
+ * To avoid that, a new internal state has been introduced, the NO_OPTIONS state,
+ * that informs the player of the unavailability of the cards.
  */
 public class ChangePermitState implements CLIState {
+    // Internal states of the action
     public static final int OPTIONS_AVAILABLE = 0;
     public static final int NO_OPTIONS = 1;
-    private int currentState;
+
+    private int internalState;
     private boolean alreadyFilled;
 
+    // Reference to the context
     private CLI cli;
 
+    // Class attributes
     private Map<Integer, RegionType> regionOptions;
 
+    /**
+     * The constructor sets the beginning state
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public ChangePermitState(CLI cli) {
-        currentState = NO_OPTIONS;
+        internalState = NO_OPTIONS;
         regionOptions = new HashMap<>();
         alreadyFilled = false;
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if(!alreadyFilled) fillRegionOptions();
         if(CachedData.getInstance().getMe().getServantsNumber() >= 1)
-            currentState = OPTIONS_AVAILABLE;
+            internalState = OPTIONS_AVAILABLE;
         else
-            currentState = NO_OPTIONS;
+            internalState = NO_OPTIONS;
 
-        if(currentState == OPTIONS_AVAILABLE) printOptions();
+        if(internalState == OPTIONS_AVAILABLE) printOptions();
         else printNoOptions();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -51,13 +72,16 @@ public class ChangePermitState implements CLIState {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
         }
-        if(currentState == OPTIONS_AVAILABLE) chooseAvailable(choice);
+        if(internalState == OPTIONS_AVAILABLE) chooseAvailable(choice);
         else chooseNoAvailable(choice);
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
-        currentState = NO_OPTIONS;
+        internalState = NO_OPTIONS;
     }
 
     private void fillRegionOptions() {
@@ -99,7 +123,7 @@ public class ChangePermitState implements CLIState {
         if(choice != 0) {
             Action action = new ChangePermitsAction((Player)CachedData.getInstance().getMe(), regionOptions.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
-            currentState = NO_OPTIONS;
+            internalState = NO_OPTIONS;
         }
         cli.setCurrentState(cli.getMainState());
     }

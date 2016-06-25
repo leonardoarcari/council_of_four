@@ -11,18 +11,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-
 /**
- * Created by Matteo on 14/06/16.
+ * The class acts as an information centre of the game. The player can select
+ * what specific game object status wats to see, from the regions to the paths.
  */
 public class ObjectStatusState implements CLIState {
+    // Reference to the context
     private CLI cli;
 
+    /**
+     * The constructor sets the context
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public ObjectStatusState(CLI cli) {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         System.out.println("Choose object to see its state:");
@@ -36,8 +45,13 @@ public class ObjectStatusState implements CLIState {
         System.out.println("0) Back");
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
-    public void readInput(String input) {
+    public void readInput(String input) throws IllegalArgumentException{
         int choice = 0;
         try {
             choice = Integer.valueOf(input);
@@ -74,6 +88,9 @@ public class ObjectStatusState implements CLIState {
         }
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         //Do nothing
@@ -89,10 +106,10 @@ public class ObjectStatusState implements CLIState {
     }
 
     private void showBalconies() {
-        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.SEA)).toFormattedString());
-        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.HILLS)).toFormattedString());
-        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.MOUNTAINS)).toFormattedString());
-        System.out.println(((CouncilorsBalcony) CachedData.getInstance().getBalcony(RegionType.KINGBOARD)).toFormattedString());
+        System.out.println((CachedData.getInstance().getBalcony(RegionType.SEA)).toFormattedString());
+        System.out.println((CachedData.getInstance().getBalcony(RegionType.HILLS)).toFormattedString());
+        System.out.println((CachedData.getInstance().getBalcony(RegionType.MOUNTAINS)).toFormattedString());
+        System.out.println((CachedData.getInstance().getBalcony(RegionType.KINGBOARD)).toFormattedString());
     }
 
     private void showRegions() {

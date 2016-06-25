@@ -6,20 +6,34 @@ import core.gamelogic.actions.Action;
 import core.gamelogic.actions.AnotherMainActionAction;
 
 /**
- * Created by Matteo on 15/06/16.
+ * The class is the state where the player falls when he wants to do the fast
+ * action that allows him to do another main action. If he has not enough servants
+ * the NOT_AVAILABLE internal state.
  */
 public class DoOtherActionState implements CLIState {
+    // Internal states of the action
     private static final int AVAILABLE = 0;
     private static final int NOT_AVAILABLE = 1;
+
     private int currentState;
 
+    // Reference to the context
     private CLI cli;
 
+    /**
+     * The constructor sets the beginning state
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public DoOtherActionState(CLI cli) {
         currentState = NOT_AVAILABLE;
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if(CachedData.getInstance().getMe().getServantsNumber() >= 3)
@@ -31,6 +45,11 @@ public class DoOtherActionState implements CLIState {
         else showBack();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -44,6 +63,9 @@ public class DoOtherActionState implements CLIState {
         else dontSendAction(choice);
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         currentState = NOT_AVAILABLE;

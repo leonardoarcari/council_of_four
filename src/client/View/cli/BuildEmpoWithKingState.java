@@ -12,9 +12,13 @@ import core.gamemodel.modelinterface.TownInterface;
 import java.util.*;
 
 /**
- * Created by Leonardo Arcari on 16/06/2016.
+ * The class is the state where the player falls when he wants to build
+ * an emporium with the king help. This action consists in other internal
+ * phases such as the choice of the politics cards to satisfy the King
+ * Balcony Council and the selection of the town where to build the emporium.
  */
 public class BuildEmpoWithKingState implements CLIState {
+    // Internal states of the action
     private static final int BASE_STATE = 0;
     private static final int CHOOSE_POLITICS = 1;
     private static final int CHOOSE_TOWN = 2;
@@ -24,8 +28,10 @@ public class BuildEmpoWithKingState implements CLIState {
     private List<PoliticsCard> validPolitics;
     private List<PoliticsCard> chosenPolitics;
 
+    // Reference to the context
     private CLI cli;
 
+    // Class attributes
     private int startingMoney;
     private int moneyForPolitics;
     private int moneyForBuilding;
@@ -33,6 +39,12 @@ public class BuildEmpoWithKingState implements CLIState {
     private Map<Integer, TownInterface> townsSelection;
     private Map<TownName, Integer> reachableTowns;
 
+    /**
+     * The constructor sets the beginning state
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public BuildEmpoWithKingState(CLI cli) {
         internalState = BASE_STATE;
         validPolitics = new ArrayList<>();
@@ -42,12 +54,20 @@ public class BuildEmpoWithKingState implements CLIState {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if (internalState == BASE_STATE) printPolitics();
         else if (internalState == CHOOSE_POLITICS) printTowns();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         if (internalState == CHOOSE_POLITICS) satisfyAction(input);
@@ -57,6 +77,9 @@ public class BuildEmpoWithKingState implements CLIState {
         }
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         resetState();
@@ -124,9 +147,7 @@ public class BuildEmpoWithKingState implements CLIState {
         for (TownName t : reachableTowns.keySet()) {
             townsSelection.put(index++, CachedData.getInstance().getTown(t));
         }
-        townsSelection.keySet().iterator().forEachRemaining(integer -> {
-            System.out.println(integer + ") " + townsSelection.get(integer).getTownName().toString());
-        });
+        townsSelection.keySet().iterator().forEachRemaining(integer -> System.out.println(integer + ") " + townsSelection.get(integer).getTownName().toString()));
         internalState = CHOOSE_TOWN;
     }
 

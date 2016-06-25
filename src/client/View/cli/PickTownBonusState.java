@@ -12,14 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Matteo on 16/06/16.
+ * This class represents a bonus action gained from the nobility path
+ * that allows the player to pick a bonus from one of the towns of
+ * the game.
  */
 public class PickTownBonusState implements CLIState {
+    // Reference to the context
+    private CLI cli;
+
+    // Attributes of the class
     private Map<TownName, Bonus> townBonusMap;
     private Map<Integer, TownName> namesMap;
 
-    private CLI cli;
-
+    /**
+     * The constructor builds the maps containing the town and their bonus references.
+     * Being in the constructor, this work is done only one time because the towns
+     * doesn't change during the whole game.
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public PickTownBonusState(CLI cli) {
         townBonusMap = new HashMap<>();
         namesMap = new HashMap<>();
@@ -32,6 +44,9 @@ public class PickTownBonusState implements CLIState {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         System.out.println("Choose town bonus to pick");
@@ -42,6 +57,11 @@ public class PickTownBonusState implements CLIState {
         }
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -58,6 +78,9 @@ public class PickTownBonusState implements CLIState {
         } else throw new IllegalArgumentException();
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         //Do nothing

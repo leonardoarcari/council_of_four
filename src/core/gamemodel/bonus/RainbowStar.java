@@ -8,8 +8,7 @@ public class RainbowStar extends Bonus {
         super(bonusNumber);
     }
 
-    @Override
-    public int getRandomValue(BonusNumber probabilityLevel) {
+    protected int getRandomValue(BonusNumber probabilityLevel) {
         return 1;
     }
 }

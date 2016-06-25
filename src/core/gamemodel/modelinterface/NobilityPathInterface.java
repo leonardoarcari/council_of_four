@@ -11,5 +11,4 @@ import java.util.Map;
  */
 public interface NobilityPathInterface extends AbstractPathInterface {
     List<List<Bonus>> getBonusPath();
-    Map<Integer, List<Player>> getPodium();
 }

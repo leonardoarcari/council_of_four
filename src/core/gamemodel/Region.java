@@ -51,8 +51,7 @@ public class Region implements RegionInterface, Subject, Serializable{
     private void createPermitCards(RegionType region) {
         AbstractBonusFactory bonusFactory = BonusFactory.getFactory(BonusOwner.PERMIT);
         for(int i = 0; i < 15; i++) {
-            List<Bonus> bonuses = bonusFactory.generateBonuses();
-            regionPermitCards.add(new PermitCard(region, bonuses, i));
+            regionPermitCards.add(new PermitCard(region, bonusFactory, i));
         }
     }
 

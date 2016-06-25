@@ -20,7 +20,6 @@ public class TownBonusFactory implements AbstractBonusFactory {
         return bonusFrom(TOWN_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);
     }
 
-    @Override
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         return bonusList(bonusNumber);

@@ -8,7 +8,6 @@ public class GetOneCityBonus extends Bonus {
         super(bonusNumber);
     }
 
-    @Override
     protected int getRandomValue(BonusNumber probabilityLevel) {
         return 1;
     }

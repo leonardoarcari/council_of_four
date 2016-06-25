@@ -13,22 +13,40 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Leonardo Arcari on 14/06/2016.
+ * The class is a state where the player falls when he wants to elect a councilor.
+ * Such action can be of different types: as a main action or as a fast action.
+ * To distinguish one from the other, an inner enumeration, Type is set in the constructor
+ * and, depending on which type the class is, different checks and method will be invoked
+ * when the player passes in this state.
  */
 public class ElectCouncilorState implements CLIState {
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_RESET = "\u001B[0m";
+
+    // Internal states of the action
     private static final int BEGIN_STATE = 0;
     private static final int CHOOSE_BALCONY = 1;
     private static final int CHOOSE_COUNCILOR = 2;
+
     private int internalState;
+
+    // Reference to the context
+    private CLI cli;
+
+    // Class attributes
     private Type electionType;
     private Map<Integer, BalconyInterface> balconyMap;
     private Map<Integer, Councilor> councilorPoolMap;
     private BalconyInterface balconyChoice;
-    private static final String ANSI_BLUE = "\u001B[34m";
-    private static final String ANSI_RESET = "\u001B[0m";
 
-    private CLI cli;
-
+    /**
+     * The constructor sets the beginning state
+     *
+     * @param electionType is an enum value that describes the action - and so the
+     *                     whole class - as a main or fast action
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public ElectCouncilorState(Type electionType, CLI cli) {
         internalState = BEGIN_STATE;
         this.electionType = electionType;
@@ -38,12 +56,20 @@ public class ElectCouncilorState implements CLIState {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if (internalState == BEGIN_STATE) printBalconies();
         else if (internalState == CHOOSE_BALCONY) printCouncilors();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         if (internalState == CHOOSE_BALCONY) storeBalconyChoice(input);
@@ -53,6 +79,9 @@ public class ElectCouncilorState implements CLIState {
         }
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         resetState();
@@ -137,6 +166,9 @@ public class ElectCouncilorState implements CLIState {
         councilorPoolMap.clear();
     }
 
+    /**
+     * This enumeration tells the class which type of action it describes.
+     */
     public enum Type {
         MAIN_ACTION, FAST_ACTION
     }

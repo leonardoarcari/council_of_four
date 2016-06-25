@@ -2,9 +2,7 @@ package client.View.cli;
 
 import client.CachedData;
 import core.Player;
-import core.gamelogic.actions.Action;
 import core.gamelogic.actions.BuyObjectsAction;
-import core.gamelogic.actions.ExposeSellablesAction;
 import core.gamemodel.OnSaleItem;
 import core.gamemodel.PoliticsCard;
 import core.gamemodel.Servant;
@@ -12,29 +10,48 @@ import core.gamemodel.Servant;
 import java.util.*;
 
 /**
- * Created by Matteo on 15/06/16.
+ * This class is the auction phase of the game. The player can choose to view the items
+ * in the showcase, with their respective price, or simply pass the phase not buying
+ * anything. As a real "market", every time the player selects an object, the price he will
+ * pay when buying increases. Thus, the need of three micro states referred to the item
+ * selection. The player is informed when he has not enough money to buy a specific object
+ * (NOT_ENOUGH_MONEY micro state) and is able to select/deselect every item (SELECT_OBJECT
+ * and DESELECT_OBJECT micro states).
  */
 public class MarketAuctionState implements CLIState {
+    // Internal state of the class
     private static final int SELECTION_STATE = 0;
     private static final int SHOWING_STATE = 1;
     private static final int BUYING_STATE = 2;
-    private int currentState;
 
+    private int internalState;
+
+    // Status of an item when buying it
     private static final int SELECT_OBJECT = 4;
     private static final int NOT_ENOUGH_MONEY = 5;
     private static final int DESELECT_OBJECT = 6;
+
     private int microState;
 
+    // Reference to the context
     private CLI cli;
 
+    // Attributes of the class
     private Map<Integer, OnSaleItem> onSaleItemMap;
     private Map<Integer, OnSaleItem> buyingItemMap;
     private boolean validate;
     private int selectedItemIndex;
     private int myCoins;
 
+    /**
+     * The constructor sets the internal state and the micro state (default NOT_ENOUGH_MONEY)
+     * and validates them
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public MarketAuctionState(CLI cli) {
-        currentState = SELECTION_STATE;
+        internalState = SELECTION_STATE;
         microState = NOT_ENOUGH_MONEY;
         onSaleItemMap = new HashMap<>();
         buyingItemMap = new HashMap<>();
@@ -42,6 +59,9 @@ public class MarketAuctionState implements CLIState {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         if(!validate) {
@@ -51,11 +71,16 @@ public class MarketAuctionState implements CLIState {
             fillOnSaleItemMap();
         }
 
-        if(currentState == SELECTION_STATE) printSelectionMenu();
-        else if(currentState == SHOWING_STATE) printItemsMenu();
+        if(internalState == SELECTION_STATE) printSelectionMenu();
+        else if(internalState == SHOWING_STATE) printItemsMenu();
         else chooseItemMenu();
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -65,15 +90,18 @@ public class MarketAuctionState implements CLIState {
             throw new IllegalArgumentException();
         }
 
-        if(currentState == SELECTION_STATE) selectAction(choice);
-        else if(currentState == SHOWING_STATE) selectItem(choice);
+        if(internalState == SELECTION_STATE) selectAction(choice);
+        else if(internalState == SHOWING_STATE) selectItem(choice);
         else checkItemSelection(choice);
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         validate = false;
-        currentState = SELECTION_STATE;
+        internalState = SELECTION_STATE;
         //Action action = new BuyObjectsAction((Player)CachedData.getInstance().getMe(), new ArrayList<>());
         //CachedData.getInstance().getController().sendInfo(action);
     }
@@ -134,7 +162,7 @@ public class MarketAuctionState implements CLIState {
         if(choice != 1 && choice != 2) throw new IllegalArgumentException();
 
         if(choice == 1) {
-            currentState = SHOWING_STATE;
+            internalState = SHOWING_STATE;
             selectedItemIndex = 0;
         } else {
             List<OnSaleItem> itemsToBuy = new ArrayList<>();
@@ -149,10 +177,10 @@ public class MarketAuctionState implements CLIState {
 
     private void selectItem(int choice) throws IllegalArgumentException {
         if(choice == 0) {
-            currentState = SELECTION_STATE;
+            internalState = SELECTION_STATE;
             selectedItemIndex = 0;
         }else if(onSaleItemMap.keySet().contains(choice)) {
-            currentState = BUYING_STATE;
+            internalState = BUYING_STATE;
             selectedItemIndex = choice;
         } else throw new IllegalArgumentException();
     }
@@ -170,6 +198,6 @@ public class MarketAuctionState implements CLIState {
                 buyingItemMap.put(selectedItemIndex, onSaleItemMap.get(selectedItemIndex));
             }
         }
-        currentState = SHOWING_STATE;
+        internalState = SHOWING_STATE;
     }
 }

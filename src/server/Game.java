@@ -216,7 +216,7 @@ public class Game implements Runnable{
         // Give victory points to highest number of permit cards
         gameBoard.moveVictoryPath(
                 players.stream().reduce(players.get(0), (player, player2) ->
-                        (player.getPermitCardsNumber() > player2.getPermitCardsNumber()) ? player : player2),
+                        (player.getPermitCardsNumber() >= player2.getPermitCardsNumber()) ? player : player2),
                 3
         );
 

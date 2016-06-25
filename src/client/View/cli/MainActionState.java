@@ -1,15 +1,26 @@
 package client.View.cli;
 
 /**
- * Created by Matteo on 16/06/16.
+ * The class represents the state where the player goes into to choose a normal
+ * action or eventually go back to the main menu.
  */
 public class MainActionState implements CLIState {
+    // Reference to the main context
     private CLI cli;
 
+    /**
+     * The constructor sets the context
+     *
+     * @param cli is the context owning all the possible game states; it is needed to
+     *            change the current state from this class
+     */
     public MainActionState(CLI cli) {
         this.cli = cli;
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void showMenu() {
         System.out.println("Select a normal action: ");
@@ -20,6 +31,11 @@ public class MainActionState implements CLIState {
         System.out.println("0) Go back");
     }
 
+    /**
+     * @param input is the choice of the player
+     * @see CLIState
+     * @throws IllegalArgumentException
+     */
     @Override
     public void readInput(String input) throws IllegalArgumentException {
         int choice;
@@ -32,6 +48,9 @@ public class MainActionState implements CLIState {
         chooseMainAction(choice);
     }
 
+    /**
+     * @see CLIState
+     */
     @Override
     public void invalidateState() {
         //Do nothing
