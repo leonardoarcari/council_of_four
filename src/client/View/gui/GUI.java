@@ -4,7 +4,7 @@ import client.CachedData;
 import client.ControllerUI;
 import client.View.UserInterface;
 import core.Player;
-import core.connection.GameBoardInterface;
+import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.Region;

@@ -1,7 +1,7 @@
 package client.clientconnection;
 
 import client.View.UserInterface;
-import core.connection.GameBoardInterface;
+import core.gamemodel.modelinterface.GameBoardInterface;
 import core.connection.InfoProcessor;
 import core.gamelogic.actions.*;
 import core.gamemodel.WealthPath;

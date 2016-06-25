@@ -3,8 +3,9 @@ package core.gamemodel;
 import java.io.Serializable;
 
 /**
- * Created by Matteo on 21/05/16.
+ * This is the enumeration of the possible types of region (and balcony) of the game.
  */
 public enum RegionType implements Serializable {
+    // Values of the enumeration
     SEA, HILLS, MOUNTAINS, KINGBOARD
 }

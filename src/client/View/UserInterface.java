@@ -1,7 +1,7 @@
 package client.View;
 
 import client.ControllerUI;
-import core.connection.GameBoardInterface;
+import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
 import core.gamelogic.actions.PodiumAction;
 import core.gamemodel.modelinterface.*;

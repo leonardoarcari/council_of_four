@@ -11,11 +11,22 @@ import java.util.NoSuchElementException;
 import java.util.Vector;
 
 /**
- * Created by Matteo on 20/05/16.
+ * This class implements two interfaces and their relative methods. From BalconyInterface
+ * it inherits the balcony getters. The method addCouncilor doesn't derive from the interface: this
+ * because the interface is the only object exposed when communicating with the client (and
+ * referring to the Façacde Pattern this implies that the client cannot access all of this
+ * class methods but only the one described in the interface) and the addCouncilor method is only
+ * needed on the server side, when updating the model. From the Subject interface it inherits
+ * all the observer modifier methods. This interface is part of the Observer Pattern: every
+ * time a subject, that is a game object or even a player, is updated, the connections of
+ * each player, which are "observing" the subjects, are notified, and send the updated objects
+ * to the connected clients.
  */
 public class CouncilorsBalcony implements BalconyInterface, Subject, Serializable{
+    // Attributes of the class
     private Councilor[] councilorsBalcony;
     private final RegionType region;
+
     private transient List<Observer> observers;
 
     public CouncilorsBalcony(RegionType regionType) {
@@ -25,38 +36,56 @@ public class CouncilorsBalcony implements BalconyInterface, Subject, Serializabl
     }
 
     /**
-     * Clean punch in the balls function
+     * This method adds a councilor to the balcony, emulating a FIFO queue.
+     * The new councilor is added to the left side of the balcony, and the
+     * right-most one exits from the balcony.
+     *
+     * @param councilor is the inserted councilor
+     * @return the right-most councilor, that goes out of the balcony
      */
     public Councilor addCouncilor(Councilor councilor) {
         Councilor councilorToAddToPool = councilorsBalcony[3];
-        for(int i = 3; i > 0; i--) {
-            councilorsBalcony[i] = councilorsBalcony[i-1];
-        }
+        System.arraycopy(councilorsBalcony, 0, councilorsBalcony, 1, 3);
         councilorsBalcony[0] = councilor;
         notifyObservers();
         return councilorToAddToPool;
     }
 
+    /**
+     * @see BalconyInterface
+     */
     @Override
     public RegionType getRegion() {
         return region;
     }
 
+    /**
+     * @see BalconyInterface
+     */
     @Override
     public Iterator<Councilor> councilorsIterator() {
         return new CouncilorIterator();
     }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);
     }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void removeObserver(Observer observer) {
         observers.remove(observer);
     }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void notifyObservers() {
         for (Observer o : observers) {
@@ -64,15 +93,26 @@ public class CouncilorsBalcony implements BalconyInterface, Subject, Serializabl
         }
     }
 
+    /**
+     * This method builds a string containing the balcony's councilors information
+     *
+     * @return a string that shows which councilors are part of the balcony
+     */
     @Override
     public String toString() {
         String toString = "";
-        for (int i = 0; i < councilorsBalcony.length; i++) {
-            toString = toString + councilorsBalcony[i] + " ";
+        for (Councilor aCouncilorsBalcony : councilorsBalcony) {
+            toString = toString + aCouncilorsBalcony + " ";
         }
         return toString;
     }
 
+    /**
+     * This method builds a string containing the balcony's information
+     *
+     * @return a string that shows the balcony status, such as region and councilors,
+     * in a formatted way (including parenthesis and spaces)
+     */
     @Override
     public String toFormattedString() {
         String regionString = region.name().toLowerCase();
@@ -88,14 +128,23 @@ public class CouncilorsBalcony implements BalconyInterface, Subject, Serializabl
         return builder.toString();
     }
 
+    /**
+     * This inner class represents the iterator of councilors of the balcony
+     */
     private class CouncilorIterator implements Iterator<Councilor> {
         private int current = 0;
 
+        /**
+         * @return whether the iterator has more elements to iterate on
+         */
         @Override
         public boolean hasNext() {
             return current < 4;
         }
 
+        /**
+         * @return the councilor pointed by the iterator
+         */
         @Override
         public Councilor next() {
             if (hasNext()) {

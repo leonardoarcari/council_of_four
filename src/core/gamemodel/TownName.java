@@ -3,9 +3,10 @@ package core.gamemodel;
 import java.io.Serializable;
 
 /**
- * Created by Matteo on 18/05/16.
+ * The enumeration is the set of names of the towns in the game.
  */
 public enum TownName implements Serializable {
+    // Values of the enumeration
     A("Arkon"),
     B("Burgen"),
     C("Castrum"),
@@ -22,12 +23,19 @@ public enum TownName implements Serializable {
     N("Naris"),
     O("Osium");
 
+    // Attribute of the enumeration
     private final String townName;
 
+    /**
+     * @param townName is the value
+     */
     TownName(final String townName) {
         this.townName = townName;
     }
 
+    /**
+     * @return the value of the object, meaning the name of a town
+     */
     @Override
     public String toString(){
         return townName;

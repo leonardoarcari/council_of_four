@@ -3,7 +3,7 @@ package core.gamemodel;
 import core.Observer;
 import core.Player;
 import core.Subject;
-import core.connection.GameBoardInterface;
+import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
@@ -14,9 +14,19 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by Matteo on 21/05/16.
+ * This class implements two interfaces and their relative methods. From GameBoardInterface
+ * it inherits some getters. Almost all public methods doesn't derive from the interface: this
+ * because the interface is the only object exposed when communicating with the client (and
+ * referring to the Façacde Pattern this implies that the client cannot access all of this
+ * class methods but only the one described in the interface) and those methods are only
+ * needed on the server side, when updating the model. From the Subject interface it inherits
+ * all the observer modifier methods. This interface is part of the Observer Pattern: every
+ * time a subject, that is a game object or even a player, is updated, the connections of
+ * each player, which are "observing" the subjects, are notified, and send the updated objects
+ * to the connected clients.
  */
 public class GameBoard implements Subject, GameBoardInterface, Serializable{
+    // Attributes of the class
     private transient RegionType boardType;
     private transient Stack<PoliticsCard> politicsCardPool;
     private transient List<PoliticsCard> discardedCards;
@@ -36,6 +46,16 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
 
     private transient List<Observer> observers;
 
+    /**
+     * This static method is called to create all the game board objects in
+     * the correct order. First the game board skeleton is created, then all
+     * the final settings are done, such as the removal of the servants and
+     * politics card for all the players. Before returning, the method registers
+     * the observers, delegating each object of his children observers registration.
+     *
+     * @param players are the players of the game
+     * @return the game board fully created
+     */
     public static GameBoard createGameBoard(List<Player> players) {
         GameBoard gameBoard = new GameBoard();
         Iterator<Player> iterator = players.iterator();
@@ -148,10 +168,23 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
     }
 
     /* Logic handler methods */
+
+    /**
+     * @param card is the politics card to discard and add to the discarded deck
+     *             of the game board
+     */
     public void discardCard(PoliticsCard card) {
         discardedCards.add(card);
     }
 
+    /**
+     * This method is called whenever the CouncilorElection action is done by a
+     * player
+     *
+     * @param councilor is the councilor to elect
+     * @param regionType is the type of the region whose balcony will change,
+     *                   due to the insertion of the councilor
+     */
     public void electCouncilor(Councilor councilor, RegionType regionType) {
         Councilor toAddCounc;
 
@@ -167,24 +200,54 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         notifyObservers();
     }
 
+    /**
+     * This method is called whenever the BuyPermitCard action is done by a
+     * player
+     *
+     * @param type is the type of the region owning the card
+     * @param pos is the position, left or right, of the card to draw
+     * @return the drawn permit card, if possible
+     */
     public PermitCard drawPermitCard(RegionType type, Region.PermitPos pos) {
         Region region = getRegionBy(type);
         return region.drawPermitCard(pos);
     }
 
+    /**
+     * This method is called whenever a player does an action that allows him
+     * to build an emporium
+     *
+     * @param player is the player building an emporium
+     * @param type is the type of the region where the player is building
+     * @param townName is the name of the town where the player is building
+     */
     public void buildEmporium(Player player,RegionType type, TownName townName) {
         getRegionBy(type).buildEmporium(player, townName);
     }
 
+    /**
+     * @param startingTown is the town where the king was set before an action
+     * @param buildingTown is the town where the king is after an action
+     */
     public void moveKing(TownName startingTown, TownName buildingTown) {
         regionFromTownName(startingTown).getTownByName(startingTown).setKing(false);
         regionFromTownName(buildingTown).getTownByName(buildingTown).setKing(true);
     }
 
+    /**
+     * Every turn, or when a bonus of drawing cards occurs, this method is
+     * invoked and pops the card from the politics deck
+     *
+     * @return the top politics card of the deck
+     */
     public PoliticsCard drawPoliticsCard() {
         return politicsCardPool.pop();
     }
 
+    /**
+     * @param number is the number of hired servants
+     * @return the hired servants
+     */
     public List<Servant> hireServants(int number) {
         List<Servant> servants = new ArrayList<>();
         for(int i = 0; i < number; i++) {
@@ -193,23 +256,49 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         return servants;
     }
 
+    /**
+     * @param servant is the servant to give back to the game board servant pool
+     */
     public void returnServant(Servant servant) {
         servantPool.add(servant);
     }
 
+    /**
+     * This method is called whenever a player moves on the nobility path
+     *
+     * @param player is the player that is moving on the path
+     * @param increment is the value of steps the player can proceed
+     * @return the list of bonuses gained during the player "walk"
+     */
     public List<Bonus> moveNobilityPath(Player player, int increment) {
+        int positionBefore = nobilityPath.getPlayerPosition(player);
         nobilityPath.movePlayer(player, increment);
-        return nobilityPath.retrieveBonus(player);
+        return nobilityPath.retrieveBonus(player, positionBefore);
     }
 
+    /**
+     * This method is called whenever a player moves on the wealth path
+     *
+     * @param player is the player that is moving on the path
+     * @param increment is how much the player has gained or spent for some action
+     */
     public void moveWealthPath (Player player, int increment) {
         wealthPath.movePlayer(player, increment);
     }
 
+    /**
+     * This method is called whenever a player moves on the victory path
+     *
+     * @param player is the player that is moving on the path
+     * @param increment is the value of steps the player can proceed
+     */
     public void moveVictoryPath(Player player, int increment) {
         victoryPath.movePlayer(player, increment);
     }
 
+    /**
+     * @return a map of the town objects and their name
+     */
     public Map<TownName, Town> getTownsMap() {
         Map<TownName,Town> townMap = new HashMap<>();
 
@@ -219,7 +308,7 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         return townMap;
     }
 
-    public void fillTownMapBy(Region region, Map<TownName,Town> townMap) {
+    private void fillTownMapBy(Region region, Map<TownName,Town> townMap) {
         Iterator<Town> iterator = region.townIterator();
         while(iterator.hasNext()){
             Town town = iterator.next();
@@ -227,6 +316,15 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         }
     }
 
+    /**
+     * This method is called whenever a player builds an emporium, to check if he can
+     * gain a town type bonus card, having built in every town of the same type
+     *
+     * @param player is the player who has built an emporium
+     * @param townName name of the town where the player has just built an emporium
+     * @return whether the player has built an emporium in all the towns of
+     * the same type
+     */
     public boolean checkTypeCompletion(Player player, TownName townName) {
         Map<TownName,Town> map = getTownsMap();
         TownType type = map.get(townName).getTownType();
@@ -238,11 +336,25 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         return true;
     }
 
+    /**
+     * This method is called whenever a player builds an emporium, to check if
+     * he can gain a region bonus card, having built in every town of a region
+     *
+     * @param player is the player who has built an emporium
+     * @param regionType is the region where the player has just built an emporium
+     * @return whether the player has built an emporium in all the towns of a region
+     */
     public boolean checkRegionCompletion(Player player,RegionType regionType) {
         Region buildingRegion = getRegionBy(regionType);
         return buildingRegion.allTownsCaptured(player);
     }
 
+    /**
+     * This method is called whenever the checkTypeCompletion returns true
+     *
+     * @param townName is the name of the last emporium has just built an emporium
+     * @return the town type bonus card with the same type of the town with the given name
+     */
     public TownTypeCard acquireTownTypeCard(TownName townName) {
         Map<TownName,Town> map = getTownsMap();
         TownType type = map.get(townName).getTownType();
@@ -257,12 +369,21 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
     }
 
     /* Utility methods */
+
+    /**
+     * @param regionType is the type of the region
+     * @return a region, given its type
+     */
     public Region getRegionBy(RegionType regionType) {
         if(regionType.equals(RegionType.SEA)) return seaRegion;
         else if (regionType.equals(RegionType.HILLS)) return hillsRegion;
         else return mountainsRegion;
     }
 
+    /**
+     * @param townName is the name of a town
+     * @return the region containing a town with the given name
+     */
     public Region regionFromTownName(TownName townName) {
         if(townName.ordinal() < 5) {
             return seaRegion;
@@ -273,43 +394,71 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         }
     }
 
-    private Iterator<Region> regionIterator() {
-        return Arrays.asList(seaRegion, hillsRegion, mountainsRegion).iterator();
-    }
-
+    /**
+     * @see GameBoardInterface
+     */
+    @Override
     public Iterator<RoyalCard> royalCardIterator() {
         return royalCardPool.iterator();
     }
 
+    /**
+     * @see GameBoardInterface
+     */
+    @Override
     public Iterator<TownTypeCard> townTypeCardIterator() {
         return townTypeCards.iterator();
     }
 
+    /**
+     * @see GameBoardInterface
+     */
+    @Override
     public Iterator<Councilor> councilorIterator() { return councilorPool.iterator(); }
 
+    /**
+     * @return whether there are more royal cards or not
+     */
     public boolean checkRoyalSize() {
-        if(royalCardPool.size() == 0) return false;
-        else return true;
+        return royalCardPool.size() != 0;
     }
 
+    /**
+     * @return the top royal card of the royal deck
+     */
     public RoyalCard popRoyalCard() {
         return royalCardPool.pop();
     }
 
+    /**
+     * @return the nobility path
+     */
     public NobilityPath getNobilityPath() {
         return nobilityPath;
     }
 
+    /**
+     * @return the wealth path
+     */
     public WealthPath getWealthPath() {
         return wealthPath;
     }
 
+    /**
+     * @return the victory path
+     */
     public VictoryPath getVictoryPath() {
         return victoryPath;
     }
 
+    /**
+     * @return the showcase
+     */
     public Showcase getShowcase() { return showcase; }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void registerObserver(Observer observer) {
         boardBalcony.registerObserver(observer);
@@ -323,6 +472,9 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         observers.add(observer);
     }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void removeObserver(Observer observer) {
         boardBalcony.removeObserver(observer);
@@ -336,6 +488,9 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         observers.remove(observer);
     }
 
+    /**
+     * @see Subject
+     */
     @Override
     public void notifyObservers() {
         for (Observer o : observers) {
@@ -343,6 +498,11 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         }
     }
 
+    /**
+     * This method forces the dispatch of the game objects
+     * when the game board is created, informing the players
+     * of the real state of the game and its objects.
+     */
     public void notifyChildren() {
         notifyObservers();
         boardBalcony.notifyObservers();
@@ -354,7 +514,7 @@ public class GameBoard implements Subject, GameBoardInterface, Serializable{
         mountainsRegion.notifyObservers();
         mountainsRegion.getRegionBalcony().notifyObservers();
 
-        getTownsMap().values().forEach(town -> town.notifyObservers());
+        getTownsMap().values().forEach(Town::notifyObservers);
 
         nobilityPath.notifyObservers();
         victoryPath.notifyObservers();

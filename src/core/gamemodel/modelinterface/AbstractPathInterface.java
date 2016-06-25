@@ -9,6 +9,7 @@ import java.util.Map;
  * This interface describes the methods of the three game paths classes. Moreover, it acts as
  * a proxy towards the client, forcing it to use only these methods. So this interface
  * is part of the Façade Pattern, applied to the model-client relationship.
+ * @see core.gamemodel.AbstractPath
  */
 public interface AbstractPathInterface {
     /**
