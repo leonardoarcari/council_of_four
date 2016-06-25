@@ -1,7 +1,9 @@
 package core.gamemodel.modelinterface;
 
 /**
- * Created by Leonardo Arcari on 06/06/2016.
+ * This interface acts as a specific marker of the WealthPath class
+ * @see AbstractPathInterface
+ * @see core.gamemodel.WealthPath
  */
 public interface WealthPathInterface extends AbstractPathInterface {
 }

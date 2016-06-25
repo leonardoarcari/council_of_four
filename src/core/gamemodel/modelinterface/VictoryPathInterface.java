@@ -1,7 +1,9 @@
 package core.gamemodel.modelinterface;
 
 /**
- * Created by Matteo on 13/06/16.
+ * This interface acts as a specific marker of the VictoryPath class
+ * @see AbstractPathInterface
+ * @see core.gamemodel.VictoryPath
  */
 public interface VictoryPathInterface extends AbstractPathInterface {
 }

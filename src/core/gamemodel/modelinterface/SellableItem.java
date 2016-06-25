@@ -1,7 +1,8 @@
 package core.gamemodel.modelinterface;
 
 /**
- * Created by Leonardo Arcari on 23/05/2016.
+ * This interface marks only the items that can be exposed, hence sold,
+ * during the market phases.
  */
 public interface SellableItem {
 }
