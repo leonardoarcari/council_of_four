@@ -88,13 +88,5 @@ public class WaitingHall {
         game = new Game(maps.get(Double.valueOf(Math.random() * maps.size()).intValue()));
     }
 
-    public Game getGame() {
-        return game;
-    }
-
     public InfoProcessor getInfoProcessor() { return game.getProcessor();}
-
-    public int getGamesCounter() {
-        return gamesCounter;
-    }
 }

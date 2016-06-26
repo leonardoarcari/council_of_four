@@ -2,7 +2,6 @@ package server;
 
 import core.Player;
 import core.Subject;
-import core.connection.InfoProcessor;
 import core.gamelogic.actions.Action;
 import core.gamelogic.actions.BuildEmpoPCAction;
 import core.gamelogic.actions.BuyPermitCardAction;
@@ -11,7 +10,6 @@ import core.gamemodel.*;
 import org.junit.Before;
 import org.junit.Test;
 import server.serverconnection.ServerConnection;
-import server.serverconnection.ServerSocketConnection;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -108,11 +106,6 @@ public class ServerProcessorTest {
 
         @Override
         public void update(Subject subject) {
-
-        }
-
-        @Override
-        public void setInfoProcessor(InfoProcessor processor) {
 
         }
 
