@@ -25,11 +25,6 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
     }
 
     @Override
-    public void setInfoProcessor(InfoProcessor processor) {
-        // Does nothing. InfoProcessor is set by the model for all RMI clients
-    }
-
-    @Override
     public void sendInfo(Object info) {
         try {
             clientRMIProcessor.processInfo(info);

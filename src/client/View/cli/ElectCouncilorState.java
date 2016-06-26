@@ -135,7 +135,7 @@ public class ElectCouncilorState implements CLIState {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException();
         }
-        if (inputChoice < 0 || inputChoice > balconyMap.size()) throw new IllegalArgumentException();
+        if (inputChoice < 0 || inputChoice > councilorPoolMap.size()) throw new IllegalArgumentException();
         if (inputChoice == 0) {
             internalState = BEGIN_STATE;
         } else {

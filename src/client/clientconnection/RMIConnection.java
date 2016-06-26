@@ -25,15 +25,6 @@ public class RMIConnection implements Connection {
     }
 
     @Override
-    public void setInfoProcessor(InfoProcessor processor) {
-        try {
-            clientRmiProcessor.setProcessor(processor);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void sendInfo(Object info) {
         try {
             serverRmiProcessor.processInfo(info);

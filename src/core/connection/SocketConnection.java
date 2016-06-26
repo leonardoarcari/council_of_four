@@ -35,11 +35,6 @@ public class SocketConnection implements Connection, Runnable, Closeable {
     }
 
     @Override
-    public void setInfoProcessor(InfoProcessor processor) {
-        this.processor = processor;
-    }
-
-    @Override
     public void sendInfo(Object info) {
         if (socketCommunicator != null) {
             socketCommunicator.sendInfo(info);
