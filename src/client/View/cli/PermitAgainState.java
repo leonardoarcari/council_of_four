@@ -3,7 +3,7 @@ package client.View.cli;
 import client.CachedData;
 import core.Player;
 import core.gamelogic.actions.Action;
-import core.gamelogic.actions.SelectAgainPermitAction;
+import core.gamelogic.actions.TakePermitBonusAction;
 import core.gamemodel.PermitCard;
 
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class PermitAgainState implements CLIState {
         }
 
         if(permitCardsMap.keySet().contains(choice)) {
-            Action action = new SelectAgainPermitAction((Player)CachedData.getInstance().getMe(), permitCardsMap.get(choice));
+            Action action = new TakePermitBonusAction((Player)CachedData.getInstance().getMe(), permitCardsMap.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
             validate = false;
             cli.setCurrentState(cli.getMainState());

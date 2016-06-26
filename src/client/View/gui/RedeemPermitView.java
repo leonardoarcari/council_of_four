@@ -1,5 +1,9 @@
 package client.View.gui;
 
+import client.CachedData;
+import core.Player;
+import core.gamelogic.actions.Action;
+import core.gamelogic.actions.TakePermitBonusAction;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

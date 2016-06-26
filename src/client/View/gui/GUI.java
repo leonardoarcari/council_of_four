@@ -845,7 +845,7 @@ public class GUI extends Application implements UserInterface {
             RedeemPermitView permitView = new RedeemPermitView(CachedData.getInstance().getMe());
             permitView.addClickListener(event -> {
                 controller.sendInfo(
-                        new SelectAgainPermitAction(
+                        new TakePermitBonusAction(
                                 (Player) CachedData.getInstance().getMe(),
                                 ((PermitCardView) event.getSource()).getPermitCard()
                         )

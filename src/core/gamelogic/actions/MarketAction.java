@@ -1,8 +1,7 @@
 package core.gamelogic.actions;
 
 /**
- * Created by Matteo on 23/05/16.
+ * This interface acts as a marker for the game market phases.
  */
 public interface MarketAction {
-
 }

@@ -1,9 +1,12 @@
 package core.gamelogic.actions;
 
 /**
- * Created by Matteo on 25/05/16.
+ * This enumeration allows the server to communicate to the players
+ * a special event, such as the beginning of the game, a special bonus
+ * action available, and so on.
  */
 public enum SyncAction {
+    // Values of the enumeration
     GAME_START,
     DRAW_PERMIT_BONUS,
     PICK_PERMIT_AGAIN,
