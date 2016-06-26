@@ -94,7 +94,7 @@ public class BuyPermitCardState implements CLIState {
             BalconyInterface balcony = CachedData.getInstance().getBalcony(region);
             if (checkBalconyForSatisfaction(balcony)) {
                 balconyMap.put(counter, balcony);
-                System.out.println(counter + ") " + balcony);
+                System.out.println(counter + ") " + balcony.toFormattedString());
                 counter++;
             }
         }
@@ -211,6 +211,7 @@ public class BuyPermitCardState implements CLIState {
                             chosenPermit
                     )
             );
+            cli.setCurrentState(cli.getWaitingState());
         }
     }
 

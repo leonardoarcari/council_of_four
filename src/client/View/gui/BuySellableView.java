@@ -62,6 +62,7 @@ public class BuySellableView extends GridPane {
                 )
             );
             setDisable(true);
+            coinsSpentProperty.setValue(0);
         });
     }
 

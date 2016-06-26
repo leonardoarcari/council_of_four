@@ -20,7 +20,8 @@ import java.util.List;
  * Created by Matteo on 16/06/16.
  */
 public class DrawFreePermitView extends ScrollPane implements HasMainAction{
-    private List<PermitCardView> permitCardViews; private Effect dropShadow;
+    private List<PermitCardView> permitCardViews;
+    private Effect dropShadow;
     private BooleanProperty turnEnded;
 
     public DrawFreePermitView() {

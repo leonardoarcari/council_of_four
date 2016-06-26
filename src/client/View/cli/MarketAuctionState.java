@@ -171,7 +171,7 @@ public class MarketAuctionState implements CLIState {
             cli.getController().stopTimer();
             CachedData.getInstance().getController().sendInfo(action);
             validate = false; //Phase ended, next time buying items map has to be re-calculated
-            cli.setCurrentState(cli.getMainState());
+            cli.setCurrentState(cli.getWaitingState());
         }
     }
 

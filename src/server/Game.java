@@ -197,7 +197,6 @@ public class Game implements Runnable{
             turnPlayers.push(lastPlayingPlayers.get(i));
         }
         turnPlayers.push(player);
-        turnPlayers.iterator().forEachRemaining(player1 -> System.out.println("Player: " + player1.getNickname() + " " + player1.getUsername()));
     }
 
     private void endGame() {
@@ -278,7 +277,6 @@ public class Game implements Runnable{
             player.getConnection().sendInfo(MarketSyncAction.END_MARKET_ACTION);
         }
         gameBoard.getShowcase().returnItemsToOwner();
-        System.out.println("new round");
         fillTurnPlayers();
         currentTurn = new Turn(turnPlayers.peek());
     }
@@ -343,7 +341,6 @@ public class Game implements Runnable{
             mainActionTokens.push(true);
             doneFastAction = false;
             currentPlayer.addPoliticsCard(gameBoard.drawPoliticsCard());
-            System.out.println("User: " + currentPlayer.getUsername() + currentPlayer.getNickname());
             timer = timerGenerator.schedule(
                     () -> {
                         try {

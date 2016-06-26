@@ -826,6 +826,7 @@ public class GUI extends Application implements UserInterface {
             CachedData.getInstance().mainActionAvailableProperty().setValue(false);
             CachedData.getInstance().fastActionAvailableProperty().setValue(false);
             CachedData.getInstance().myTurnProperty().setValue(false);
+            timerProperty.setValue("Waiting for next turn..");
         });
     }
 
