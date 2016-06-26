@@ -8,9 +8,10 @@ import core.gamemodel.bonus.Bonus;
 import java.util.Iterator;
 
 /**
- * This interface contains the methods of the Town class. Moreover, it acts as
- * a proxy towards the client, forcing it to use only these methods. So this interface
- * is part of the Façade Pattern, applied to the model-client relationship.
+ * This interface contains the getter and utility methods of the Town class. Moreover,
+ * it acts as a proxy towards the client, forcing it to use only these methods.
+ *
+ * @see core.gamemodel.Town
  */
 public interface TownInterface {
     /**

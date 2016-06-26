@@ -5,9 +5,10 @@ import core.gamemodel.RegionCard;
 import core.gamemodel.RegionType;
 
 /**
- * This interface describes the methods the Region class. Moreover, it acts as
- * a proxy towards the client, forcing it to use only these methods. So this interface
- * is part of the Façade Pattern, applied to the model-client relationship.
+ * This interface describes the getter and utility methods the Region class. Moreover,
+ * it acts as a proxy towards the client, forcing it to use only these methods.
+ *
+ * @see core.gamemodel.Region
  */
 public interface RegionInterface {
     /**

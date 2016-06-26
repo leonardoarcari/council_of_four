@@ -7,9 +7,9 @@ import core.gamemodel.TownTypeCard;
 import java.util.Iterator;
 
 /**
- * This interface describes the methods of the game board class. Moreover, it acts as
- * a proxy towards the client, forcing it to use only these methods. So this interface
- * is part of the Façade Pattern, applied to the model-client relationship.
+ * This interface describes the getter methods of the game board class. Moreover, it acts as
+ * a proxy towards the client, forcing it to use only these methods.
+ *
  * @see core.gamemodel.GameBoard
  */
 public interface GameBoardInterface {

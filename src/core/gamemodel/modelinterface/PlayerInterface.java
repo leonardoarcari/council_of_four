@@ -6,9 +6,8 @@ import javafx.scene.paint.Color;
 import java.util.Iterator;
 
 /**
- * This interface describes the methods the Player class. Moreover, it acts as
- * a proxy towards the client, forcing it to use only these methods. So this interface
- * is part of the Façade Pattern, applied to the model-client relationship.
+ * This interface describes the getter methods the Player class. Moreover, it acts as
+ * a proxy towards the client, forcing it to use only these methods.
  */
 public interface PlayerInterface  {
     /**

@@ -6,9 +6,10 @@ import core.gamemodel.RegionType;
 import java.util.Iterator;
 
 /**
- * This interface describes the methods the Balcony class. Moreover, it acts as
- * a proxy towards the client, forcing it to use only these methods. So this interface
- * is part of the Façade Pattern, applied to the model-client relationship.
+ * This interface describes the getter methods the Balcony class. Moreover, it acts as
+ * a proxy towards the client, forcing it to use only these methods.
+ *
+ * @see core.gamemodel.CouncilorsBalcony
  */
 public interface BalconyInterface {
     /**
