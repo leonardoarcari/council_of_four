@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Leonardo Arcari on 25/05/2016.
+ * Is the factory class that creates, with a Factory pattern, the bonuses for
+ * the permit cards. The class creates the number of bonuses and type, delegating
+ * the value creation to the bonus itself.
  */
 public class PermitBonusFactory implements AbstractBonusFactory{
     private static final ArrayList<Float> CARD_LOW_PROBABILITIES = new ArrayList<>(Arrays.asList(
@@ -18,8 +20,14 @@ public class PermitBonusFactory implements AbstractBonusFactory{
     private static final ArrayList<Float> CARD_HIGH_PROBABILITIES = new ArrayList<>(Arrays.asList(
             2f/10, 4f/10, 6f/10, 8f/10, 9.7f/10, 1f));
 
+    /**
+     * @return a single bonus
+     */
     public Bonus createOneBonus() {return bonusFrom(CARD_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);}
 
+    /**
+     * @return a list of randomly generated bonuses
+     */
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         return bonusList(bonusNumber);

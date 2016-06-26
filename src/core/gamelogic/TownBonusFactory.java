@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Leonardo Arcari on 25/05/2016.
+ * Is the factory class that creates, with a Factory pattern, the bonuses for
+ * the towns. The class creates the number of bonuses and type, delegating
+ * the value creation to the bonus itself.
  */
 public class TownBonusFactory implements AbstractBonusFactory {
     private static final ArrayList<Float> TOWN_LOW_PROBABILITIES = new ArrayList<>(Arrays.asList(
@@ -16,10 +18,16 @@ public class TownBonusFactory implements AbstractBonusFactory {
     private static final ArrayList<Float> TOWN_HIGH_PROBABILITIES = new ArrayList<>(Arrays.asList(
             1f/5, 2f/5, 3f/5, 4f/5, 1f));
 
+    /**
+     * @return a single bonus
+     */
     public Bonus createOneBonus() {
         return bonusFrom(TOWN_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);
     }
 
+    /**
+     * @return a list of randomly generated bonuses
+     */
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         return bonusList(bonusNumber);

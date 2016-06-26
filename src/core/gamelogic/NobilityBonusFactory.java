@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Leonardo Arcari on 25/05/2016.
+ * Is the factory class that creates, with a Factory pattern, the bonuses for
+ * the nobility path. The class creates the number of bonuses and type, delegating
+ * the value creation to the bonus itself.
  */
 public class NobilityBonusFactory implements AbstractBonusFactory {
     private static final ArrayList<Float> NOBILITY_LOW_PROBABILITIES = new ArrayList<>(Arrays.asList(
@@ -16,8 +18,14 @@ public class NobilityBonusFactory implements AbstractBonusFactory {
     private static final ArrayList<Float> NOBILITY_HIGH_PROBABILITIES = new ArrayList<>(Arrays.asList(
             8f/44, 9f/44, 25f/44, 26f/44, 32f/44, 34f/44, 36f/44, 38f/44, 1f));
 
+    /**
+     * @return a single bonus
+     */
     public Bonus createOneBonus() {return bonusFrom(NOBILITY_LOW_PROBABILITIES,BonusNumber.ONE_PROBABILITY);}
 
+    /**
+     * @return a list of randomly generated bonuses
+     */
     public List<Bonus> generateBonuses() {
         BonusNumber bonusNumber = getBonusNumber();
         if (bonusNumber.equals(BonusNumber.NO_PROBABILITY)) return new ArrayList<>();
