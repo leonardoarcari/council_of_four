@@ -15,7 +15,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Leonardo Arcari on 23/05/2016.
+ * The <code>Game</code> class represents an instance of a game and coordinates players' turns and game's phases. It has
+ * knowledge of playing and disconnected clients, match's gameboard and turns' timers.<p>
+ * Class is designed as a finite state machine, having stable states and moving through them in a consistent way thanks
+ * to methods made available to the final user. This class does not implement the logic of the actions a player can do
+ * but handles turns, market phases and game end.
  */
 public class Game implements Runnable{
     private List<Player> players;
