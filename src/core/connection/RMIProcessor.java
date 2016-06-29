@@ -4,9 +4,15 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * A <code>RMIProcessor</code> has the same behaviour of {@link InfoProcessor InfoProcessor} except that it used in
+ * combination with RMI framework. Requiring every <code>Remote</code> class method to throw a
+ * <code>RemoteException</code>, inheriting from InfoProcessor is not possible.
  */
 public interface RMIProcessor extends Remote {
+    /**
+     * @see InfoProcessor#processInfo(Object)
+     * @param info Message/Information to handle
+     * @throws RemoteException
+     */
     void processInfo(Object info) throws RemoteException;
-    void setProcessor(InfoProcessor processor) throws RemoteException;
 }

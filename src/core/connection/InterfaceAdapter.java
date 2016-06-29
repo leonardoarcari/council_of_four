@@ -5,7 +5,8 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 /**
- * Created by leonardoarcari on 09/06/16.
+ * Interface adapter for serializing/de-serializing abstract classes or interfaces. <p>
+ * Code courtesy of Maciek Makowski: <a href="http://stackoverflow.com/a/9550086">source</a>.
  */
 public final class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
     /**

@@ -10,7 +10,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * A <code>RMIConnection</code> is a class that behaves like <code>ServerConnection</code> implemented using RMI
+ * framework.
  */
 public class RMIConnection implements RMIProcessor, ServerConnection {
     private RMIProcessor clientRMIProcessor;
@@ -18,12 +19,23 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
     private Player me;
     private Runnable onDisconnect;
 
+    /**
+     * Initializes a <code>RMIConnection</code> exporting itself as a <code>UnicastRemoteObject</code> to allow remote
+     * calls from the client
+     * @param clientProcessor RMIProcessor to ask for messages processing after de-serializing them
+     * @throws RemoteException in case of RMI error
+     */
     public RMIConnection(RMIProcessor clientProcessor) throws RemoteException {
         this.clientRMIProcessor = clientProcessor;
         serverProcessor = WaitingHall.getInstance().getInfoProcessor();
         UnicastRemoteObject.exportObject(this, 0);
     }
 
+    /**
+     * Sends the input message to the client and invokes its <code>RMIProcessor</code> to process it (using remote
+     * method invocation)
+     * @param info Object to send
+     */
     @Override
     public void sendInfo(Object info) {
         try {
@@ -34,14 +46,15 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
         }
     }
 
+    /**
+     * Delegates the job to the game's infoProcessor
+     * @see server.ServerProcessor
+     * @param info Message/Information to handle
+     * @throws RemoteException in case of RMI error
+     */
     @Override
     public void processInfo(Object info) throws RemoteException{
         serverProcessor.processInfo(info);
-    }
-
-    @Override
-    public void setProcessor(InfoProcessor processor) throws RemoteException {
-        serverProcessor = processor;
     }
 
     @Override
@@ -49,6 +62,11 @@ public class RMIConnection implements RMIProcessor, ServerConnection {
         onDisconnect = runnable;
     }
 
+    /**
+     * Calls {@link #sendInfo(Object)} to send to the player return by {@link #getPlayer()} a copy of a game's model
+     * object that notified a change
+     * @param subject Game model object to send that changed its state
+     */
     @Override
     public void update(Subject subject) {
         sendInfo(subject);

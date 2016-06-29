@@ -19,7 +19,13 @@ import java.util.concurrent.TimeUnit;
  * knowledge of playing and disconnected clients, match's gameboard and turns' timers.<p>
  * Class is designed as a finite state machine, having stable states and moving through them in a consistent way thanks
  * to methods made available to the final user. This class does not implement the logic of the actions a player can do
- * but handles turns, market phases and game end.
+ * but handles turns, market phases and game end.<p>
+ * Instancing Game does not (un-wisely) allow to call methods of the class. For a full working <code>Game</code> you need
+ * to call the {@link #run()} method that will perform the final bindings pulling players from {@link WaitingHall} and
+ * instancing the game model.
+ * After that, a random player is chosen and first turn starts. Each turn has a timer associated implemented with a
+ * Scheduled thread. When the time is up the current player's turn is forced to end. After a full round market phase is
+ * started allowing players to buy items following a turn cycle similar to the one described above.
  */
 public class Game implements Runnable{
     private List<Player> players;
@@ -43,6 +49,10 @@ public class Game implements Runnable{
     public static final int EXPOSURE_TIMER = 100;
     public static final int BUY_ITEMS_TIMER = 100;
 
+    /**
+     * Construct a game with no links between towns. Use this for testing purpose if you are not planning to interact
+     * with the map topology.
+     */
     public Game() {
         processor = new ServerProcessor(this);
         marketPhase = false;
@@ -50,6 +60,10 @@ public class Game implements Runnable{
         timerGenerator = new ScheduledThreadPoolExecutor(1);
     }
 
+    /**
+     * Construct a game with links provided by {@link ConfigParser mapConfig}.
+     * @param mapConfig The topology of the game map
+     */
     public Game(ConfigParser mapConfig) {
         this.mapConfig = mapConfig;
         processor = new ServerProcessor(this);
@@ -57,18 +71,32 @@ public class Game implements Runnable{
         timerGenerator = new ScheduledThreadPoolExecutor(1);
     }
 
+    /**
+     * @return A reference to the game's GameBoard
+     */
     public GameBoard getGameBoard() {
         return gameBoard;
     }
 
+    /**
+     * @return Iterator of the live players of the Game (this does not include the disconnected ones)
+     */
     public Iterator<Player> playerIterator() {
         return players.iterator();
     }
 
+    /**
+     * @return A reference to the Game's {@link InfoProcessor}, implemented by {@link ServerProcessor}
+     */
     public InfoProcessor getProcessor() {
         return processor;
     }
 
+    /**
+     * Set up the Game. This method MUST be called in order to have a fully working game.<p>
+     * Players are pulled from {@link WaitingHall}, a new Game instance is created in the WaitingHall for new incoming
+     * clients. Then the model is instanced and sent to all players. First turn is run.
+     */
     @Override
     public void run() {
         players = WaitingHall.getInstance().pullPlayers();
@@ -108,6 +136,13 @@ public class Game implements Runnable{
         });
     }
 
+    /**
+     * Return the real instance of a {@link Player}. This is particularly useful as communicating involves lot of
+     * serialization/deserialization, thus player object lose their identity on the server. To the "real" model properties
+     * the local copy of player is required.
+     * @param player Player object to look the local instance for
+     * @return "retP" the local player instance for which <code>retP.equals(player)</code> is true.
+     */
     public Player getPlayerInstance(Player player) {
         int playerIndex;
         playerIndex = players.indexOf(player);
@@ -116,18 +151,36 @@ public class Game implements Runnable{
     }
 
     /* Turn synchronization */
+
+    /**
+     * Check for <code>player</code> if he has main actions left
+     * @param player Player to check for main actions availability
+     * @return true if it has main actions left, false otherwise
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn
+     */
     public boolean hasMoreMainActions(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             return !currentTurn.mainActionTokens.isEmpty();
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Add the possibility to <code>player</code> to do another main action. Subsequent calls to this method stack.
+     * @param player Player to add a new main action to
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn
+     */
     public void addMainActionToken(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             currentTurn.mainActionTokens.push(true);
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Remove a main action from <code>player</code> because, for example, he has done a main action.
+     * @param player Player to pop a main action token from
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn or he has
+     * no main actions left
+     */
     public void popMainActionToken(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             if (hasMoreMainActions(player)) {
@@ -138,12 +191,23 @@ public class Game implements Runnable{
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Checks whether <code>player</code> has already sent a fast action previously in the current turn.
+     * @param player Player to check for
+     * @return True if <code>player</code> has already done a fast action in current turn. False otherwise.
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn
+     */
     public boolean hasDoneFastAction(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             return currentTurn.doneFastAction;
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Registers that <code>player</code> has done a fast action and notify him for succeeding in it
+     * @param player Player to register fast action
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn
+     */
     public void fastActionDone(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             if (!hasDoneFastAction(player)) {
@@ -153,6 +217,16 @@ public class Game implements Runnable{
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Registers <code>player</code> has ended his turn. This method could be invoked either from a message by the
+     * player itself either from the turn timer thread. It acknowledges the player of turn ended and takes the next
+     * decision:<p>
+     *     - If the round is not over yet a new turn is run the respective client notified
+     *     - If the round is over market phase is started
+     *     - If the turn ending is the last of the last round, the end game routine is executed
+     * @param player Player is ending its turn
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s turn
+     */
     public void endTurn(Player player) throws NotYourTurnException {
         if (isAllowedToGame(player)) {
             if (!timer.isDone()) timer.cancel(true);
@@ -172,24 +246,41 @@ public class Game implements Runnable{
     }
 
     /* Actions' events methods */
+
+    /**
+     * Notifies <code>player</code> that a 'Draw a permit card' action is required.
+     * @param player Player to notify
+     */
     public void drawnPermitCard(Player player) {
         if (isAllowedToGame(player)) {
             player.getConnection().sendInfo(SyncAction.DRAW_PERMIT_BONUS);
         }
     }
 
+    /**
+     * Notifies <code>player</code> that a 'Redeem a permit card bonus again' bonus is available.
+     * @param player Player to notify
+     */
     public void redeemPermitCardAgain(Player player) {
         if (isAllowedToGame(player)) {
             player.getConnection().sendInfo(SyncAction.PICK_PERMIT_AGAIN);
         }
     }
 
+    /**
+     * Notifies <code>player</code> that a 'Redeem a town bonus' bonus is available.
+     * @param player Player to notify
+     */
     public void redeemATownBonus(Player player) {
         if (isAllowedToGame(player)) {
             player.getConnection().sendInfo(SyncAction.PICK_TOWN_BONUS);
         }
     }
 
+    /**
+     * Registers a player to be the first to have built 10 emporiums, hence the last round phase must begin.
+     * @param player Player who reached 10 emporiums built
+     */
     public void firstToTenEmporium(Player player) {
         lastTurn = true;
         gameBoard.moveVictoryPath(player, 3);
@@ -229,6 +320,16 @@ public class Game implements Runnable{
     }
 
     /* Market phase methods */
+
+    /**
+     * Registers a <code>player</code> to have exposed a (even empty) set of
+     * {@link core.gamemodel.modelinterface.SellableItem SellableItem} in the {@link core.gamemodel.Showcase Showcase}.
+     * If all the players are registered the market auction phase is started and the first potential buyer is notified.
+     * @param player Player who exposed a (even empty) set of SellableItem
+     * @throws NotYourTurnException in case at the time of invocation the game state is not 'market phase'
+     * @throws UnsupportedOperationException in case at the time of invocation all the players already registered their
+     * exposure actions
+     */
     public synchronized void sellableExposed(Player player) throws NotYourTurnException {
         if (isAllowedToMarket(player)) {
             if (market.playersReady < players.size()) {
@@ -242,6 +343,12 @@ public class Game implements Runnable{
         } else throw new NotYourTurnException();
     }
 
+    /**
+     * Registers a <code>player</code> to have sent a (even empty) buying action, thus its market turn is ended. A new
+     * player is notified that it's its turn or, in case every player has done a buying action, market phase ends.
+     * @param player Player who sent a (even empty) buying action
+     * @throws NotYourTurnException in case at the time of invocation it's not <code>player</code>'s market turn
+     */
     public synchronized void endAuctionOf(Player player) throws NotYourTurnException {
         if (isAllowedToMarket(player)) {
             timer.cancel(true);
@@ -275,7 +382,7 @@ public class Game implements Runnable{
         );
     }
 
-    public void endMarket() {
+    private void endMarket() {
         marketPhase = false;
         for (Player player : players) {
             player.getConnection().sendInfo(MarketSyncAction.END_MARKET_ACTION);
@@ -339,7 +446,7 @@ public class Game implements Runnable{
         final Stack<Boolean> mainActionTokens;
         boolean doneFastAction;
 
-        public Turn(Player currentPlayer) {
+        Turn(Player currentPlayer) {
             this.currentPlayer = currentPlayer;
             mainActionTokens = new Stack<>();
             mainActionTokens.push(true);
@@ -365,7 +472,7 @@ public class Game implements Runnable{
         Player currentPlayer;
         List<Player> auctionPlayers;
 
-        public MarketPhase() {
+        MarketPhase() {
             playersReady = 0;
             playerMarketIndex = 0;
         }
@@ -405,9 +512,7 @@ public class Game implements Runnable{
         }
 
         class EndMarketException extends Exception {
-            public EndMarketException() {
-            }
-
+            EndMarketException() {}
             public EndMarketException(String message) {
                 super(message);
             }
@@ -415,8 +520,8 @@ public class Game implements Runnable{
 
     }
 
-    public class NotYourTurnException extends Exception {
-        public NotYourTurnException() {
+    class NotYourTurnException extends Exception {
+        NotYourTurnException() {
             super("not your turn");
         }
 

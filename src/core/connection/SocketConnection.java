@@ -13,7 +13,8 @@ import java.net.Socket;
 import java.util.StringTokenizer;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * A <code>SocketConnection</code> is a {@link Connection Connection} implemented using a standard TCP socket connection
+ * where objects are serialized/de-serialized as JSON strings.
  */
 public class SocketConnection implements Connection, Runnable, Closeable {
     private Socket socket;
@@ -23,6 +24,13 @@ public class SocketConnection implements Connection, Runnable, Closeable {
     private Gson gson;
     private Runnable onDisconnect;
 
+    /**
+     * Initializes a <code>SocketConnection</code> and the JSON serializer/de-serializer in order to work fine with
+     * game model's interfaces.
+     * @param processor InfoProcessor to ask for messages processing after de-serializing them
+     * @param socket TCP socket
+     * @throws IOException in case of errors in the socket input stream
+     */
     public SocketConnection(InfoProcessor processor, Socket socket) throws IOException {
         this.processor = processor;
         this.socket = socket;
@@ -34,6 +42,10 @@ public class SocketConnection implements Connection, Runnable, Closeable {
         socketCommunicator = new SocketCommunicator(socket);
     }
 
+    /**
+     * Delegates the job to the <code>InfoProcessor</code> passed in the constructor
+     * @param info Object to send
+     */
     @Override
     public void sendInfo(Object info) {
         if (socketCommunicator != null) {
@@ -41,6 +53,11 @@ public class SocketConnection implements Connection, Runnable, Closeable {
         }
     }
 
+    /**
+     * Listen to the socket's input stream for incoming messages. JSON strings are read line by line and deserialized
+     * using the class whose name is contained at the beginning of the string. Upon success, the de-serialized object is
+     * sent to the InfoProcessor passed in the constructor.
+     */
     @Override
     public void run() {
         try {
@@ -91,6 +108,10 @@ public class SocketConnection implements Connection, Runnable, Closeable {
         onDisconnect = runnable;
     }
 
+    /**
+     * Closes the socket connection
+     * @throws IOException
+     */
     @Override
     public void close() throws IOException {
         socket.close();

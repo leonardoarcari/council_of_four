@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.rmi.RemoteException;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * Main class. Sets the server up by initialing the TCP and RMI connections services
  */
 public class Server {
     public static int MAX_PLAYERS = 4;

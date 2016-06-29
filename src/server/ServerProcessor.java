@@ -11,15 +11,25 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Matteo on 20/05/2016.
+ * A <code>ServerProcessor</code> class is a <code>InfoProcessor</code> implementation for the server to handle the part
+ * of the game logic of applying on the game model the actions performed by playing clients. *
  */
 public class ServerProcessor implements InfoProcessor {
     private Game game;
 
+    /**
+     * Initializes a <code>ServerProcessor</code> with the knowledge of the the {@link Game Game}.
+     * @param game Reference to the game instance
+     */
     public ServerProcessor(Game game) {
         this.game = game;
     }
 
+    /**
+     * Updates the game model according to the dynamic type of <code>info</code> ignoring it if it's not an expected type
+     * of message.
+     * @param info Message from a client to process and apply on the model
+     */
     @Override
     public synchronized void processInfo(Object info) {
         if (info instanceof NormalAction) {

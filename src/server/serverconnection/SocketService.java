@@ -10,9 +10,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Leonardo Arcari on 21/05/2016.
+ * A <code>SocketService</code> is a class that accept incoming TCP connections and sets a
+ * {@link core.connection.Connection Connection} up representing the playing client on the server.
  */
 public class SocketService implements Runnable {
+    /**
+     * Make a TCP passive open request and waits for incoming connections.
+     * On an incoming connection request a socket is allocated and wrapped in a
+     * {@link ServerSocketConnection ServerSocketConnection}, a newly allocated {@link Player Player} is set into it and
+     * added to the waiting players' list in {@link WaitingHall WaitingHall}.
+     *
+     * In case of any network error accepting a socket thread is shutdown and the socket server closed.
+     */
     @Override
     public void run() {
         ExecutorService executor = Executors.newCachedThreadPool();
