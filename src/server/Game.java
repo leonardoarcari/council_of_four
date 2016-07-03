@@ -384,10 +384,10 @@ public class Game implements Runnable{
 
     private void endMarket() {
         marketPhase = false;
+        gameBoard.getShowcase().returnItemsToOwner();
         for (Player player : players) {
             player.getConnection().sendInfo(MarketSyncAction.END_MARKET_ACTION);
         }
-        gameBoard.getShowcase().returnItemsToOwner();
         fillTurnPlayers();
         currentTurn = new Turn(turnPlayers.peek());
     }

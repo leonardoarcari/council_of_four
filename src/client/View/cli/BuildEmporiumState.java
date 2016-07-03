@@ -87,6 +87,7 @@ public class BuildEmporiumState implements CLIState{
         townOptions.keySet().iterator().forEachRemaining(integer ->
             System.out.println(integer + ") " + townOptions.get(integer).getTownName().toString())
         );
+        System.out.println("0) Go back");
         internalState = CHOOSE_TOWN;
     }
 

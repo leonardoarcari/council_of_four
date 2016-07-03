@@ -137,6 +137,7 @@ public class BuyPermitCardState implements CLIState {
             for (PoliticsCard card : validCards) {
                 System.out.println(index++ + ") " + card);
             }
+            System.out.println("0) Go back");
         }
         internalState = CHOOSE_POLITICS;
     }
@@ -154,8 +155,13 @@ public class BuyPermitCardState implements CLIState {
             while (tokenizer.hasMoreTokens()) {
                 int index;
                 try {
-                    index = Integer.valueOf(tokenizer.nextToken());
+                    try {
+                        index = Integer.valueOf(tokenizer.nextToken());
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException();
+                    }
                     if (indexes.contains(index)) throw new IllegalArgumentException();
+                    if (index < 0 || index > validCards.size()) throw new IllegalArgumentException();
                     chosenPolitics.add(validCards.get(index-1));
                     indexes.add(index);
                 } catch (NumberFormatException e) {

@@ -100,7 +100,8 @@ public class Showcase implements Subject, ShowcaseInterface, Serializable {
      * its original owner, acting as if he gained it.
      */
     public void returnItemsToOwner() {
-        for (int i = 0; i < onSaleItems.size(); i++) {
+        int onSaleItemsSize = onSaleItems.size();
+        for (int i = 0; i < onSaleItemsSize; i++) {
             OnSaleItem leftover = onSaleItems.remove(0);
             Player owner = players.get(players.indexOf(leftover.getOwner()));
             giveItemTo(owner, leftover);

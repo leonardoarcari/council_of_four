@@ -87,8 +87,6 @@ public class MarketExposureState implements CLIState {
     public void invalidateState() {
         validate = false;
         currentState = SELECTION_STATE;
-        //ExposeSellablesAction action = new ExposeSellablesAction((Player)CachedData.getInstance().getMe(), new ArrayList<>());
-        //CachedData.getInstance().getController().sendInfo(action);
     }
 
     private void fillSellableMap() {
@@ -149,7 +147,7 @@ public class MarketExposureState implements CLIState {
             cli.getController().stopTimer();
             ExposeSellablesAction action = new ExposeSellablesAction((Player)CachedData.getInstance().getMe(), new ArrayList<>(onSaleItemList));
             CachedData.getInstance().getController().sendInfo(action);
-            validate = false; //Phase ended, next time sellable items map has to be re-calculated
+            invalidateState(); //Phase ended, next time sellable items map has to be re-calculated
             cli.setCurrentState(cli.getWaitingState());
         }
     }

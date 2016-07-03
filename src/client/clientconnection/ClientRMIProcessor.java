@@ -22,9 +22,4 @@ public class ClientRMIProcessor implements RMIProcessor {
     public void processInfo(Object info) throws RemoteException {
         processor.processInfo(info);
     }
-
-    @Override
-    public void setProcessor(InfoProcessor processor) throws RemoteException {
-        this.processor = processor;
-    }
 }
