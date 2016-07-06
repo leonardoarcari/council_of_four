@@ -3,7 +3,7 @@ package client.View.gui;
 import javafx.beans.property.BooleanProperty;
 
 /**
- *  A <code>HasMainAction</code is a class that lets the user do a main action.
+ *  A <code>HasMainAction</code> is a class that lets the user do a main action.
  */
 public interface HasMainAction {
     /**

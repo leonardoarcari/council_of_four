@@ -3,7 +3,7 @@ package client.View.gui;
 import javafx.beans.property.BooleanProperty;
 
 /**
- * A <code>HasFastAction</code is a class that lets the user do a fast action.
+ * A <code>HasFastAction</code> is a class that lets the user do a fast action.
  */
 public interface HasFastAction {
     /**

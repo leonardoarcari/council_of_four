@@ -49,7 +49,7 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
 
     /**
      * Updates the set of Councilors to show
-     * @param councilors
+     * @param councilors List of Councilors to display in this
      */
     public void setPool(List<Councilor> councilors) {
         pool.clear();

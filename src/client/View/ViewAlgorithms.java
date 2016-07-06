@@ -68,7 +68,7 @@ public class ViewAlgorithms {
      * Each valid card is added to input <code>availablePermits</code> list.
      * @param townName TownName to look permit cards for
      * @param availablePermits Empty list to populate with permit cards for the input townName
-     * @return <code>true</code> if after searching, <code>availablePermits.size() > 0</code>, <code>false</code> otherwise.
+     * @return <code>true</code> if after searching, <code>availablePermits.size() &gt; 0</code>, <code>false</code> otherwise.
      */
     public static synchronized boolean checkAvailablePermits(TownName townName, List<PermitCard> availablePermits) {
         List<PermitCard> playerPermits = CachedData.getInstance().getMyPermitCards();

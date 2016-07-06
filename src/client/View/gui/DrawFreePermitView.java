@@ -78,7 +78,7 @@ public class DrawFreePermitView extends ScrollPane implements HasMainAction{
 
     /**
      * Registers the input EventHandler on clicks on shown <code>PermitCardView</code>s
-     * @param value
+     * @param value EventHandler to set on mouse click
      */
     public void addClickListener(EventHandler<? super MouseEvent> value) {
         permitCardViews.forEach(permitCardView -> permitCardView.setOnMouseClicked(value));

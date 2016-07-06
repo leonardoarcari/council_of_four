@@ -67,7 +67,7 @@ public class RedeemPermitView extends ScrollPane implements HasMainAction{
 
     /**
      * Registers <code>value</code> as EventHandler on mouse click on any <code>PermitCard</code> shown in this
-     * @param value
+     * @param value EventHandler to register on mouse click
      */
     public void addClickListener(EventHandler<? super MouseEvent> value) {
         permitCardViews.forEach(permitCardView -> permitCardView.setOnMouseClicked(value));
