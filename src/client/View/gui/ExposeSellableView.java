@@ -21,16 +21,19 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by leonardoarcari on 10/06/16.
+ * A <code>ExposeSellableView</code> lets the player pick which items to sell, to choose its price and expose it in the
+ * showcase.
  */
 public class ExposeSellableView extends GridPane {
     private HBox cardsBox;
     private Map<SellableItem, OnSaleItem> onSaleItems;
 
+    /**
+     * Initializes a <code>ExposeSellableView</code>
+     */
     public ExposeSellableView() {
         onSaleItems = new HashMap<>();
 
@@ -62,10 +65,17 @@ public class ExposeSellableView extends GridPane {
         });
     }
 
+    /**
+     * Adds a SellableItem to the list of potential items to expose
+     * @param item SellableItem to show
+     */
     public void addSellableItem(SellableItem item) {
         cardsBox.getChildren().add(buildSellableNode(item));
     }
 
+    /**
+     * Clears the list of potential <code>SellableItem</code>s to expose
+     */
     public void clearSellableItem() {
         cardsBox.getChildren().clear();
     }
@@ -111,10 +121,6 @@ public class ExposeSellableView extends GridPane {
 
         node.getChildren().addAll(iv, setPriceBox);
         return node;
-    }
-
-    public Iterator<OnSaleItem> onSaleItemIterator() {
-        return onSaleItems.values().iterator();
     }
 
     private Image retrieveImage(SellableItem item) {

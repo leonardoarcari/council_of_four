@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Leonardo Arcari on 06/06/2016.
+ * A <code>VictoryPathView</code> shows the model's welath path state, indicating the positions of all players on it
  */
 public class WealthPathView implements PathViewInterface {
     private double[] posX;
@@ -32,6 +32,9 @@ public class WealthPathView implements PathViewInterface {
     private PopOver popOver;
     private Effect effect;
 
+    /**
+     * Initializes a WealthPathView
+     */
     public WealthPathView() {
         posX = new double[21];
         players = FXCollections.observableArrayList();
@@ -41,10 +44,15 @@ public class WealthPathView implements PathViewInterface {
         initializePosX();
     }
 
+    @Override
     public void addListener(ListChangeListener<? super ObjectImageView> listener) {
         players.addListener(listener);
     }
 
+    /**
+     * Updates the wealth path model's state to show
+     * @param wealthPath new WealthPath object to show
+     */
     public void updateWealthPath(WealthPathInterface wealthPath) {
         players.clear();
         List<List<Player>> pathList = wealthPath.getPlayers();

@@ -24,7 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Leonardo Arcari on 08/06/2016.
+ * A <code>SelectPoliticsView</code> lets player to pick a set of <code>PoliticsCard</code>s to send in a
+ * {@link core.gamelogic.actions.BuyPermitCardAction BuyPermitCardAction} action.
  */
 public class SelectPoliticsView extends BorderPane implements HasMainAction {
     private HBox cardsBox;
@@ -35,6 +36,10 @@ public class SelectPoliticsView extends BorderPane implements HasMainAction {
     private RegionType type;
     private BooleanProperty turnEnded;
 
+    /**
+     * Initializes a <code>SelectPoliticsView</code> with the given input <code>RegionType</code>
+     * @param type <code>RegionType</code> of the region whose balcony will be satisfied by the picked cards
+     */
     public SelectPoliticsView(RegionType type) {
         this.type = type;
 
@@ -65,6 +70,10 @@ public class SelectPoliticsView extends BorderPane implements HasMainAction {
         BorderPane.setAlignment(selectedNo, Pos.CENTER);
     }
 
+    /**
+     * Updates the <code>PoliticsCard</code>s shown in this with the cards returned by <code>politicsCardIterator</code>
+     * @param politicsCardIterator Iterator of the politics cards to display and let the user to pick
+     */
     public void updatePoliticsCards(Iterator<PoliticsCard> politicsCardIterator) {
         cardsBox.getChildren().clear();
         Button back = new Button("Back");

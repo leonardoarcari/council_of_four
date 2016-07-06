@@ -3,11 +3,11 @@ package core.gamemodel;
 import core.Observer;
 import core.Player;
 import core.Subject;
-import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.AbstractBonusFactory;
 import core.gamelogic.BonusFactory;
 import core.gamelogic.BonusOwner;
 import core.gamemodel.bonus.Bonus;
+import core.gamemodel.modelinterface.GameBoardInterface;
 import server.serverconnection.ServerConnection;
 
 import java.io.Serializable;

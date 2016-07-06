@@ -12,12 +12,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 /**
- * Created by Leonardo Arcari on 11/06/2016.
+ * A <code>ChatView</code> displays a list of messages exchanged between players and a input text field to send a
+ * message.
  */
 public class ChatView extends GridPane {
     private TextArea textArea;
     private TextField textField;
 
+    /**
+     * Initializes a ChatView
+     */
     public ChatView() {
         textArea = new TextArea();
         textArea.setEditable(false);
@@ -37,6 +41,10 @@ public class ChatView extends GridPane {
         getChildren().addAll(textArea, textField);
     }
 
+    /**
+     * Adds a message received from server to the list of messages
+     * @param message String message to append to the list
+     */
     public void append(String message) {
         textArea.appendText("\n" + message);
     }

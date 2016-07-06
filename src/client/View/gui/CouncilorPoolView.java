@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 /**
- * Created by Matteo on 05/06/16.
+ * A <code>CouncilorPoolView</code> shows the state of the set of councilors not in any balcony.
  */
 public class CouncilorPoolView implements HasMainAction, HasFastAction{
     private ScrollPane councilorPoolNode;
@@ -36,6 +36,9 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
     private BooleanProperty mainAction;
     private BooleanProperty fastAction;
 
+    /**
+     * Initializes a CouncilorPoolView
+     */
     public CouncilorPoolView() {
         pool = FXCollections.observableArrayList();
         mainAction = null;
@@ -44,6 +47,10 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
         setUpPool();
     }
 
+    /**
+     * Updates the set of Councilors to show
+     * @param councilors
+     */
     public void setPool(List<Councilor> councilors) {
         pool.clear();
         for(Councilor councilor : councilors) {
@@ -51,7 +58,7 @@ public class CouncilorPoolView implements HasMainAction, HasFastAction{
         }
     }
 
-    public Node getFlowNode() {
+    Node getFlowNode() {
         return councilorPoolNode;
     }
 

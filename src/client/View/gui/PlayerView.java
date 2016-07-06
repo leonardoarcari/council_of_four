@@ -1,6 +1,5 @@
 package client.View.gui;
 
-import client.CachedData;
 import core.gamemodel.*;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.geometry.HPos;
@@ -29,7 +28,9 @@ import org.controlsfx.control.PopOver;
 import java.util.*;
 
 /**
- * Created by Leonardo Arcari on 05/06/2016.
+ * A <code>PlayerView</code> shows the state of model's {@link core.Player Player} representing this client.
+ * This displays player's username, nickname, color, permitcards, politicscards, servants, royalcards and other bonus
+ * cards.
  */
 public class PlayerView {
     private VBox playerNode;
@@ -55,8 +56,10 @@ public class PlayerView {
 
     private Map<String,Image> cardImages;
 
+    /**
+     * Initializes a PlayerView
+     */
     public PlayerView() {
-
         permitScroll = new ScrollPane();
         permitScroll.setPrefViewportWidth(200);
         permitBox = new HBox(5);
@@ -255,10 +258,16 @@ public class PlayerView {
         return playerNode;
     }
 
+    /**
+     * @return A reference to the <code>PlayerInterface</code> instance representing this playing client
+     */
     public PlayerInterface getPlayer() {
         return playerInterface;
     }
 
+    /**
+     * @param player <code>PlayerInterface</code> to show all details of
+     */
     public void setPlayer(PlayerInterface player) {
         if (player != null) {
             playerInterface = player;

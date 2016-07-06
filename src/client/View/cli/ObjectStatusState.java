@@ -2,7 +2,8 @@ package client.View.cli;
 
 import client.CachedData;
 import core.Player;
-import core.gamemodel.*;
+import core.gamemodel.Councilor;
+import core.gamemodel.RegionType;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.RegionInterface;
 import core.gamemodel.modelinterface.TownInterface;

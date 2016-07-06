@@ -27,13 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Leonardo Arcari on 11/06/2016.
+ * A <code>BuySellableView</code> shows the state of a model's {@link core.gamemodel.Showcase ShowCase}.
  */
 public class BuySellableView extends GridPane {
     private HBox cardsBox;
     private List<OnSaleItem> itemToBuy;
     private IntegerProperty coinsSpentProperty;
 
+    /**
+     * Initializes a BuySellableView
+     */
     public BuySellableView() {
         itemToBuy = new ArrayList<>();
         coinsSpentProperty = new SimpleIntegerProperty(0);
@@ -66,10 +69,17 @@ public class BuySellableView extends GridPane {
         });
     }
 
+    /**
+     * Show an additional <code>OnSaleItem</code>
+     * @param item OnSaleItem to add to the showing list
+     */
     public void addOnSaleItem(OnSaleItem item) {
         cardsBox.getChildren().add(buildOnSaleNode(item));
     }
 
+    /**
+     * Clears the showing list of OnSaleItems
+     */
     public void clearOnSaleItem() {
         cardsBox.getChildren().clear();
     }

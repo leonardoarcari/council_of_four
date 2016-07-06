@@ -4,7 +4,6 @@ import client.CachedData;
 import client.ControllerUI;
 import client.View.UserInterface;
 import core.Player;
-import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.actions.ChatAction;
 import core.gamelogic.actions.PlayerInfoAction;
 import core.gamelogic.actions.PodiumAction;

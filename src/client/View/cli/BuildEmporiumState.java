@@ -9,7 +9,10 @@ import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.PlayerInterface;
 import core.gamemodel.modelinterface.TownInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The class is the state where the player falls when he wants to build an emporium

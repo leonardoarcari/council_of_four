@@ -1,6 +1,5 @@
 package client.View.gui;
 
-import com.sun.istack.internal.Nullable;
 import core.gamemodel.PermitCard;
 import core.gamemodel.bonus.Bonus;
 import javafx.embed.swing.SwingFXUtils;
@@ -16,17 +15,24 @@ import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
 /**
- * Created by Matteo on 06/06/16.
+ * A <code>PermitCardView</code> is a <code>ObjectImageView</code> showing the state of model's
+ * {@link PermitCard PermitCard}, displaying bonuses and names of the towns you can build an emporium with the shown card
  */
 public class PermitCardView extends ObjectImageView {
     private ImageView myView;
     private PermitCard permitCard;
     private PopOver myPopover;
 
+    /**
+     * Initializes a PermitCardView
+     * @param image default background image
+     * @param leftX Normalized left x coordinate of this in case it's added to an anchor pane
+     * @param topY Normalized top y coordinate of this in case it's added to an anchor pane
+     * @param width Normalized width of this
+     */
     public PermitCardView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         myView = new ImageView();
-
         setFirstPopOver();
     }
 
@@ -39,6 +45,10 @@ public class PermitCardView extends ObjectImageView {
         myPopover.setContentNode(myView);
     }
 
+    /**
+     * Registers the <code>PermitCard</code> to show in this
+     * @param permitCard new PermitCard model's object to display
+     */
     public void setPermitCard(PermitCard permitCard) {
         this.permitCard = permitCard;
         if(permitCard == null) {
@@ -109,7 +119,7 @@ public class PermitCardView extends ObjectImageView {
                 count * 60 - (count - 1) * 5) / 2;
     }
 
-    public PopOver getMyPopover() {
+    PopOver getMyPopover() {
         return myPopover;
     }
 

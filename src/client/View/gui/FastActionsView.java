@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Matteo on 06/06/16.
+ * A <code>FastActionsView</code> shows a set of buttons the players can interact with to do a fast action.
  */
 public class FastActionsView implements HasFastAction{
     private VBox actionPane;
@@ -36,7 +36,6 @@ public class FastActionsView implements HasFastAction{
     private List<Button> actionButton;
     private Button hireServant;
     private Button changePermit;
-    private Button electCouncilor;
     private Button anotherAction;
 
     private BooleanProperty enoughCoins;
@@ -49,6 +48,9 @@ public class FastActionsView implements HasFastAction{
     private Button hillsRegion;
     private Button mountainsRegion;
 
+    /**
+     * Initializes a FastActionsView
+     */
     public FastActionsView() {
         actionPane = new VBox();
         actionNode = new VBox(20);
@@ -162,10 +164,19 @@ public class FastActionsView implements HasFastAction{
         });
     }
 
+    /**
+     * Sets whether the player has enough coins for a fast action or not
+     * @param status <code>True</code> if has more or equals than 3 coins, <code>false</code> otherwise
+     */
     public void updateEnoughCoinProperty(Boolean status) {
         enoughCoins.set(status);
     }
 
+    /**
+     * Sets whether the player has enough servants for a fast action or not
+     * @param moreThan1 <code>True</code> if has more than 1 servants, <code>False</code> otherwise
+     * @param moreThan3 <code>True</code> if has more than 3 servants, <code>False</code> otherwise
+     */
     public void updateEnoughServantsProperty(Boolean moreThan1, Boolean moreThan3) {
         enghServantsPermit.set(moreThan1);
         enghServantsActionAgain.setValue(moreThan3);

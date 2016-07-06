@@ -1,9 +1,5 @@
 package client.View.gui;
 
-import client.CachedData;
-import core.Player;
-import core.gamelogic.actions.Action;
-import core.gamelogic.actions.TakePermitBonusAction;
 import core.gamemodel.modelinterface.PlayerInterface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Leonardo Arcari on 07/06/2016.
+ * A <code>RedeemPermitView</code> lets player choose a <code>PermitCard</code> he owns to redeem its bonuses another
+ * time.
  */
 public class RedeemPermitView extends ScrollPane implements HasMainAction{
     private List<PermitCardView> permitCardViews;
@@ -29,6 +26,10 @@ public class RedeemPermitView extends ScrollPane implements HasMainAction{
     private HBox box;
     private BooleanProperty turnEnded;
 
+    /**
+     * Initializes a RedeemPermitView
+     * @param player Reference to the <code>player</code> to choose permit cards from
+     */
     public RedeemPermitView(PlayerInterface player) {
         box = new HBox(20);
         permitCardViews = new ArrayList<>();
@@ -64,6 +65,10 @@ public class RedeemPermitView extends ScrollPane implements HasMainAction{
         setFitToHeight(true);
     }
 
+    /**
+     * Registers <code>value</code> as EventHandler on mouse click on any <code>PermitCard</code> shown in this
+     * @param value
+     */
     public void addClickListener(EventHandler<? super MouseEvent> value) {
         permitCardViews.forEach(permitCardView -> permitCardView.setOnMouseClicked(value));
     }

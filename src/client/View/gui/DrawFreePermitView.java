@@ -17,13 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Matteo on 16/06/16.
+ * A <code>DrawFreePermitView</code> lets the player choose a permit card from those revealed on the game-board as a
+ * consequence of a {@link core.gamemodel.bonus.DrawPermitCard DrawPermitCard bonus}.
  */
 public class DrawFreePermitView extends ScrollPane implements HasMainAction{
     private List<PermitCardView> permitCardViews;
     private Effect dropShadow;
     private BooleanProperty turnEnded;
 
+    /**
+     * Initializes a DrawFreePermitView
+     */
     public DrawFreePermitView() {
         HBox box = new HBox(20);
         permitCardViews = new ArrayList<>();
@@ -72,6 +76,10 @@ public class DrawFreePermitView extends ScrollPane implements HasMainAction{
         permitCardViews.add(view);
     }
 
+    /**
+     * Registers the input EventHandler on clicks on shown <code>PermitCardView</code>s
+     * @param value
+     */
     public void addClickListener(EventHandler<? super MouseEvent> value) {
         permitCardViews.forEach(permitCardView -> permitCardView.setOnMouseClicked(value));
     }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Matteo on 13/06/16.
+ * A <code>VictoryPathView</code> shows the model's victory path state, indicating the positions of all players on it
  */
 public class VictoryPathView implements PathViewInterface {
     private double[] posX;
@@ -32,6 +32,9 @@ public class VictoryPathView implements PathViewInterface {
     private PopOver popOver;
     private Effect effect;
 
+    /**
+     * Initializes a VictoryPathView
+     */
     public VictoryPathView() {
         posX = new double[28];
         posY = new double[24];
@@ -48,6 +51,10 @@ public class VictoryPathView implements PathViewInterface {
         players.addListener(listener);
     }
 
+    /**
+     * Updates the victory path model's state to show
+     * @param victoryPath new VictoryPathInterface object to show
+     */
     public void updateVictoryPath(VictoryPathInterface victoryPath) {
         players.clear();
         List<List<Player>> pathList = victoryPath.getPlayers();

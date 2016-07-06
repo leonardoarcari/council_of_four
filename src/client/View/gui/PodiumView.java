@@ -13,19 +13,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Matteo on 18/06/16.
+ * A <code>PodiumView</code> displays the podium at the end of the game. The podium shows the best players of the game
+ * and their achievements in this match. Thus, victory points, position on nobility path and on wealth path are
+ * represented.
  */
 public class PodiumView extends ScrollPane {
     private Map<Integer, List<Player>> podium;
     private VBox podiumShow;
 
+    /**
+     * Initializes <code>PodiumView</code> with the input podium
+     * @param podium Map representing the podium. Keys are the positions on the podium and values are lists of players
+     * at <code>'key'</code> position.
+     */
     public PodiumView(Map<Integer, List<Player>> podium) {
         this.podium = podium;
         podiumShow = new VBox(5);

@@ -4,7 +4,8 @@ import core.Player;
 import core.gamemodel.bonus.Bonus;
 import core.gamemodel.modelinterface.NobilityPathInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the Nobility path object of the game.

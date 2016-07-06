@@ -3,7 +3,8 @@ package core.gamemodel;
 import core.Player;
 import core.gamemodel.modelinterface.VictoryPathInterface;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * This class is the Victory path object of the game.

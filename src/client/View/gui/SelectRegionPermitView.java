@@ -12,7 +12,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
@@ -22,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Matteo on 10/06/16.
+ * A <code>SelectRegionPermitView</code> lets the user pick a permit card from a region after satisfying the region's
+ * balcony
  */
 public class SelectRegionPermitView extends ScrollPane implements HasMainAction{
     private List<PermitCardView> permitCardViews;
@@ -31,6 +31,11 @@ public class SelectRegionPermitView extends ScrollPane implements HasMainAction{
     private RegionInterface region;
     private BooleanProperty turnEnded;
 
+    /**
+     * Initializes a SelectRegionPermitView
+     * @param regionType <code>RegionType</code> of the region to pick permit cards from
+     * @param politicsSelected A list of the selected PoliticsCards to satisfy the region's balcony
+     */
     public SelectRegionPermitView(RegionType regionType, List<PoliticsCard> politicsSelected) {
         box = new HBox(20);
         permitCardViews = new ArrayList<>();

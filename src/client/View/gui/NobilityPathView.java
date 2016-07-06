@@ -27,7 +27,8 @@ import java.util.List;
 
 
 /**
- * Created by Matteo on 02/06/16.
+ * A <code>NobilityPathView</code> shows the model's nobility path state, indicating available bonus on each cell and
+ * the positions of all players
  */
 public class NobilityPathView extends ObjectImageView implements PathViewInterface {
     private double[] posX;
@@ -37,6 +38,13 @@ public class NobilityPathView extends ObjectImageView implements PathViewInterfa
     private PopOver popOver;
     private ObservableList<ObjectImageView> players;
 
+    /**
+     * Initializes a NobilityPathView
+     * @param image default background image
+     * @param leftX Normalized left x coordinate of this in case it's added to an anchor pane
+     * @param topY Normalized top y coordinate of this in case it's added to an anchor pane
+     * @param width Normalized width of this
+     */
     public NobilityPathView(Image image, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         posX = new double[21];
@@ -46,6 +54,10 @@ public class NobilityPathView extends ObjectImageView implements PathViewInterfa
         initializePosX();
     }
 
+    /**
+     * Updates the nobility path model's state to show
+     * @param nobilityPath new NobilityPath object to show
+     */
     public void updateNobilityPath(NobilityPathInterface nobilityPath) {
         if(!alreadyDrawn) {
             this.setImage(drawPath(nobilityPath));
@@ -128,6 +140,7 @@ public class NobilityPathView extends ObjectImageView implements PathViewInterfa
         players.addAll(holders);
     }
 
+    @Override
     public void addListener(ListChangeListener<? super ObjectImageView> listener) {
         players.addListener(listener);
     }

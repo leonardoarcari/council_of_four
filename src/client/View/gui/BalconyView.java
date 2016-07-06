@@ -36,7 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Matteo on 05/06/16.
+ * A <code>BalconyView</code> is a <code>ObjectImageView</code> to show a model
+ * {@link core.gamemodel.CouncilorsBalcony Balcony} of councilors.
  */
 public class BalconyView extends ObjectImageView implements HasMainAction, HasFastAction {
     private ObservableList<Councilor> councilors;
@@ -51,6 +52,14 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
     private BooleanProperty nullRegionPermitCards;
     private ObservableList<PoliticsCard> availablePoliticsCards;
 
+    /**
+     * Initializes a <code>BalconyView</code> with an empty set of councilors.
+     * @param image Default background image
+     * @param balconyRegion region of the model's balcony associated to this BalconyView
+     * @param leftX Normalized left x coordinate of this in case it's added to an anchor pane
+     * @param topY Normalized top y coordinate of this in case it's added to an anchor pane
+     * @param width Normalized width of this
+     */
     public BalconyView(Image image, RegionType balconyRegion, double leftX, double topY, double width) {
         super(image, leftX, topY, width);
         this.balconyRegion = balconyRegion;
@@ -78,6 +87,10 @@ public class BalconyView extends ObjectImageView implements HasMainAction, HasFa
         this.councilors.addAll(councilors);
     }
 
+    /**
+     * Updates the BalconyInterface this represents
+     * @param balcony Model's balcony to represent
+     */
     public void setBalcony(BalconyInterface balcony) {
         List<Councilor> councilors = new ArrayList<>();
         Iterator<Councilor> councilorIterator = balcony.councilorsIterator();

@@ -4,13 +4,14 @@ import core.gamemodel.PermitCard;
 import core.gamemodel.RegionType;
 import core.gamemodel.TownType;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by leonardoarcari on 10/06/16.
+ * A <code>ImageMaps</code> is a singleton class acting as a cache of Image references of image files. This way
+ * files are loaded in RAM only once and made accessible here.
+ * Following methods provide access to Image references of the whole client.
  */
 public class ImagesMaps {
     private volatile static ImagesMaps instance = null;

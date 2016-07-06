@@ -5,7 +5,10 @@ import client.View.ViewAlgorithms;
 import core.Player;
 import core.gamelogic.GraphsAlgorithms;
 import core.gamelogic.actions.BuildEmpoKingAction;
-import core.gamemodel.*;
+import core.gamemodel.Councilor;
+import core.gamemodel.PoliticsCard;
+import core.gamemodel.RegionType;
+import core.gamemodel.TownName;
 import core.gamemodel.modelinterface.BalconyInterface;
 import core.gamemodel.modelinterface.TownInterface;
 

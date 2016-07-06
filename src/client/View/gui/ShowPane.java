@@ -17,7 +17,10 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
- * Created by Leonardo Arcari on 07/06/2016.
+ * A <code>ShowPane</code> is a full window pane for multiple purposes. Provides convenient methods to change the displayed
+ * title and the showed content, that can be any JavaFX node. It's useful to let the user focus on a choice,
+ * without being distracted by other GUI controls.
+ * Due to its versatility, and being one and only in the GUI, it's implemented as a Singleton
  */
 public class ShowPane{
     private volatile static ShowPane instance = null;
@@ -39,13 +42,18 @@ public class ShowPane{
         return instance;
     }
 
+    /**
+     * Registers JavaFX Application main scene and Parent that will be hidden on this ShowPane showing. This way
+     * hiding this, old Parent is restored
+     * @param scene Main JavaFX Application scene
+     * @param previous Parent to restore on this hiding
+     */
     public void setSceneAndParent(Scene scene, Parent previous) {
         this.scene = scene;
         this.previous = previous;
     }
 
     private ShowPane() {
-
         pane = new GridPane();
         RowConstraints rc0 = new RowConstraints();
         rc0.setPercentHeight(20);
@@ -71,10 +79,18 @@ public class ShowPane{
         pane.setGridLinesVisible(true);
     }
 
+    /**
+     * Sets ShowPane title
+     * @param title Title string to display at the top of the ShowPane
+     */
     public void setTitle(String title) {
         this.title.setText(title);
     }
 
+    /**
+     * Sets the displayed content in the middle of the ShowCase
+     * @param content Node to display in this ShowCase
+     */
     public void setContent(Node content) {
         this.content = content;
         pane.getChildren().clear();
@@ -82,6 +98,9 @@ public class ShowPane{
         pane.add(this.content, 0, 1);
     }
 
+    /**
+     * Show this ShowPane
+     */
     public void show() {
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.25), this.previous);
         fadeOut.setFromValue(1.0);
@@ -97,6 +116,9 @@ public class ShowPane{
         crossFade.play();
     }
 
+    /**
+     * Hide this ShowPane and restore previous window's content
+     */
     public void hide() {
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.25), pane);
         fadeOut.setFromValue(1.0);

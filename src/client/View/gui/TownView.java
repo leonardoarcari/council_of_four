@@ -34,7 +34,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Leonardo Arcari on 03/06/2016.
+ * A <code>TownView</code> shows the model's state of a {@link core.gamemodel.Town Town} by displaying the built-in
+ * emporiums
  */
 public class TownView extends ObjectImageView implements HasMainAction {
     private ObservableList<Player> emporiums;
@@ -53,6 +54,15 @@ public class TownView extends ObjectImageView implements HasMainAction {
     private BooleanProperty servantsAvailable;
     private BooleanProperty alreadyBuilt;
 
+    /**
+     * Initiliazes a <code>TownView</code>
+     * @param townName Name of the Town this TownView represents
+     * @param regionType RegionType of the region containing the Town this TownView represents
+     * @param leftX Normalized left x coordinate of this in case it's added to an anchor pane
+     * @param topY Normalized top y coordinate of this in case it's added to an anchor pane
+     * @param width Normalized width of this
+     * @param image Town's Image
+     */
     public TownView(TownName townName, RegionType regionType, double leftX, double topY, double width, Image image) {
         super(image, leftX, topY, width);
         this.townName = townName;
@@ -77,6 +87,9 @@ public class TownView extends ObjectImageView implements HasMainAction {
         setUpPopOver();
     }
 
+    /**
+     * @param town <code>TownInterface</code> to show the state of
+     */
     public void update(TownInterface town) {
         if (this.town == null) this.town = town;
         List<Player> emporiums = new ArrayList<>();
@@ -92,6 +105,9 @@ public class TownView extends ObjectImageView implements HasMainAction {
         this.emporiums.addAll(emporiums);
     }
 
+    /**
+     * @return The TownName of the Town this TownView represents
+     */
     public TownName getTownName() {
         return townName;
     }
@@ -173,11 +189,18 @@ public class TownView extends ObjectImageView implements HasMainAction {
         return townPopOver;
     }
 
+    /**
+     * Sets the number of servants the player owns, enabling or disabling the option to build an emporium
+     * @param servantsNumber Number of servants
+     */
     public void setServantsAvailable(int servantsNumber) {
         if(emporiums.size() <= servantsNumber) servantsAvailable.setValue(true);
         else servantsAvailable.setValue(false);
     }
 
+    /**
+     * @return <code>True</code> if Player owns enough servants to build an emporium. <code>False</code> otherwise.
+     */
     public boolean areServantsAvailable() {
         return servantsAvailable.getValue();
     }

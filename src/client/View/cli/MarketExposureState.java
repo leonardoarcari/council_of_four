@@ -8,7 +8,10 @@ import core.gamemodel.PoliticsCard;
 import core.gamemodel.Servant;
 import core.gamemodel.modelinterface.SellableItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is the exposure phase of the market. A player can see the items he can sell

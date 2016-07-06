@@ -4,7 +4,6 @@ import client.CachedData;
 import client.ControllerUI;
 import client.View.UserInterface;
 import core.Player;
-import core.gamemodel.modelinterface.GameBoardInterface;
 import core.gamelogic.actions.*;
 import core.gamemodel.*;
 import core.gamemodel.Region;
@@ -36,7 +35,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * Created by Leonardo Arcari on 31/05/2016.
+ * A <code>GUI</code> is the main class for the graphical <code>UserInterface</code> implemented for this game. It's the
+ * starting point on GUI initialization and it's responsible of initializing all the other graphical controls.
  */
 public class GUI extends Application implements UserInterface {
     private ClassLoader classLoader;

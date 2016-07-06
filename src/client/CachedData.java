@@ -9,10 +9,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.text.Font;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 /**
  * <code>CacheData</code> is a singleton class for utility purposes. Due to a lack of wisdom in designing user interface,
