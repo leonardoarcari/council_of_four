@@ -7,10 +7,12 @@ import core.gamelogic.actions.PodiumAction;
 import core.gamemodel.modelinterface.*;
 
 /**
- * Created by Leonardo Arcari on 16/06/2016.
+ * A <code>UserInterface</code> is responsible to show to the client's user the state of the game, letting him/her to
+ * interact with it. The following methods are common to a user interface of Council of Four that reacts to server's
+ * messages and new model states, updating accordingly.
  */
 public interface UserInterface {
-    //Update methods
+
     void updateBalcony(BalconyInterface balcony);
 
     void updateNobilityPath(NobilityPathInterface nobility);

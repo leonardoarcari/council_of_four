@@ -11,12 +11,21 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * A <code>RMIConnection</code> is a class that behaves like <code>Connection</code> implemented using RMI
+ * framework.
  */
 public class RMIConnection implements Connection {
     private RMIProcessor clientRmiProcessor;
     private RMIProcessor serverRmiProcessor;
 
+    /**
+     * Initializes a <code>RMIConnection</code> on the client connecting to an already online server. The current
+     * implementation requires a {@link server.Server Server} running on <code>localhost</code> having RMI Registry
+     * publishing a {@link RMIServiceInterface RMIServiceInterface} object bound.
+     * @param clientProcessor The client's InfoProcessor
+     * @throws RemoteException in case of RMI error
+     * @throws NotBoundException in case of RMI binding error
+     */
     public RMIConnection(InfoProcessor clientProcessor) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
         RMIServiceInterface serverService = (RMIServiceInterface) registry.lookup("rmi_server_service");
@@ -34,7 +43,5 @@ public class RMIConnection implements Connection {
     }
 
     @Override
-    public void setOnDisconnection(Runnable runnable) {
-
-    }
+    public void setOnDisconnection(Runnable runnable) {    }
 }

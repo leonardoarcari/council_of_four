@@ -4,7 +4,10 @@ import client.View.gui.GUI;
 import javafx.application.Application;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * Main method of Client application. You can run it from your console by typing<p>
+ * <code>binaryName -ui {cli | gui}</code><p>
+ * <b>cli</b> option will run the client using a Command Line Interface<p>
+ * <b>gui</b> option will run the client showing a Graphical User Interface
  */
 public class Client {
     public static final String uiOption = "-ui";

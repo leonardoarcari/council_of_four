@@ -9,15 +9,28 @@ import core.gamemodel.modelinterface.*;
 
 
 /**
- * Created by Leonardo Arcari on 03/06/2016.
+ * A <code>UIInfoProcessor</code> is a <code>InfoProcessor</code> implementation on the client to handle the server's
+ * messages processing to apply their informative content on the user interface. This concerns the game's model objects
+ * being sent to update the user interface accordingly to their new state, or synchronization messages to inform the
+ * client on some game event.
  */
 public class UInfoProcessor implements InfoProcessor {
     private UserInterface userInterface;
 
+    /**
+     * Initializes a <code>UInfoProcessor</code> to process server's messages and applying them on the <code>userInterface
+     * </code> chosen by the user
+     * @param userInterface userInterface implementation to update accordingly to server's messages
+     */
     public UInfoProcessor(UserInterface userInterface) {
         this.userInterface = userInterface;
     }
 
+    /**
+     * Updates the <code>UserInterface. Info</code> is processed depending on its dynamic type mostly delegating the task
+     * to <code>UserInterface</code>'s methods.
+     * @param info Message/Information to handle
+     */
     @Override
     public synchronized void processInfo(Object info) {
         if (info instanceof TownInterface) {

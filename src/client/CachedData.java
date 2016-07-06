@@ -15,7 +15,9 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by leonardoarcari on 09/06/16.
+ * <code>CacheData</code> is a singleton class for utility purposes. Due to a lack of wisdom in designing user interface,
+ * often there were problems on having references to objects sent by the server. This class acts as an aggregator of
+ * references exposing setters and getters.
  */
 public class CachedData {
     private volatile static CachedData instance = null;
@@ -43,6 +45,9 @@ public class CachedData {
 
     private Font customFont;
 
+    /**
+     * @return the only instance of <code>CachedData</code>, initializing it it's the first time this method is invoked.
+     */
     public static CachedData getInstance() {
         if (instance == null) {
             synchronized (CachedData.class) {

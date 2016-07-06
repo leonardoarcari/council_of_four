@@ -22,7 +22,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Leonardo Arcari on 20/05/2016.
+ * A <code>ControllerUI</code> is a class useful for <code>UserInterface</code> for handling the connection establishment,
+ * timers run and stop and sending messages to the server.
  */
 public class ControllerUI {
     private Connection connection;
@@ -34,6 +35,11 @@ public class ControllerUI {
 
     private int timeLeft;
 
+    /**
+     * Initializes a <code>ControllerUI</code> by creating a new <code>UIInfoProcessor</code> for the input <code>
+     * UserInterface</code>.
+     * @param userInterface UserInterface reference to create a ControllerUI for.
+     */
     public ControllerUI(UserInterface userInterface) {
         this.userInterface = userInterface;
         processor = new UInfoProcessor(userInterface);
@@ -42,6 +48,9 @@ public class ControllerUI {
         timeLeft = -1;
     }
 
+    /**
+     * Establishes a RMIConnection to the game server
+     */
     public void rmiConnection() {
         try {
             connection = new RMIConnection(processor);
@@ -50,6 +59,10 @@ public class ControllerUI {
         }
     }
 
+    /**
+     * Establishes a standard TCP Socket connection to the game server running on <code>localhost</code> on
+     * <code>2828</code> port.
+     */
     public void socketConnection() {
         try {
             Socket socket = new Socket("127.0.0.1", 2828);
@@ -69,6 +82,10 @@ public class ControllerUI {
         }
     }
 
+    /**
+     * Schedules a routing to be run every second. This is the turn timer that updates the userInterface
+     * @param time Timer time in seconds
+     */
     public void runTurnTimer(int time) {
         timeLeft = time;
         timer = executorService.scheduleAtFixedRate(
@@ -87,6 +104,12 @@ public class ControllerUI {
         sendInfo(new EndTurnAction((Player) CachedData.getInstance().getMe()));
     }
 
+    /**
+     * Schedules a routing to be run every second. This is the turn timer that updates the userInterface
+     * @param time Timer time in seconds
+     * @param exposure <code>true</code> if the timer starting is for the exposure phase of the market, <code>false</code>
+     * if for the auction phase
+     */
     public void runMarketTimer(int time, boolean exposure) {
         timeLeft = time;
         timer = executorService.scheduleAtFixedRate(
@@ -111,15 +134,27 @@ public class ControllerUI {
         }
     }
 
+    /**
+     * Stops a timer previously started
+     */
     public void stopTimer() {
         timer.cancel(true);
     }
 
+    /**
+     * Executes final cleanups before closing the application
+     */
     public void quit() {
         closeTask.run();
     }
 
+    /**
+     * Sends in an independent thread <code>info</code> to the server over a previously established connection. Does
+     * nothing if no connection is available
+     * @param info Information to send to the server.
+     */
     public void sendInfo(Object info) {
-        new Thread(() -> connection.sendInfo(info)).start();
+        if (connection != null)
+            new Thread(() -> connection.sendInfo(info)).start();
     }
 }
