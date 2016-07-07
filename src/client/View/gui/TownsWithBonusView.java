@@ -31,7 +31,7 @@ import org.controlsfx.control.PopOver;
 import java.util.*;
 
 /**
- * Created by Matteo on 11/06/16.
+ * This class contains all the images of the towns and acts as a parent for their bonuses objects.
  */
 public class TownsWithBonusView implements HasMainAction{
     private volatile static TownsWithBonusView instance = null;
@@ -129,14 +129,23 @@ public class TownsWithBonusView implements HasMainAction{
         townBonusView.put(TownName.O, new ObjectImageView(null, 0.8455768259373965, 0.35770668485675305, 0.037));
     }
 
+    /**
+     * @return the town map containing the set of town bonus images
+     */
     public Map<TownName, ObjectImageView> getTownBonusView() {
         return townBonusView;
     }
 
+    /**
+     * @return the town map containing the set of town images
+     */
     public Map<TownName, TownView> getTownsView() {
         return townsView;
     }
 
+    /**
+     * @return an effect to apply at an image
+     */
     public static DropShadow setShadowEffect() {
         Glow glow = new Glow(0.8);
         DropShadow borderglow = new DropShadow();
@@ -148,7 +157,16 @@ public class TownsWithBonusView implements HasMainAction{
         return borderglow;
     }
 
-    //Build Emporium With King help handling
+    /**
+     * This method lights up the towns the player can reach, limited to his coins. That is done
+     * changing the listener of the towns, which usually show a popOver when clicked and are lighted
+     * when passing over them with the mouse. The reachable towns shows one more popover, to inform
+     * the player of the number of coins he has to spend to accomplish the action and giving him
+     * the option to cancel the action. Moreover, these towns are always lighted. The non-reachable
+     * town are instead not lighted, not clickable and not interactive.
+     *
+     * @param politicsSelected is the list of the selected cards to satisfy the king balcony
+     */
     public void changeTownListener(List<PoliticsCard> politicsSelected) {
         action = new ActionData();
         action.setSatisfyingCard(politicsSelected);
@@ -238,7 +256,10 @@ public class TownsWithBonusView implements HasMainAction{
         });
     }
 
-    //TownBonus Pick Action handling section
+    /**
+     * This method sets an handler to the town bonus objects, allowing the player to
+     * retrieve them by simply clicking them.
+     */
     public void changeBonusListener() {
         for(TownName name : townBonusView.keySet()) {
             ObjectImageView bonusView = townBonusView.get(name);

@@ -65,9 +65,9 @@ public class PodiumState implements CLIState {
                 if(player.equals(CachedData.getInstance().getMe())) System.out.print(ANSI_CYAN);
 
                 System.out.print("\t" + player.getNickname() + " with: ");
-                System.out.print(CachedData.getInstance().getWealthPath().getPlayerPosition(player) + " coin(s),");
-                System.out.print(CachedData.getInstance().getNobilityPath().getPlayerPosition(player) + " nobility(ies)");
-                System.out.println(CachedData.getInstance().getVictoryPath().getPlayerPosition(player) + "victory point(s)");
+                System.out.print(CachedData.getInstance().getWealthPath().getPlayerPosition(player) + " coin(s), ");
+                System.out.print(CachedData.getInstance().getNobilityPath().getPlayerPosition(player) + " nobility(ies), ");
+                System.out.println(CachedData.getInstance().getVictoryPath().getPlayerPosition(player) + " victory point(s)");
                 System.out.print(ANSI_RESET);
             }
         }
