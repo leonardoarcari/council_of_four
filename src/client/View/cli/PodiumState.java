@@ -51,7 +51,7 @@ public class PodiumState implements CLIState {
     public void showMenu() {
         System.out.println("Game results: ");
 
-        if(podium.get(1).equals(CachedData.getInstance().getMe())){
+        if(podium.get(1).contains((Player)CachedData.getInstance().getMe())){
             System.out.println(ANSI_GREEN + "\nYou are the winner!!!\n" + ANSI_RESET);
         } else {
             System.out.println(ANSI_BLUE + "\nYou lost...\n" + ANSI_RESET);

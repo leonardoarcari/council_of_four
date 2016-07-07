@@ -72,7 +72,7 @@ public class PermitAgainState implements CLIState {
             throw new IllegalArgumentException();
         }
 
-        if(permitCardsMap.keySet().contains(choice)) {
+        if (permitCardsMap.keySet().contains(choice)) {
             Action action = new TakePermitBonusAction((Player)CachedData.getInstance().getMe(), permitCardsMap.get(choice));
             CachedData.getInstance().getController().sendInfo(action);
             validate = false;
