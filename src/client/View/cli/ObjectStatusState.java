@@ -57,7 +57,7 @@ public class ObjectStatusState implements CLIState {
         try {
             choice = Integer.valueOf(input);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException();
         }
         switch(choice) {
             case 1:
